@@ -1,4 +1,5 @@
 # Boa Vida Fish Forecast
+---
 
 &gt; Because asking "where should we fish?" shouldn't require a PhD in marine biology.
 
@@ -13,7 +14,7 @@ This app turns 30+ years of fishing trips into actual useful advice. Think of it
 
 Works on your phone. Even when the internet doesn't.
 
-## ✨ Features
+## Features
 
 ### Smart Recommendations
 - Pick a fish, get actual advice (not fortune cookie wisdom)
