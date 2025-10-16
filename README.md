@@ -38,8 +38,10 @@ cd boa-vida-fish-forecast
 npm install
 npm run dev
 
-# When you're ready to show off
-npm run build && npm run deploy
+# When you're ready to show off (just push to GitHub)
+git add .
+git commit -m "Update fishing data"
+git push origin main
 ```
 
 ## How It Works
