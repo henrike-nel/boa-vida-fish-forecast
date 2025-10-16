@@ -1,5 +1,4 @@
 # Boa Vida Fish Forecast
----
 
 &gt; Because asking "where should we fish?" shouldn't require a PhD in marine biology.
 
@@ -26,7 +25,7 @@ Works on your phone. Even when the internet doesn't.
 ## Quick Start
 
 ### For Normal People
-1. Visit: [boa-vida-fish-forecast.github.io](https://henriken.github.io/boa-vida-fish-forecast)
+1. Visit: [henrike-nel.github.io/boa-vida-fish-forecast](https://henrike-nel.github.io/boa-vida-fish-forecast/)
 2. Tap the share button → "Add to Home Screen"
 3. Pick the fish you're after
 4. Catch fish (results may vary)
