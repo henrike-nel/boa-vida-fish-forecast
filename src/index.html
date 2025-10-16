@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boa Vida Fish Finder - Bazaruto Fishing Guide</title>
+    <meta name="description" content="Data-driven fishing guide for Bazaruto waters based on historical catch data">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Papa Parse for CSV parsing -->
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    
+    <!-- Lodash for data manipulation -->
+    <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
+    
+    <!-- Lucide React Icons -->
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+    
+    <style>
+        /* Additional mobile optimizations */
+        body {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Ensure good contrast in bright sunlight */
+        .sunlight-optimized {
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        /* Loading animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Smooth transitions */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        const { useState, useEffect } = React;
+        const { Fish, MapPin, Sun, Moon, Droplets, Clock, TrendingUp, AlertCircle } = lucideReact;
+
+        const SimpleFishingGuide = () => {
+            const [data, setData] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [selectedFish, setSelectedFish] = useState('');
+            const [recommendations, setRecommendations] = useState(null);
+            const [species, setSpecies] = useState([]);
+            const [error, setError] = useState(null);
+
+            useEffect(() => {
+                loadData();
+            }, []);
+
+            const loadData = async () => {
+                try {
+                    setLoading(true);
+                    setError(null);
+                    
+                    // Try multiple possible filenames for flexibility
+                    const possibleFilenames = [
+                        'Boa_Vida_Fish_Finder_data.csv',
+                        'Baz  Stage 2 of Enriched Data 2.csv',
+                        'Baz  Enriched Data.csv',
+                        'Baz Data.csv'
+                    ];
+                    
+                    let csvData;
+                    let loadedFilename = '';
+                    
+                    for (const filename of possibleFilenames) {
+                        try {
+                            const response = await fetch(filename);
+                            if (response.ok) {
+                                csvData = await response.text();
+                                loadedFilename = filename;
+                                console.log(`Successfully loaded: ${filename}`);
+                                break;
+                            }
+                        } catch (err) {
+                            console.log(`Could not load: ${filename}`);
+                        }
+                    }
+                    
+                    if (!csvData) {
+                        throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the same directory.');
+                    }
+                    
+                    Papa.parse(csvData, {
+                        header: true,
+                        skipEmptyLines: true,
+                        dynamicTyping: true,
+                        complete: (results) => {
+                            const cleanedData = results.data
+                                .filter(row => row.Species && row.Species.trim() !== '')
+                                .map(row => {
+                                    // Handle column names with trailing spaces
+                                    const place = row.Place || row['Place '] || row['Place  '];
+                                    const primaryBait = row.Primary_Bait || row['Primary_Bait '] || row.Bait || row['Bait '];
+                                    const timeOfStrike = row['Time of Strike'] || row['Time of Strike '] || row['Time of Strike  '];
+                                    const weather = row.Weather || row['Weather '] || row['Weather  '];
+                                    
+                                    return {
+                                        Species: row.Species?.trim(),
+                                        Weight: parseFloat(row['Weight (Kg)']) || 0,
+                                        WeightLbs: parseFloat(row['Weight (lbs)']) || 0,
+                                        Place: place?.trim() || 'Unknown',
+                                        PrimaryBait: primaryBait?.trim() || 'Unknown',
+                                        Enhancement: row.Enhancement?.trim() || '',
+                                        RawBait: row['Raw Data Bait']?.trim() || '',
+                                        WaterTemp: parseFloat(row['Water Temperature (C)']) || 0,
+                                        Moon: row.Moon?.trim() || 'Unknown',
+                                        TideState: row['Tide State']?.trim() || 'Unknown',
+                                        TimeOfStrike: timeOfStrike?.trim() || '',
+                                        Weather: weather?.trim() || '',
+                                        CloudCover: parseInt(row['Cloud Cover (%)']) || 0,
+                                        TideHeight: parseFloat(row['Tide Height (m)']) || 0,
+                                        TidalCoeff: parseInt(row['Tidal Coefficient']) || 0
+                                    };
+                                });
+                            
+                            setData(cleanedData);
+                            const uniqueSpecies = _.uniq(cleanedData.map(d => d.Species)).sort();
+                            setSpecies(uniqueSpecies);
+                            if (uniqueSpecies.length > 0) {
+                                setSelectedFish(uniqueSpecies[0]);
+                                analyzeSpecies(uniqueSpecies[0], cleanedData);
+                            }
+                        },
+                        error: (error) => {
+                            throw new Error(`CSV parsing error: ${error.message}`);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    setError(error.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const analyzeSpecies = (fishSpecies, fishingData) => {
+                const speciesData = fishingData.filter(d => d.Species === fishSpecies);
+                
+                if (speciesData.length === 0) {
+                    setRecommendations(null);
+                    return;
+                }
+
+                // Best locations
+                const locationCounts = _(speciesData)
+                    .groupBy('Place')
+                    .mapValues(records => ({
+                        count: records.length,
+                        avgWeight: _.meanBy(records, 'WeightLbs'),
+                        percentage: (records.length / speciesData.length * 100)
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
+
+                // Best baits (using Primary_Bait)
+                const baitCounts = _(speciesData)
+                    .groupBy('PrimaryBait')
+                    .mapValues(records => ({
+                        count: records.length,
+                        avgWeight: _.meanBy(records, 'WeightLbs'),
+                        percentage: (records.length / speciesData.length * 100)
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
+
+                // Best enhancements (when used with primary bait)
+                const enhancementCounts = _(speciesData)
+                    .filter(record => record.Enhancement && record.Enhancement !== 'Unknown' && record.Enhancement !== '')
+                    .groupBy('Enhancement')
+                    .mapValues(records => ({
+                        count: records.length,
+                        avgWeight: _.meanBy(records, 'WeightLbs'),
+                        percentage: (records.length / speciesData.filter(r => r.Enhancement && r.Enhancement !== '').length * 100),
+                        usedWith: _.chain(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
+
+                // Best moon phases
+                const moonCounts = _(speciesData)
+                    .groupBy('Moon')
+                    .mapValues(records => ({
+                        count: records.length,
+                        percentage: (records.length / speciesData.length * 100)
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
+
+                // Best tide states
+                const tideCounts = _(speciesData)
+                    .groupBy('TideState')
+                    .mapValues(records => ({
+                        count: records.length,
+                        percentage: (records.length / speciesData.length * 100)
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
+
+                // Best time of day
+                const timeOfDay = _(speciesData)
+                    .groupBy(row => {
+                        const time = row.TimeOfStrike;
+                        if (!time) return 'Unknown';
+                        const hour = parseInt(time.split(':')[0]);
+                        if (hour >= 5 && hour < 12) return 'Morning (5am-12pm)';
+                        if (hour >= 12 && hour < 17) return 'Afternoon (12pm-5pm)';
+                        if (hour >= 17 && hour < 20) return 'Evening (5pm-8pm)';
+                        return 'Night (8pm-5am)';
+                    })
+                    .mapValues(records => ({
+                        count: records.length,
+                        percentage: (records.length / speciesData.length * 100)
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
+
+                // Weather conditions
+                const avgWaterTemp = _.meanBy(speciesData, 'WaterTemp');
+                const avgCloudCover = _.meanBy(speciesData, 'CloudCover');
+                
+                const weatherPreference = avgCloudCover < 30 ? 'Clear skies' : 
+                                         avgCloudCover < 60 ? 'Partly cloudy' : 'Overcast';
+
+                setRecommendations({
+                    totalCatches: speciesData.length,
+                    avgWeight: _.meanBy(speciesData, 'WeightLbs'),
+                    maxWeight: _.maxBy(speciesData, 'WeightLbs')?.WeightLbs || 0,
+                    topLocation: locationCounts[0],
+                    allLocations: locationCounts.slice(0, 3),
+                    topBait: baitCounts[0],
+                    allBaits: baitCounts.slice(0, 3),
+                    topEnhancement: enhancementCounts.length > 0 ? enhancementCounts[0] : null,
+                    allEnhancements: enhancementCounts.slice(0, 3),
+                    topMoon: moonCounts[0],
+                    allMoons: moonCounts.slice(0, 3),
+                    topTide: tideCounts[0],
+                    allTides: tideCounts.slice(0, 3),
+                    topTime: timeOfDay[0],
+                    allTimes: timeOfDay,
+                    avgWaterTemp: avgWaterTemp.toFixed(1),
+                    weatherPreference
+                });
+            };
+
+            const handleSpeciesChange = (newSpecies) => {
+                setSelectedFish(newSpecies);
+                analyzeSpecies(newSpecies, data);
+            };
+
+            if (loading) {
+                return React.createElement('div', {
+                    className: "min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center p-4"
+                }, React.createElement('div', {
+                    className: "bg-white rounded-xl p-8 text-center shadow-2xl max-w-sm mx-auto"
+                }, [
+                    React.createElement('div', {
+                        key: 'spinner',
+                        className: "animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"
+                    }),
+                    React.createElement('p', {
+                        key: 'text',
+                        className: "text-xl font-semibold sunlight-optimized"
+                    }, "Loading fishing data..."),
+                    React.createElement('p', {
+                        key: 'subtext',
+                        className: "text-gray-600 mt-2"
+                    }, "Analyzing historical catches")
+                ]));
+            }
+
+            if (error) {
+                return React.createElement('div', {
+                    className: "min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center p-4"
+                }, React.createElement('div', {
+                    className: "bg-white rounded-xl p-8 text-center shadow-2xl max-w-md mx-auto"
+                }, [
+                    React.createElement(AlertCircle, {
+                        key: 'icon',
+                        className: "h-16 w-16 text-red-500 mx-auto mb-4"
+                    }),
+                    React.createElement('p', {
+                        key: 'title',
+                        className: "text-xl font-semibold mb-2 sunlight-optimized"
+                    }, "Data Loading Error"),
+                    React.createElement('p', {
+                        key: 'message',
+                        className: "text-gray-600 mb-4"
+                    }, error),
+                    React.createElement('button', {
+                        key: 'retry',
+                        onClick: loadData,
+                        className: "bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
+                    }, "Try Again")
+                ]));
+            }
+
+            if (!recommendations) {
+                return React.createElement('div', {
+                    className: "min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center p-4"
+                }, React.createElement('div', {
+                    className: "bg-white rounded-xl p-8 text-center shadow-2xl max-w-md mx-auto"
+                }, [
+                    React.createElement(AlertCircle, {
+                        key: 'icon',
+                        className: "h-16 w-16 text-orange-500 mx-auto mb-4"
+                    }),
+                    React.createElement('p', {
+                        key: 'title',
+                        className: "text-xl font-semibold sunlight-optimized"
+                    }, "No data available"),
+                    React.createElement('p', {
+                        key: 'message',
+                        className: "text-gray-600 mt-2"
+                    }, "Please ensure the CSV file is uploaded and accessible.")
+                ]));
+            }
+
+            return React.createElement('div', {
+                className: "min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 p-4 pb-8"
+            }, React.createElement('div', {
+                className: "max-w-2xl mx-auto"
+            }, [
+                // Header
+                React.createElement('div', {
+                    key: 'header',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                }, React.createElement('div', {
+                    className: "text-center"
+                }, [
+                    React.createElement(Fish, {
+                        key: 'icon',
+                        className: "h-12 w-12 text-blue-600 mx-auto mb-3"
+                    }),
+                    React.createElement('h1', {
+                        key: 'title',
+                        className: "text-3xl font-bold text-gray-800 mb-2 sunlight-optimized"
+                    }, "Boa Vida Fish Finder"),
+                    React.createElement('p', {
+                        key: 'subtitle',
+                        className: "text-gray-600"
+                    }, `Based on ${data.length} successful catches`)
+                ])),
+
+                // Fish Selector
+                React.createElement('div', {
+                    key: 'selector',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                }, [
+                    React.createElement('label', {
+                        key: 'label',
+                        className: "block text-lg font-semibold text-gray-700 mb-3 sunlight-optimized"
+                    }, "What fish do you want to catch?"),
+                    React.createElement('select', {
+                        key: 'select',
+                        value: selectedFish,
+                        onChange: (e) => handleSpeciesChange(e.target.value),
+                        className: "w-full text-2xl font-bold p-4 border-2 border-blue-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:border-blue-500 sunlight-optimized"
+                    }, species.map(sp => React.createElement('option', {
+                        key: sp,
+                        value: sp
+                    }, sp))),
+                    
+                    React.createElement('div', {
+                        key: 'stats',
+                        className: "mt-4 p-4 bg-blue-50 rounded-lg"
+                    }, [
+                        React.createElement('div', {
+                            key: 'total',
+                            className: "flex justify-between items-center"
+                        }, [
+                            React.createElement('span', {
+                                key: 'label',
+                                className: "text-gray-700"
+                            }, "Total caught:"),
+                            React.createElement('span', {
+                                key: 'value',
+                                className: "text-2xl font-bold text-blue-600 sunlight-optimized"
+                            }, recommendations.totalCatches)
+                        ]),
+                        React.createElement('div', {
+                            key: 'avg',
+                            className: "flex justify-between items-center mt-2"
+                        }, [
+                            React.createElement('span', {
+                                key: 'label',
+                                className: "text-gray-700"
+                            }, "Average weight:"),
+                            React.createElement('span', {
+                                key: 'value',
+                                className: "text-xl font-bold text-blue-600 sunlight-optimized"
+                            }, `${recommendations.avgWeight.toFixed(1)} lbs`)
+                        ]),
+                        React.createElement('div', {
+                            key: 'max',
+                            className: "flex justify-between items-center mt-2"
+                        }, [
+                            React.createElement('span', {
+                                key: 'label',
+                                className: "text-gray-700"
+                            }, "Biggest catch:"),
+                            React.createElement('span', {
+                                key: 'value',
+                                className: "text-xl font-bold text-blue-600 sunlight-optimized"
+                            }, `${recommendations.maxWeight.toFixed(1)} lbs`)
+                        ])
+                    ])
+                ]),
+
+                // Best Location
+                React.createElement('div', {
+                    key: 'location',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                }, [
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "flex items-center mb-4"
+                    }, [
+                        React.createElement(MapPin, {
+                            key: 'icon',
+                            className: "h-8 w-8 text-green-600 mr-3"
+                        }),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                        }, "Where to Fish")
+                    ]),
+                    
+                    React.createElement('div', {
+                        key: 'best',
+                        className: "bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-4"
+                    }, React.createElement('div', {
+                        className: "text-center"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-lg text-green-700 mb-2"
+                        }, "🎯 BEST SPOT"),
+                        React.createElement('div', {
+                            key: 'name',
+                            className: "text-3xl font-bold text-green-900 mb-2 sunlight-optimized"
+                        }, recommendations.topLocation[0]),
+                        React.createElement('div', {
+                            key: 'stats',
+                            className: "text-xl text-green-700"
+                        }, `${recommendations.topLocation[1].count} catches (${recommendations.topLocation[1].percentage.toFixed(0)}% success)`),
+                        React.createElement('div', {
+                            key: 'avg',
+                            className: "text-lg text-green-600 mt-2"
+                        }, `Avg: ${recommendations.topLocation[1].avgWeight.toFixed(1)} lbs`)
+                    ])),
+
+                    recommendations.allLocations.length > 1 && React.createElement('div', {
+                        key: 'others',
+                        className: "space-y-2"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-sm font-semibold text-gray-600 mb-2"
+                        }, "Other good spots:"),
+                        ...recommendations.allLocations.slice(1).map(([place, data], index) => 
+                            React.createElement('div', {
+                                key: index,
+                                className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                            }, [
+                                React.createElement('span', {
+                                    key: 'name',
+                                    className: "font-medium text-gray-800"
+                                }, place),
+                                React.createElement('span', {
+                                    key: 'count',
+                                    className: "text-gray-600"
+                                }, `${data.count} catches`)
+                            ])
+                        )
+                    ])
+                ]),
+
+                // Best Bait
+                React.createElement('div', {
+                    key: 'bait',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                }, [
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "flex items-center mb-4"
+                    }, [
+                        React.createElement(Fish, {
+                            key: 'icon',
+                            className: "h-8 w-8 text-orange-600 mr-3"
+                        }),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                        }, "What Bait to Use")
+                    ]),
+                    
+                    React.createElement('div', {
+                        key: 'best',
+                        className: "bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-6 mb-4"
+                    }, React.createElement('div', {
+                        className: "text-center"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-lg text-orange-700 mb-2"
+                        }, "🎣 BEST BAIT"),
+                        React.createElement('div', {
+                            key: 'name',
+                            className: "text-3xl font-bold text-orange-900 mb-2 sunlight-optimized"
+                        }, recommendations.topBait[0]),
+                        React.createElement('div', {
+                            key: 'stats',
+                            className: "text-xl text-orange-700"
+                        }, `${recommendations.topBait[1].count} catches (${recommendations.topBait[1].percentage.toFixed(0)}% success)`),
+                        React.createElement('div', {
+                            key: 'avg',
+                            className: "text-lg text-orange-600 mt-2"
+                        }, `Avg: ${recommendations.topBait[1].avgWeight.toFixed(1)} lbs`)
+                    ])),
+
+                    recommendations.allBaits.length > 1 && React.createElement('div', {
+                        key: 'others',
+                        className: "space-y-2"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-sm font-semibold text-gray-600 mb-2"
+                        }, "Other good baits:"),
+                        ...recommendations.allBaits.slice(1).map(([bait, data], index) => 
+                            React.createElement('div', {
+                                key: index,
+                                className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                            }, [
+                                React.createElement('span', {
+                                    key: 'name',
+                                    className: "font-medium text-gray-800"
+                                }, bait),
+                                React.createElement('span', {
+                                    key: 'count',
+                                    className: "text-gray-600"
+                                }, `${data.count} catches`)
+                            ])
+                        )
+                    ])
+                ]),
+
+                // Best Enhancement (conditional)
+                recommendations.topEnhancement && React.createElement('div', {
+                    key: 'enhancement',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                }, [
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "flex items-center mb-4"
+                    }, [
+                        React.createElement(TrendingUp, {
+                            key: 'icon',
+                            className: "h-8 w-8 text-pink-600 mr-3"
+                        }),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                        }, "Bait Enhancement")
+                    ]),
+                    
+                    React.createElement('div', {
+                        key: 'best',
+                        className: "bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg p-6 mb-4"
+                    }, React.createElement('div', {
+                        className: "text-center"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-lg text-pink-700 mb-2"
+                        }, "✨ BEST ENHANCEMENT"),
+                        React.createElement('div', {
+                            key: 'name',
+                            className: "text-3xl font-bold text-pink-900 mb-2 sunlight-optimized"
+                        }, recommendations.topEnhancement[0]),
+                        React.createElement('div', {
+                            key: 'stats',
+                            className: "text-xl text-pink-700"
+                        }, `${recommendations.topEnhancement[1].count} catches (${recommendations.topEnhancement[1].percentage.toFixed(0)}% when used)`),
+                        React.createElement('div', {
+                            key: 'avg',
+                            className: "text-lg text-pink-600 mt-2"
+                        }, `Avg: ${recommendations.topEnhancement[1].avgWeight.toFixed(1)} lbs`),
+                        recommendations.topEnhancement[1].usedWith && React.createElement('div', {
+                            key: 'used-with',
+                            className: "text-sm text-pink-600 mt-2"
+                        }, `Often used with: ${recommendations.topEnhancement[1].usedWith[0]}`)
+                    ])),
+
+                    recommendations.allEnhancements.length > 1 && React.createElement('div', {
+                        key: 'others',
+                        className: "space-y-2"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-sm font-semibold text-gray-600 mb-2"
+                        }, "Other enhancements:"),
+                        ...recommendations.allEnhancements.slice(1).map(([enhancement, data], index) => 
+                            React.createElement('div', {
+                                key: index,
+                                className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                            }, [
+                                React.createElement('span', {
+                                    key: 'name',
+                                    className: "font-medium text-gray-800"
+                                }, enhancement),
+                                React.createElement('span', {
+                                    key: 'count',
+                                    className: "text-gray-600"
+                                }, `${data.count} catches`)
+                            ])
+                        )
+                    ])
+                ]),
+
+                // Best Time
+                React.createElement('div', {
+                    key: 'time',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                }, [
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "flex items-center mb-4"
+                    }, [
+                        React.createElement(Clock, {
+                            key: 'icon',
+                            className: "h-8 w-8 text-purple-600 mr-3"
+                        }),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                        }, "When to Fish")
+                    ]),
+                    
+                    React.createElement('div', {
+                        key: 'best',
+                        className: "bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-6 mb-4"
+                    }, React.createElement('div', {
+                        className: "text-center"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-lg text-purple-700 mb-2"
+                        }, "⏰ BEST TIME"),
+                        React.createElement('div', {
+                            key: 'name',
+                            className: "text-3xl font-bold text-purple-900 mb-2 sunlight-optimized"
+                        }, recommendations.topTime[0]),
+                        React.createElement('div', {
+                            key: 'stats',
+                            className: "text-xl text-purple-700"
+                        }, `${recommendations.topTime[1].count} catches (${recommendations.topTime[1].percentage.toFixed(0)}% success)`)
+                    ])),
+
+                    recommendations.allTimes.length > 1 && React.createElement('div', {
+                        key: 'others',
+                        className: "space-y-2"
+                    }, recommendations.allTimes.slice(1).map(([time, data], index) => 
+                        React.createElement('div', {
+                            key: index,
+                            className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                        }, [
+                            React.createElement('span', {
+                                key: 'name',
+                                className: "font-medium text-gray-800"
+                            }, time),
+                            React.createElement('span', {
+                                key: 'count',
+                                className: "text-gray-600"
+                            }, `${data.count} catches`)
+                        ])
+                    ))
+                ]),
+
+                // Best Conditions
+                React.createElement('div', {
+                    key: 'conditions',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                }, [
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "flex items-center mb-4"
+                    }, [
+                        React.createElement(Sun, {
+                            key: 'icon',
+                            className: "h-8 w-8 text-yellow-600 mr-3"
+                        }),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                        }, "Best Conditions")
+                    ]),
+                    
+                    React.createElement('div', {
+                        key: 'conditions-list',
+                        className: "space-y-3"
+                    }, [
+                        // Moon Phase
+                        React.createElement('div', {
+                            key: 'moon',
+                            className: "bg-indigo-50 rounded-lg p-4"
+                        }, React.createElement('div', {
+                            className: "flex items-center justify-between"
+                        }, [
+                            React.createElement('div', {
+                                key: 'left',
+                                className: "flex items-center"
+                            }, [
+                                React.createElement(Moon, {
+                                    key: 'icon',
+                                    className: "h-6 w-6 text-indigo-600 mr-3"
+                                }),
+                                React.createElement('div', {
+                                    key: 'content'
+                                }, [
+                                    React.createElement('div', {
+                                        key: 'label',
+                                        className: "font-semibold text-gray-800"
+                                    }, "Moon Phase"),
+                                    React.createElement('div', {
+                                        key: 'value',
+                                        className: "text-2xl font-bold text-indigo-900 sunlight-optimized"
+                                    }, recommendations.topMoon[0])
+                                ])
+                            ]),
+                            React.createElement('div', {
+                                key: 'right',
+                                className: "text-right"
+                            }, [
+                                React.createElement('div', {
+                                    key: 'label',
+                                    className: "text-sm text-gray-600"
+                                }, "Success rate"),
+                                React.createElement('div', {
+                                    key: 'value',
+                                    className: "text-xl font-bold text-indigo-600 sunlight-optimized"
+                                }, `${recommendations.topMoon[1].percentage.toFixed(0)}%`)
+                            ])
+                        ])),
+
+                        // Tide State
+                        React.createElement('div', {
+                            key: 'tide',
+                            className: "bg-cyan-50 rounded-lg p-4"
+                        }, React.createElement('div', {
+                            className: "flex items-center justify-between"
+                        }, [
+                            React.createElement('div', {
+                                key: 'left',
+                                className: "flex items-center"
+                            }, [
+                                React.createElement(Droplets, {
+                                    key: 'icon',
+                                    className: "h-6 w-6 text-cyan-600 mr-3"
+                                }),
+                                React.createElement('div', {
+                                    key: 'content'
+                                }, [
+                                    React.createElement('div', {
+                                        key: 'label',
+                                        className: "font-semibold text-gray-800"
+                                    }, "Tide"),
+                                    React.createElement('div', {
+                                        key: 'value',
+                                        className: "text-2xl font-bold text-cyan-900 sunlight-optimized"
+                                    }, recommendations.topTide[0])
+                                ])
+                            ]),
+                            React.createElement('div', {
+                                key: 'right',
+                                className: "text-right"
+                            }, [
+                                React.createElement('div', {
+                                    key: 'label',
+                                    className: "text-sm text-gray-600"
+                                }, "Success rate"),
+                                React.createElement('div', {
+                                    key: 'value',
+                                    className: "text-xl font-bold text-cyan-600 sunlight-optimized"
+                                }, `${recommendations.topTide[1].percentage.toFixed(0)}%`)
+                            ])
+                        ])),
+
+                        // Weather
+                        React.createElement('div', {
+                            key: 'weather',
+                            className: "bg-sky-50 rounded-lg p-4"
+                        }, React.createElement('div', {
+                            className: "flex items-center justify-between"
+                        }, [
+                            React.createElement('div', {
+                                key: 'left',
+                                className: "flex items-center"
+                            }, [
+                                React.createElement(Sun, {
+                                    key: 'icon',
+                                    className: "h-6 w-6 text-sky-600 mr-3"
+                                }),
+                                React.createElement('div', {
+                                    key: 'content'
+                                }, [
+                                    React.createElement('div', {
+                                        key: 'label',
+                                        className: "font-semibold text-gray-800"
+                                    }, "Weather"),
+                                    React.createElement('div', {
+                                        key: 'value',
+                                        className: "text-2xl font-bold text-sky-900 sunlight-optimized"
+                                    }, recommendations.weatherPreference)
+                                ])
+                            ]),
+                            React.createElement('div', {
+                                key: 'right',
+                                className: "text-right"
+                            }, [
+                                React.createElement('div', {
+                                    key: 'label',
+                                    className: "text-sm text-gray-600"
+                                }, "Water temp"),
+                                React.createElement('div', {
+                                    key: 'value',
+                                    className: "text-xl font-bold text-sky-600 sunlight-optimized"
+                                }, `${recommendations.avgWaterTemp}°C`)
+                            ])
+                        ]))
+                    ])
+                ]),
+
+                // Quick Summary
+                React.createElement('div', {
+                    key: 'summary',
+                    className: "bg-gradient-to-r from-green-500 to-blue-500 rounded-xl shadow-2xl p-6 text-white"
+                }, [
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "flex items-center mb-4"
+                    }, [
+                        React.createElement(TrendingUp, {
+                            key: 'icon',
+                            className: "h-8 w-8 mr-3"
+                        }),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "text-2xl font-bold sunlight-optimized"
+                        }, "Quick Summary")
+                    ]),
+                    React.createElement('div', {
+                        key: 'content',
+                        className: "text-lg leading-relaxed"
+                    }, [
+                        React.createElement('p', {
+                            key: 'intro',
+                            className: "mb-3 sunlight-optimized"
+                        }, React.createElement('strong', null, `To catch ${selectedFish}:`)),
+                        React.createElement('p', {
+                            key: 'location',
+                            className: "mb-2"
+                        }, `🎯 Fish at ${React.createElement('strong', null, recommendations.topLocation[0])}`),
+                        React.createElement('p', {
+                            key: 'bait',
+                            className: "mb-2"
+                        }, `🎣 Use ${React.createElement('strong', null, recommendations.topBait[0])} as bait`),
+                        recommendations.topEnhancement && React.createElement('p', {
+                            key: 'enhancement',
+                            className: "mb-2"
+                        }, `✨ Add ${React.createElement('strong', null, recommendations.topEnhancement[0])} enhancement`),
+                        React.createElement('p', {
+                            key: 'time',
+                            className: "mb-2"
+                        }, `⏰ Go fishing ${React.createElement('strong', null, recommendations.topTime[0].toLowerCase())}`),
+                        React.createElement('p', {
+                            key: 'moon',
+                            className: "mb-2"
+                        }, `🌙 Best during ${React.createElement('strong', null, recommendations.topMoon[0])}`),
+                        React.createElement('p', {
+                            key: 'tide'
+                        }, `🌊 Target ${React.createElement('strong', null, recommendations.topTide[0].toLowerCase())} tide`)
+                    ])
+                ]),
+
+                // Footer
+                React.createElement('div', {
+                    key: 'footer',
+                    className: "text-center mt-6 text-white text-sm"
+                }, [
+                    React.createElement('p', {
+                        key: 'line1'
+                    }, "Based on historical catch data from Bazaruto"),
+                    React.createElement('p', {
+                        key: 'line2',
+                        className: "mt-1"
+                    }, "Good luck fishing! 🎣")
+                ])
+            ]));
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(SimpleFishingGuide));
+    </script>
+</body>
+</html>
