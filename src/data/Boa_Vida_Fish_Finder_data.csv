@@ -1,0 +1,292 @@
+Date,Species,Weight (Kg),Weight (lbs),Length (m),Place ,Primary_Bait,Enhancement,Raw Data Bait ,Line (kg),Time of Strike ,Water Temperature (C),Weather ,Tide State,Tide Height (m),Tidal Coefficient,Cloud Cover (%),Description,Air Temp (°C),Moon
+11/06/1992,Sailfish,11,24.25082,-,Lighthouse,Carapau,,Halfbeak,16,10:30,26,S/SNSS Fine,Outgoing,2,79,54,Partly Cloudy,29.4,Waning Gibbous
+13/06/1992,Sailfish,37,81.57094,2.085,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,12,11:15,27,Light NE,Outgoing,1.7,104,69,Partly Cloudy,31.1,Waning Gibbous
+05/07/1992,Sailfish,32,70.54784,-,North Camp,Halfbeak,,Halfbeak,15,15:45,24,Light SE,Outgoing,0.5,68,84,Overcast,28.1,Waning Gibbous
+06/07/1992,Sailfish,31,68.34322,-,Mush's Hole,Halfbeak,,Halfbeak,15,09:30,24,Clam,Outgoing,2.2,45,99,Overcast,27.7,Waning Gibbous
+06/07/1992,Sailfish,34,74.95708,-,Mush's Hole,Halfbeak,,Halfbeak,15,13:00,25,Light S,Outgoing,1.2,42,35,Partly Cloudy,29.4,Waning Gibbous
+07/07/1992,Sailfish,45,99.2079,-,Mush's Hole,Halfbeak,,Halfbeak,15,09:15,26,Strong N,Outgoing,2.3,36,53,Partly Cloudy,30.5,Waning Gibbous
+07/07/1992,Sailfish,35,77.1617,-,Sailfish Bay,Halfbeak,,Halfbeak,15,11:30,26,N,Outgoing,1.7,34,57,Partly Cloudy,30.1,Waning Gibbous
+08/07/1992,Sailfish,34,74.95708,-,Venge's Bay,Halfbeak,,Halfbeak,15,12:30,26,SE,Outgoing,1.3,36,37,Partly Cloudy,29.2,Waning Gibbous
+08/07/1992,Sailfish,40,88.1848,-,Sailfish Bay,Halfbeak,,Halfbeak,15,09:45,25,SE,Outgoing,2.2,34,60,Partly Cloudy,29.3,Waning Gibbous
+09/07/1992,Sailfish,38,83.77556,-,Sailfish Bay,Halfbeak,,Halfbeak,15,09:45,25,Strong SE,Outgoing,2.2,62,58,Partly Cloudy,29.5,Waning Gibbous
+12/07/1992,Sailfish,25,55.1155,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,18,10:45,24,SE,Outgoing,1.9,99,80,Overcast,27.8,Last Quarter
+14/07/1992,Sailfish,38,83.77556,2.1,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,23,11:00,25,SE,Outgoing,1.8,115,48,Partly Cloudy,28.7,Waning Gibbous
+16/07/1992,Sailfish,17,37.47854,-,Mush's Hole,Halfbeak,Hawaiian Eye,Halfbeak,14,08:00,25,SE,Outgoing,2.5,115,44,Partly Cloudy,28.8,Waning Gibbous
+17/07/1992,Sailfish,33,72.75246,2.12,Mush's Hole,Halfbeak,Hawaiian Eye,Halfbeak,17,07:15,25,SE,Outgoing,2.6,115,50,Partly Cloudy,29.6,Waning Gibbous
+25/07/1992,Sailfish,38,83.77556,2.1,Lighthouse,Belly Shine,Mydo,Mydo Shiner,15,11:04,26,SE,Outgoing,1.8,59,46,Partly Cloudy,29.9,Waning Gibbous
+27/07/1992,Sailfish,45,99.2079,-,Lighthouse,Belly Shine,Mydo,Mydo Shiner,10,10:30,26,Light S,Outgoing,2,57,64,Partly Cloudy,29.4,Waning Gibbous
+27/07/1992,Sailfish,38,83.77556,-,Lighthouse,Belly Shine,Hawaiian Eye,Mydo Shiner,15,11:30,26,Light S,Outgoing,1.7,58,53,Partly Cloudy,30.4,Waning Gibbous
+30/11/1993,Sailfish,25,55.1155,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,17,15:45,28,SE,Outgoing,0.5,107,67,Partly Cloudy,31,Waning Crescent
+12/01/1994,Sailfish,35,77.1617,-,Salfish Bay,Halfbeak,Hawaiian Eye,Halfbeak,15,07:10,28,NE,High,2.6,103,43,Partly Cloudy,31.2,Waning Gibbous
+12/01/1994,Sailfish,25,55.1155,-,Mush's Hole,Rapala,,Halfbeak,17,08:00,28,NE,Outgoing,2.5,103,51,Partly Cloudy,31.7,Waning Gibbous
+20/01/1994,Sailfish,25,55.1155,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,20,11:30,29,SE,Outgoing,1.7,74,10,Clear,32.6,Waning Gibbous
+21/06/1994,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,40,11:40,24,NE,Outgoing,1.6,86,97,Overcast,28.4,Waning Crescent
+10/07/1994,Sailfish,37,81.57094,-,Lighthouse,Halfbeak,Pink skirt ,Halfbeak,15,07:10,21,NW,High,2.6,109,86,Overcast,24.3,Waning Crescent
+10/07/1994,Sailfish,35,77.1617,-,Lighthouse,Rapala,,Halfbeak,15,07:10,21,NW,High,2.6,109,88,Overcast,24.7,Waning Crescent
+17/07/1994,Sailfish,25,55.1155,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,12.5,15:00,20,SE,Outgoing,0.7,22,91,Overcast,23.8,Waning Crescent
+18/07/1994,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,15,07:20,20,SE,Outgoing,2.6,41,97,Overcast,23.4,Waning Crescent
+14/07/1994,Sailfish,37,81.57094,-,Lighthouse,Halfbeak,,Halfbeak,12.5,13:45,21,SE,Outgoing,1,32,89,Overcast,24.6,Last Quarter
+21/07/1994,Sailfish,38,83.77556,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,16,07:45,23,E,Outgoing,2.6,97,89,Overcast,27,Waning Crescent
+21/07/1994,Sailfish,31,68.34322,-,Lighthouse,Halfbeak,,Halfbeak,15,08:30,23,E,Outgoing,2.5,98,95,Overcast,27.3,Waning Crescent
+21/07/1994,Sailfish,33,72.75246,2.12m,Lighthouse,Halfbeak,,Halfbeak,15,08:00,23,E,Outgoing,2.5,97,93,Overcast,27.5,Waning Crescent
+03/08/1994,Sailfish,38,83.77556,-,3 Trees,Halfbeak,Hawaiian Eye,Halfbeak,21,10:40,23,SE,Outgoing,1.9,75,91,Overcast,27.6,Last Quarter
+07/08/1994,Sailfish,30,66.1386,-,Lighthouse,Live Bait,,Live Bait,15,09:50,22,SE,Outgoing,2.1,114,81,Overcast,25.5,Waning Crescent
+28/08/1994,Sailfish,30,66.1386,-,Lighthouse,Belly Shine,Hawaiian Eye,Halfbeak,15,07:10,23,SE,High,2.6,77,91,Overcast,27.9,Waning Crescent
+28/08/1994,Sailfish,28,61.72936,-,Lighthouse,Belly Shine,Pink skirt ,Halfbeak,15,12:20,23,SE,Outgoing,1.4,74,94,Overcast,26.5,Waning Crescent
+24/11/1992,Sailfish,30,66.1386,-,Mush's Hole,Halfbeak,,Halfbeak,23,12:00,25,NE,Outgoing,1.5,98,54,Partly Cloudy,29.6,Waning Crescent
+30/11/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,,Halfbeak,15,10:00,26,SE,Outgoing,2.1,107,42,Partly Cloudy,30.8,Waning Crescent
+30/11/1992,Sailfish,28,61.72936,-,Lighthouse,Halfbeak,,Halfbeak,15,14:20,26,SE,Outgoing,0.8,106,41,Partly Cloudy,30.4,Waning Crescent
+19/12/1992,Black Marlin,25,55.1155,-,Lighthouse,Rapala,,Pink Rapala,6,09:15,26,NE,Outgoing,2.3,21,54,Partly Cloudy,29.2,Waning Crescent
+30/03/1993,Prodigal Son,9,19.84158,-,Mush's Hole,-,,-,8,08:45,27,NE,Outgoing,2.4,75,68,Partly Cloudy,30.5,Waning Gibbous
+15/12/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,09:45,,,,,,,,,
+10/05/1993,Sailfish,20,44.0924,-,Lighthouse,Halfbeak,,Halfbeak,6,-,26,Light SE,Outgoing,1.5,83,61,Partly Cloudy,29.3,Last Quarter
+10/05/1993,Sailfish,45,99.2079,-,Mush's Hole,Halfbeak,,Halfbeak,6,-,26,SE,Outgoing,1.5,83,68,Partly Cloudy,29.8,Last Quarter
+10/05/1993,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,,Halfbeak,6,-,26,SE,Outgoing,1.5,83,45,Partly Cloudy,30.8,Last Quarter
+10/05/1993,Sailfish,34,74.95708,2,Lighthouse,Halfbeak,,Halfbeak,6,,26,SE,Outgoing,2.6,86,32,Partly Cloudy,30.6,Last Quarter
+10/05/1993,Sailfish,36,79.36632,2,Mush's Hole,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,6,07:15,26,SE,Outgoing,2.6,86,44,Partly Cloudy,29.9,Last Quarter
+10/05/1993,Sailfish,29,63.93398,1.76,Lighthouse,Halfbeak,,Halfbeak,6,-,26,SE,Outgoing,1.5,83,67,Partly Cloudy,29.4,Last Quarter
+10/05/1993,Sailfish,30,66.1386,1.83,Mush's Hole,Halfbeak,,Halfbeak,6,-,26,SE,Outgoing,1.5,83,56,Partly Cloudy,30.6,Last Quarter
+01/10/1992,Sailfish,38,83.77556,-,Lighthouse,Halfbeak,,Halfbeak,15,14:00,26,SE,Outgoing,0.9,67,66,Partly Cloudy,30.1,Waning Gibbous
+01/10/1992,Sailfish,40,88.1848,-,Lighthouse,Carapau,,Carapau,15,16:30,26,SE,Outgoing,0.4,65,43,Partly Cloudy,29.6,Waning Gibbous
+02/10/1992,Sailfish,36,79.36632,-,Lighthouse,Halfbeak,,Halfbeak,15,11:00,25,SE,Outgoing,1.8,42,65,Partly Cloudy,30,Waning Gibbous
+02/10/1992,Sailfish,42,92.59404,-,Lighthouse,Carapau,,Carapau,15,11:00,25,SE,Outgoing,1.8,42,60,Partly Cloudy,28.5,Waning Gibbous
+02/10/1992,Sailfish,44,97.00328,-,Lighthouse,Halfbeak,,Halfbeak,15,12:00,25,SE,Outgoing,1.5,41,44,Partly Cloudy,28.4,Waning Gibbous
+02/10/1992,Sailfish,44,97.00328,-,Lighthouse,Halfbeak,,Halfbeak,15,13:00,25,SE,Outgoing,1.2,40,51,Partly Cloudy,29.2,Waning Gibbous
+02/10/1992,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,,Halfbeak,15,14:00,25,SE,Outgoing,0.9,39,61,Partly Cloudy,29,Waning Gibbous
+02/10/1992,Sailfish,38,83.77556,-,Lighthouse,Belly Shine,Hawaiian Eye,Pink Hawaiian Eye + Shine,15,14:30,25,SE,Outgoing,0.8,39,50,Partly Cloudy,28.8,Waning Gibbous
+02/10/1992,Sailfish,45,99.2079,-,Lighthouse,Belly Shine,Hawaiian Eye,Pink Hawaiian Eye + Shine,15,16:00,25,SE,Outgoing,0.5,38,55,Partly Cloudy,28.3,Waning Gibbous
+02/10/1992,Sailfish,30,66.1386,-,Lighthouse,Belly Shine,Hawaiian Eye,Yellow Hawaiian Eye + Shine,15,13:30,25,SE,Outgoing,1,40,62,Partly Cloudy,29.2,Waning Gibbous
+02/10/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Hawaiian Eye,Yellow Hawaiian Eye + Halfbeak,15,15:30,25,SE,Outgoing,0.5,38,30,Partly Cloudy,28.8,Waning Gibbous
+04/10/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,10,10:00,25,SE,Outgoing,2.1,24,49,Partly Cloudy,29.8,Waning Gibbous
+05/10/1992,Sailfish,32,70.54784,-,Lighthouse,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,10,08:00,26,SE,Outgoing,2.5,24,48,Partly Cloudy,30.5,Last Quarter
+05/10/1992,Sailfish,20,44.0924,-,Lighthouse,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,10,09:00,26,SE,Outgoing,2.3,25,37,Partly Cloudy,30.7,Last Quarter
+05/10/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,10:00,26,SE,Outgoing,2.1,26,66,Partly Cloudy,30.6,Last Quarter
+06/10/1992,Sailfish,33,72.75246,1.95,Lighthouse,Belly Shine,Hawaiian Eye,Red and White Hawaiian Eye + Shine,10,12:10,26,SE,Outgoing,1.4,56,60,Partly Cloudy,30.4,Last Quarter
+06/10/1992,Sailfish,38,83.77556,-,Lighthouse,Belly Shine,Hawaiian Eye,Red and White Hawaiian Eye + Shine,10,11:10,26,SE,Outgoing,1.8,56,52,Partly Cloudy,29.4,Last Quarter
+18/07/1993,Sailfish,29,63.93398,-,3 Trees,Halfbeak,Hawaiian Eye,Belly Shine + Halfbeak,18,16:00,25,SE,Outgoing,0.5,108,50,Partly Cloudy,29.2,Last Quarter
+07/07/1993,Sailfish,22,48.50164,-,Lighthouse,Rapala,,Orange Rapala,12,06:55,24,SE,High,2.7,103,96,Overcast,27.1,Last Quarter
+07/07/1993,Sailfish,27,59.52474,-,Lighthouse,Belly Shine,Red skirt ,Belly Shine + Halfbeak,23,08:00,24,SE,Outgoing,2.5,103,90,Overcast,29,Last Quarter
+12/07/1993,Sailfish,28,61.72936,2,12 Mile,,Yellow Feather,Yellow Feather,10,13:30,24,NE,Outgoing,1,32,95,Overcast,27.2,Waning Crescent
+17/07/1993,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,Yellow skirt ,Yellow Skirt + Halfbeak,10,16:30,25,SE,Outgoing,0.4,92,66,Partly Cloudy,28.4,Last Quarter
+20/07/1993,Sailfish,29,63.93398,-,12 Mile ,Halfbeak,Hawaiian Eye,Yellow Feather + Halfbeak,20,09:00,24,SE,Outgoing,2.3,115,88,Overcast,27.6,Waning Crescent
+27/07/1993,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,15,08:00,23,NE,Outgoing,2.5,65,84,Overcast,26.3,Last Quarter
+31/07/1993,Sailfish,30,66.1386,-,North Camp ,Halfbeak,Hawaiian Eye,Halfbeak,15,11:30,24,Calm,Outgoing,1.7,53,87,Overcast,27,Waning Crescent
+31/07/1993,Sailfish,40,88.1848,-,North Camp,Halfbeak,,Halfbeak,22,11:20,24,Calm,Outgoing,1.7,53,91,Overcast,27.2,Waning Crescent
+01/08/1993,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak,15,10:00,24,Calm,Outgoing,2.1,115,85,Overcast,28.5,Waning Gibbous
+01/08/1993,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,,Halfbeak,22,10:00,24,Calm,Outgoing,2.1,115,86,Overcast,27.3,Waning Gibbous
+30/09/1993,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,,Halfbeak,23,15:00,26,Calm,Outgoing,0.7,82,62,Partly Cloudy,29.3,Waning Crescent
+04/10/1993,Sailfish,29,63.93398,1.91,Lighthouse,Belly Shine,Pink skirt ,Pink skirt + Belly Shine,10,11:30,25,SE,Outgoing,1.7,95,48,Partly Cloudy,30,Last Quarter
+04/10/1993,Sailfish,25,55.1155,1.84,Lighthouse,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,10,10:45,25,SE,Outgoing,1.9,95,34,Partly Cloudy,29,Last Quarter
+04/10/1993,Sailfish,27,59.52474,1.88,Lighthouse,Halfbeak,Hawaiian Eye,Yellow Hawaiian Eye + Halfbeak,16,08:30,25,SE,Outgoing,2.5,96,42,Partly Cloudy,29.5,Last Quarter
+06/10/1993,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,17,16:10,25,SE,Outgoing,0.4,61,37,Partly Cloudy,29.7,Waning Crescent
+06/10/1993,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,17,15:40,25,SE,Outgoing,0.5,62,58,Partly Cloudy,29.5,Waning Crescent
+24/08/1994,Sailfish,38,83.77556,-,Lighthouse,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,13,07:10,23,SE,High,2.6,115,94,Overcast,26.2,New Moon
+24/08/1994,Sailfish,26,57.32012,-,Lighthouse,Halfbeak,Red skirt ,Halfbeak,10,09:30,23,SE,Outgoing,2.2,114,93,Overcast,27.7,New Moon
+03/09/1994,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,23,15:30,23,SE,Outgoing,0.5,93,87,Overcast,27.1,Last Quarter
+04/09/1994,Sailfish,,,-,Lighthouse,Halfbeak,Hawaiian Eye,Yellow Hawaiian Eye + Halfbeak,16,09:20,23,SE,Outgoing,2.3,106,94,Overcast,27.3,Waning Crescent
+04/09/1994,Sailfish,,,-,Lighthouse,Halfbeak,Hawaiian Eye,Pink skirt + Halfbeak,16,09:20,23,SE,Outgoing,2.3,106,84,Overcast,26,Waning Crescent
+04/09/1994,Sailfish,,,-,Lighthouse,Halfbeak,Hawaiian Eye,Pink skirt + Carapau,16,10:40,23,SE,Outgoing,1.9,106,83,Overcast,26.4,Waning Crescent
+05/09/1994,Sailfish,20,44.0924,1.7,Lighthouse,Carapau,Hawaiian Eye,Pink Hawaiian Eye + Carapau,18,10:00,24,SE,Outgoing,2.1,110,97,Overcast,27.1,Waning Crescent
+05/09/1994,Sailfish,25,55.1155,1.85,Lighthouse,Carapau,Hawaiian Eye,Blue and White Hawaiin Eye + Carapau,13.5,10:00,24,SE,Outgoing,2.1,110,90,Overcast,27.3,Waning Crescent
+13/09/1994,Sailfish,31,68.34322,1.99,Lighthouse,Halfbeak,Hawaiian Eye,Blue and White Hawaiin Eye + Halfbeak,28,10:00,23,NE,Outgoing,2.1,24,89,Overcast,27.3,Waning Crescent
+14/09/1994,Sailfish,36,79.36632,2.07,Lighthouse,Halfbeak,Hawaiian Eye,Blue and White Hawaiin Eye + Halfbeak,15,06:30,23,NE,High,2.7,42,95,Overcast,26.6,Waning Crescent
+14/09/1994,Sailfish,34,74.95708,2.05,Lighthouse,Halfbeak,Hawaiian Eye,Blue and White Hawaiin Eye + Halfbeak,23,10:00,23,W,Outgoing,2.1,45,83,Overcast,26.4,Waning Crescent
+08/10/1994,Sailfish,32,70.54784,-,Lighthouse,Halfbeak,,Halfbeak,15,15:30,24,NE,Outgoing,0.5,96,84,Overcast,28.2,Waning Crescent
+08/10/1994,Sailfish,34,74.95708,-,Lighthouse,Halfbeak,,Halfbeak,15,16:30,24,NE,Outgoing,0.4,95,97,Overcast,27.4,Waning Crescent
+08/10/1994,Sailfish,35,77.1617,-,Lighthouse,Belly Shine,,Belly Shine,25,11:30,24,SE,Outgoing,1.7,98,91,Overcast,28.2,Waning Crescent
+21/10/1994,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak,15,16:00,26,NE,Outgoing,0.5,115,58,Partly Cloudy,30.1,New Moon
+22/10/1994,Sailfish,27,59.52474,-,Lighthouse,Rapala,,Rapala,12.5,,26,NE,Outgoing,1.5,114,44,Partly Cloudy,31,New Moon
+20/10/1994,Black Marlin,60,132.2772,-,5km East of Lighthouse,Skipped Bait,,Skip Bait King,59,,26,NE,Outgoing,1.5,112,54,Partly Cloudy,29.3,Waning Crescent
+08/10/1993,Sailfish,24,52.91088,-,Liighthouse,Belly Shine,Pink skirt,Pink skirt + Belly Shine,12.5,11:30,25,SE,Outgoing,1.7,27,32,Partly Cloudy,29.6,Waning Crescent
+08/10/1993,Sailfish,30,66.1386,-,Lighthouse,Belly Shine,Pink skirt,Pink skirt + Belly Shine,12.5,12:30,25,SE,Outgoing,1.3,27,37,Partly Cloudy,29.8,Waning Crescent
+08/10/1993,Sailfish,30,66.1386,-,Lighthouse,Belly Shine,Hawaiian Eye,Halfbeak,17,11:00,25,SE,Outgoing,1.8,28,40,Partly Cloudy,28.8,Waning Crescent
+08/10/1993,Sailfish,31,68.34322,1.97,Lighthouse,Belly Shine,Pink skirt,Pink skirt + Belly Shine,17,09:15,25,NE,Outgoing,2.3,29,33,Partly Cloudy,29.3,Waning Crescent
+09/10/1993,Sailfish,21,46.29702,1.7,Lighthouse,Belly Shine,,Shine,17,09:15,25,NE,Outgoing,2.3,40,69,Partly Cloudy,29.7,Waning Crescent
+09/10/1993,Sailfish,35,77.1617,-,Mush's Hole,Belly Shine,Pink skirt,,20,07:30,25,NE,Outgoing,2.6,39,33,Partly Cloudy,29.5,Waning Crescent
+11/10/1993,Sailfish,37,81.57094,2.1,Lighthouse,Halfbeak,Hawaiian Eye,Belly Shine + Halfbeak,15,07:00,26,E,High,2.7,74,40,Partly Cloudy,30.1,Waning Crescent
+12/10/1993,Sailfish,36,79.36632,-,Lighthouse,Carapau,,,15,09:00,26,E,Outgoing,2.3,83,45,Partly Cloudy,29.5,Waning Crescent
+13/10/1993,Sailfish,37,81.57094,2.15,Lighthouse,Belly Shine,,Shine,12,12:20,26,SE,Outgoing,1.4,103,44,Partly Cloudy,30.7,Last Quarter
+21/10/1993,Sailfish,22,48.50164,-,Lighthouse,Halfbeak,Pink skirt ,Pink Shine Halfbeak,14,11:00,26,Calm,Outgoing,1.8,77,69,Partly Cloudy,30.4,Waning Crescent
+28/10/1993,Sailfish,35,77.1617,-,Lighthouse,Belly Shine,,Shine ,23,09:00,26,NE,Outgoing,2.3,62,56,Partly Cloudy,29.8,Waning Crescent
+06/11/1993,Sailfish,42,92.59404,2.16,Lighthouse,Halfbeak,,Halfbeak,15,15:30,27,SE,Outgoing,0.5,43,55,Partly Cloudy,31.4,Waning Crescent
+07/11/1993,Sailfish,30,66.1386,-,Lighthouse,Live Bait,,Live Garfish,15,14:00,27,SE,Outgoing,0.9,35,47,Partly Cloudy,30.4,Waning Crescent
+12/11/1993,Sailfish,35,77.1617,-,Sailfish Bay,Halfbeak,Yellow skirt ,Red and Yellow skirt + Halfbeak,8,10:05,27,SE,Outgoing,2.1,97,48,Partly Cloudy,30.9,Waning Crescent
+14/11/1993,Sailfish,25,55.1155,-,Sailfish Bay,Halfbeak,Hawaiian Eye,Halfbeak,15,08:00,28,SE,Outgoing,2.5,115,40,Partly Cloudy,31.2,Waning Crescent
+18/11/1993,Sailfish,31,68.34322,1.94,1km East of Lighthouse,Belly Shine,Hawaiian Eye,Hawaiian Eye + Belly Shine,20,16:00,28,SE,Outgoing,0.5,105,45,Partly Cloudy,32.8,Waning Crescent
+21/11/1993,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,07:25,28,SE,Outgoing,2.6,63,57,Partly Cloudy,32,Waning Crescent
+28/10/1991,Sailfish,30,66.1386,2,Lighthouse,Belly Shine,White skirt ,White skirt +  Belly Shine,10,14:00,26,Calm NE,Outgoing,0.9,93,65,Partly Cloudy,29.7,Last Quarter
+30/10/1991,Sailfish,28,61.72936,-,Lighthouse,Halfbeak,Hawaiian Eye,Hawaiian Eye + Halfbeak,18,16:30,26,Light NE,Outgoing,0.4,61,35,Partly Cloudy,30.9,Waning Crescent
+30/10/1991,Sailfish,25,55.1155,-,Lighthouse,Halfbeak,Pink skirt ,Pink Hawaiian Eye + Halfbeak,24,17:00,26,Light NE,Low,0.3,61,41,Partly Cloudy,29.8,Waning Crescent
+11/11/1991,Black Marlin,26,57.32012,-,Sandpit,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,10,06:00,30,Calm NE,High,2.7,87,13,Clear,34.6,Waning Crescent
+27/12/1991,Black Marlin,197,434.31014,-,12 Mile,Live Bait,,Live Bonito,58,10:00,28,Choppy,Outgoing,2.1,88,53,Partly Cloudy,32.3,Waning Crescent
+02/01/1992,Black Marlin,86,189.59732,-,12km from Lighthouse ,Skipped Bait,,Dead Bonito,36,10:40,28,Calm,Outgoing,1.9,100,55,Partly Cloudy,31.1,Waxing Gibbous
+13/01/1992,Sailfish,83,182.98346,-,8km from Lighthouse ,Skipped Bait,,Skip Cuda,58,11:00,27,Calm SE,Outgoing,1.8,22,37,Partly Cloudy,31,Waxing Gibbous
+25/02/1992,Sailfish,35,77.1617,-,Lighthouse,Pike,Pink skirt ,Skirt + Pike,17,09:00,29,SE,Outgoing,2.3,79,13,Clear,32.3,Full Moon
+05/03/1992,Sailfish,20,44.0924,-,Lighthouse,Halfbeak,Hawaiian Eye,Hawaiian Eye + Belly Shine,17,07:00,28,SE,High,2.7,114,60,Partly Cloudy,33,Full Moon
+10/06/1992,Sailfish,31,68.34322,1.98,North Camp ,Carapau,Hawaiian Eye,Hawaiian Eye + Belly Shine,17,10:00,24,SE,Outgoing,2.1,52,89,Overcast,27.5,Waning Gibbous
+11/06/1992,Sailfish,36,79.36632,2.2,Dolphin Bay,Belly Shine,Hawaiian Eye,Hawaiian Eye + Belly Shine,15,10:30,25,SE,Outgoing,2,79,38,Partly Cloudy,29.2,Waning Gibbous
+11/06/1992,Sailfish,27,59.52474,1.81,Dolphin Bay,Belly Shine,Hawaiian Eye,Hawaiian Eye + Belly Shine,23,15:00,25,SE,Outgoing,0.7,82,35,Partly Cloudy,28.7,Waning Gibbous
+12/06/1992,Sailfish,29,63.93398,1.1992,Dolphin Bay,Belly Shine,Hawaiian Eye,Hawaiian Eye + Belly Shine,15,12:10,26,Light SE,Outgoing,1.4,87,40,Partly Cloudy,30.7,Last Quarter
+14/06/1992,Sailfish,20,44.0924,1.73,Dolphin Bay,Halfbeak,White skirt ,White skirt + Halfbeak,19,10:15,24,Light SE,Outgoing,2,113,83,Overcast,27.8,Waning Gibbous
+15/06/1992,Sailfish,29,63.93398,1.85,North Camp ,Carapau,White skirt ,White skirt + Carapau,10,10:00,25,S,Outgoing,2.1,103,36,Partly Cloudy,28.9,Waning Gibbous
+15/06/1992,Sailfish,38,83.77556,2.3,North Camp ,Halfbeak,White skirt ,White skirt + Halfbeak,17,09:30,25,S,Outgoing,2.2,103,30,Partly Cloudy,29.1,Waning Gibbous
+10/06/1992,Black Marlin,45,99.2079,-,Lighthouse ,Carapau,Hawaiian Eye,Hawaiian Eye + Carapau,12,07:50,26,SE,Outgoing,2.6,51,43,Partly Cloudy,29.3,Waning Gibbous
+24/10/1994,Black Marlin,114,251.32668,-,East of Lighthouse,Skipped Bait,,Skipping bait,58,,26,SE,Outgoing,1.5,100,65,Partly Cloudy,29.8,New Moon
+25/10/1994,Sailfish,35,77.1617,-,3 Trees,Halfbeak,,Halfbeak,10,07:20,26,EN,Outgoing,2.6,83,41,Partly Cloudy,30.9,Waning Crescent
+27/10/1994,Black Marlin,56,123.45872,-,Lighthouse,Live Bait,,Live Bonito,58,11:00,27,Calm,Outgoing,1.8,65,61,Partly Cloudy,30.1,Waning Crescent
+05/11/1994,Sailfish,28,61.72936,-,Lighthouse,Halfbeak,,Halfbeak,15,10:20,28,SE,Outgoing,2,115,47,Partly Cloudy,31.8,Waning Crescent
+01/12/1994,Sailfish,22,48.50164,-,,-,,-,15,-,-,-,Outgoing,1.5,115,58,Partly Cloudy,29,Waning Crescent
+28/12/1994,Black Marlin,36,79.36632,-,3 Trees,Silky,,Silky,15,08:30,-,-,Outgoing,2.5,40,47,Partly Cloudy,28.7,New Moon
+12/05/1995,Sailfish,32,70.54784,-,Lighthouse,Halfbeak,,Halfbeak,15,-,-,-,Outgoing,1.5,104,50,Partly Cloudy,28.2,Waning Crescent
+12/05/1995,Sailfish,38,83.77556,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,-,-,-,Outgoing,1.5,104,41,Partly Cloudy,28.8,Waning Crescent
+11/02/1995,Sailfish,40,88.1848,-,Sailfish Bay,,,,24,-,-,-,Outgoing,1.5,51,31,Partly Cloudy,28.7,Last Quarter
+13/07/1995,Sailfish,31,68.34322,1.91,,,,,24,-,-,-,Outgoing,1.5,112,68,Partly Cloudy,29.8,Waning Crescent
+30/07/1995,Sailfish,25,55.1155,-,,,,,28,-,-,-,Outgoing,1.5,111,60,Partly Cloudy,29.3,Waning Crescent
+30/09/1995,Sailfish,20,44.0924,1.36,,,,,12.5,-,-,-,Outgoing,1.5,92,58,Partly Cloudy,29.2,New Moon
+10/08/1995,Sailfish,34,74.95708,-,12 Mile,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,16,10:30,25,Calm,Outgoing,2,111,49,Partly Cloudy,29,Waning Crescent
+27/07/1992,Sailfish,38,83.77556,2.02,Lighthouse,Halfbeak,Yellow Feather,Halfbeak + Yellow Feather,10,08:30,26,Light S,Outgoing,2.5,56,55,Partly Cloudy,30.6,Waning Gibbous
+27/07/1992,Sailfish,30.6,67.461372,1.9,Lighthouse,Halfbeak,Yellow Feather,Halfbeak + Yellow Feather,15,11:20,26,Light S,Outgoing,1.7,58,59,Partly Cloudy,29.5,Waning Gibbous
+22/07/1992,Sailfish,26,57.32012,1.78,Lighthouse,Halfbeak,Green skirt ,Green Skirt + Halfbeak + Shine,17,15:00,26,Light S,Outgoing,0.7,46,68,Partly Cloudy,31,Waning Crescent
+29/09/1992,Sailfish,20,44.0924,-,North Camp,Halfbeak,Yellow Feather,Halfbeak + Yellow Feather,15,12:10,26,Light S,Outgoing,1.4,110,48,Partly Cloudy,30.9,Waning Crescent
+29/07/1992,Sailfish,42,92.59404,2,Mush's Hole,Halfbeak,,Halfbeak,15,07:55,26,NE,Outgoing,2.6,88,68,Partly Cloudy,30,Last Quarter
+29/09/1992,Sailfish,37,81.57094,2.02,Lighthouse,Halfbeak,,Halfbeak,10,10:00,26,NE,Outgoing,2.1,110,57,Partly Cloudy,29.2,Waning Crescent
+28/07/1992,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,,Halfbeak,15,08:20,25,NW,Outgoing,2.5,81,46,Partly Cloudy,29.5,Last Quarter
+29/09/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,,Halfbeak,15,09:00,24,W,Outgoing,2.3,109,89,Overcast,27.3,Waning Crescent
+29/09/1992,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,,Halfbeak,10,10:20,24,N,Outgoing,2,110,87,Overcast,28.6,Waning Crescent
+29/09/1992,Sailfish,25,55.1155,-,Mush's Hole,Halfbeak,,Halfbeak,17,08:00,22,Light SE,Outgoing,2.5,109,96,Overcast,26.1,Waning Crescent
+21/08/1992,Sailfish,25.2,55.556424,2.01,Lighthouse,Halfbeak,,Halfbeak,17,10:45,24,Calm,Outgoing,1.9,39,96,Overcast,27.7,Waning Crescent
+09/09/1992,Sailfish,40,88.1848,2.1,Lighthouse,Halfbeak,,Halfbeak,15,11:00,25,Calm,Outgoing,1.8,94,55,Partly Cloudy,29.6,Last Quarter
+11/09/1992,Sailfish,29,63.93398,1.89,Lighthouse,Halfbeak,,Halfbeak,20,10:30,25,Calm,Outgoing,2,112,50,Partly Cloudy,28.7,Waning Crescent
+12/09/1992,Sailfish,35,77.1617,2,Lighthouse,Halfbeak,,Halfbeak,12,09:00,25,Light SE,Outgoing,2.3,113,46,Partly Cloudy,28.2,Waning Crescent
+12/09/1992,Sailfish,35,77.1617,2,Lighthouse,Halfbeak,,Halfbeak,24,09:45,25,Light SE,Outgoing,2.2,114,48,Partly Cloudy,28.9,Waning Crescent
+12/09/1992,Sailfish,45,99.2079,2.2,Lighthouse,Halfbeak,,Halfbeak,25,11:00,24,Light SE,Outgoing,1.8,114,85,Overcast,27.8,Waning Crescent
+13/09/1992,Sailfish,32,70.54784,1.95,Lighthouse,Halfbeak,,Halfbeak,24,10:00,24,Light SE,Outgoing,2.1,114,93,Overcast,27.3,Waning Gibbous
+10/05/1993,Sailfish,,,-,Lighthouse,Halfbeak,,Halfbeak,6,-,26,Light SE,Outgoing,1.5,83,58,Partly Cloudy,30.4,Last Quarter
+11/05/1993,Sailfish,38,83.77556,2.2,Sailfish Bay,Halfbeak,,Halfbeak,6,-,25,NE,Outgoing,1.5,58,30,Partly Cloudy,29.4,Last Quarter
+11/05/1993,Sailfish,37,81.57094,2.1,Mush's Hole,Halfbeak,,Halfbeak,6,-,25,NE,Outgoing,1.5,58,60,Partly Cloudy,28.2,Last Quarter
+13/05/1993,Sailfish,20,44.0924,-,Sailfish Bay,Halfbeak,,Halfbeak,6,-,25,NE,Outgoing,1.5,20,50,Partly Cloudy,28,Waning Gibbous
+15/05/1993,Sailfish,28,61.72936,-,Lighthouse,Halfbeak,,Halfbeak,15,10:30,25,Calm,Outgoing,2,22,68,Partly Cloudy,29.2,Waning Gibbous
+11/05/1993,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,,Halfbeak,6,-,25,NE,Outgoing,1.5,58,52,Partly Cloudy,28.1,Last Quarter
+11/05/1993,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,,Halfbeak,10,-,25,NE,Outgoing,1.5,58,32,Partly Cloudy,29.9,Last Quarter
+11/05/1993,Sailfish,40,88.1848,-,Mush's Hole,Halfbeak,,Halfbeak,10,-,25,NE,Outgoing,1.5,58,51,Partly Cloudy,29.6,Last Quarter
+12/05/1993,Sailfish,,,-,Sailfish Bay,Halfbeak,,Halfbeak,10,10:00,26,SE,Outgoing,2.1,51,40,Partly Cloudy,30.7,Last Quarter
+21/05/1993,Sailfish,40,88.1848,-,Mush's Hole,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,18,13:00,27,SE,Outgoing,1.2,114,66,Partly Cloudy,31,Last Quarter
+14/06/1993,Sailfish,40,88.1848,-,Lighthouse,Belly Shine,Pink skirt ,Pink skirt + Belly Shine,20,11:45,25,Light SE,Outgoing,1.6,68,42,Partly Cloudy,28.2,Waning Gibbous
+15/06/1993,Sailfish,25,55.1155,-,Lighthouse,Halfbeak,,Halfbeak,16,14:45,25,Light SE,Outgoing,0.7,41,41,Partly Cloudy,29.5,Waning Gibbous
+16/06/1993,Sailfish,34,74.95708,-,Sailfish,Halfbeak,,Halfbeak,-,14:45,25,SE,Outgoing,0.7,69,39,Partly Cloudy,28.3,Waning Gibbous
+16/06/1993,Sailfish,70,154.3234,-,Sailfish,Halfbeak,,Halfbeak,20,14:45,25,SE,Outgoing,0.7,69,41,Partly Cloudy,28.4,Waning Gibbous
+16/06/1993,Sailfish,32,70.54784,-,Sailfish,Halfbeak,,Halfbeak,2015,14:45,25,SE,Outgoing,0.7,69,42,Partly Cloudy,29,Waning Gibbous
+17/06/1993,Sailfish,34,74.95708,-,Venge's Bay,Halfbeak,,Halfbeak,16,14:40,24,NE,Outgoing,0.7,77,97,Overcast,28,Last Quarter
+17/06/1993,Sailfish,29,63.93398,-,Venge's Bay,Halfbeak,,Halfbeak,18,14:40,24,NE,Outgoing,0.7,77,93,Overcast,27.8,Last Quarter
+03/11/1992,Sailfish,24,52.91088,-,Mush's Hole,Halfbeak,,Halfbeak,17,08:00,26,Calm ESE,Outgoing,2.5,35,36,Partly Cloudy,30.8,Waning Gibbous
+03/11/1992,Sailfish,29,63.93398,1.94,Mush's Hole,Halfbeak,,Halfbeak,17,08:30,26,Calm ESE,Outgoing,2.5,34,46,Partly Cloudy,29.5,Waning Gibbous
+03/11/1992,Sailfish,29,63.93398,1.94,Mush's Hole,Halfbeak,Hawaiian Eye,Halfbeak + Red Hawaiian Eye,17,10:00,26,Calm ESE,Outgoing,2.1,33,44,Partly Cloudy,29.9,Waning Gibbous
+03/11/1992,Black Marlin,90,198.4158,-,Sailfish Bay,,,,36,11:30,26,Calm,Outgoing,1.7,32,52,Partly Cloudy,30.2,Waning Gibbous
+03/11/1992,Sailfish,25,55.1155,-,Sailfish Bay,Halfbeak,,Halfbeak,17,09:00,26,Calm,Outgoing,2.3,34,43,Partly Cloudy,29.5,Waning Gibbous
+03/11/1992,Sailfish,37,81.57094,-,Sailfish Bay,Belly Shine,Pink skirt ,Pink skirt + Belly Shine,12.4,10:00,26,Calm,Outgoing,2.1,33,48,Partly Cloudy,29.6,Waning Gibbous
+03/11/1992,Sailfish,27,59.52474,-,Sailfish Bay,,Pink skirt ,Pink skirt,12.5,10:00,26,Calm,Outgoing,2.1,33,57,Partly Cloudy,30,Waning Gibbous
+04/11/1992,Sailfish,29,63.93398,-,Sailfish Bay,,Red skirt ,Red and Black Skirt,8,15:15,25,Rough SE,Outgoing,0.6,41,48,Partly Cloudy,29.7,Last Quarter
+04/11/1992,Sailfish,29,63.93398,-,Sailfish Bay,Belly Shine,Yellow skirt ,Yellow skirt + Belly Shine,15,15:15,25,Rough SE,Outgoing,0.6,41,55,Partly Cloudy,28.9,Last Quarter
+04/11/1992,Sailfish,40,88.1848,-,Sailfish Bay,,Red Feather,Red Feather,10,09:30,25,Rough SE,Outgoing,2.2,36,38,Partly Cloudy,29.7,Last Quarter
+08/11/1992,Sailfish,30,66.1386,1,Lighthouse,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,15,09:00,25,Light SE,Outgoing,2.3,99,46,Partly Cloudy,28.9,Waning Crescent
+09/11/1992,Black Marlin,25,55.1155,-,Lighthouse,Halfbeak,Hawaiian Eye,Green and Yellow Hawaiian Eye + Halfbeak,15,12:00,26,SE,Outgoing,1.5,112,59,Partly Cloudy,30.2,Waning Crescent
+09/11/1992,Black Marlin,25,55.1155,-,North Camp,Rapala,,Red and White Rapala,19,12:45,26,SE,Outgoing,1.3,112,33,Partly Cloudy,30.7,Waning Crescent
+11/11/1992,Sailfish,30,66.1386,-,Lighthouse,Belly Shine,,Shine,15,15:30,27,Light E,Outgoing,0.5,113,61,Partly Cloudy,30.3,Waning Crescent
+11/11/1992,Black Marlin,20,44.0924,-,Lighthouse,Belly Shine,,Shine,15,15:20,27,Light E,Outgoing,0.6,113,59,Partly Cloudy,31.4,Waning Crescent
+16/11/1992,Black Marlin,190,418.8778,2.87,Mush's Hole,Skipped Bait,,Skip Cuda,36,12:00,27,NE,Outgoing,1.5,80,50,Partly Cloudy,30.6,Waning Crescent
+20/11/1992,Blue Marlin,22,48.50164,-,Ponrn Manuel,Halfbeak,Hawaiian Eye,Pink Hawaiian Eye + Halfbeak,20,05:45,25,SE,High,2.7,28,62,Partly Cloudy,28.8,Waning Crescent
+30/09/1996,Sailfish,50,110.231,-,Sailfish Bay,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,08:30,24,Calm SE,Outgoing,2.5,113,94,Overcast,27.5,Waxing Crescent
+01/10/1996,Sailfish,20,44.0924,1.8,South of 3 Trees,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,06:40,24,Calm E,High,2.7,84,90,Overcast,27.3,Waning Crescent
+20/10/1996,Sailfish,40,88.1848,2.2,Sailfish Bay,Skipped Bait,,Skip bod?,15,08:40,23,Light NE,Outgoing,2.4,44,92,Overcast,27.1,Waxing Crescent
+29/10/1996,Black Marlin,18.5,40.78547,-,-,,,,59,,,,Outgoing,1.5,112,49,Partly Cloudy,29.7,Waxing Crescent
+28/02/1997,Black Marlin,30,66.1386,-,Lighthouse,Rapala,,Rapala Light,14,06:45,25,SE,High,2.7,114,39,Partly Cloudy,30,Waning Crescent
+04/03/1997,Black Marlin,45,99.2079,-,Lighthouse,Rapala,,Rapala,14,07:10,25,SE,High,2.6,70,33,Partly Cloudy,28.5,Waning Crescent
+13/07/1997,Sailfish,25,55.1155,-,Lighthouse,pink mimnhne,,pink mimnhne,15,10:45,26,Rough SE,Outgoing,1.9,44,61,Partly Cloudy,29.3,Waning Crescent
+15/09/1997,Sailfish,35,77.1617,-,Lighthouse,Strip Bait,,Bonito strip,18,11:45,26,Rough SE,Outgoing,1.6,80,50,Partly Cloudy,29.2,New Moon
+24/04/1997,Sailfish,30,66.1386,-,3 Trees,Hawaiian Pink Eye,,Hawaiian Pink Eye,17,09:45,,Calm,Outgoing,2.2,115,37,Partly Cloudy,28.5,New Moon
+24/04/1997,Sailfish,38,83.77556,-,3 Trees,Hawaiian Pink Eye,,Hawaiian Pink Eye,17,09:15,,Calm Light NE,Outgoing,2.3,115,58,Partly Cloudy,28.2,New Moon
+14/09/1995,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,-,,,Outgoing,1.5,73,30,Partly Cloudy,28.6,Waning Crescent
+14/09/1995,Sailfish,28,61.72936,-,Lighthouse,Belly Shine,Pink skirt ,Pink skirt + Strip,15,,,,Outgoing,1.5,73,63,Partly Cloudy,29,Waning Crescent
+04/11/1995,Black Marlin,100,220.462,-,Lighthouse,Live Bait,,Live Bonito,58,11:00,28,Calm SE,Outgoing,1.8,81,60,Partly Cloudy,31.5,Waning Crescent
+05/11/1995,Black Marlin,226,498.24412,-,Lighthouse,,,-,58,,,,Outgoing,1.5,88,64,Partly Cloudy,29.8,Waning Crescent
+05/11/1995,Black Marlin,100,220.462,-,Lighthouse,Live Bait,,Live Bonito,58,14:30,28,Calm SE,Outgoing,0.8,90,47,Partly Cloudy,31.5,Waning Crescent
+08/11/1995,Black Marlin,158,348.32996,-,Lighthouse,,,-,58,,,,Outgoing,1.5,115,55,Partly Cloudy,28.3,New Moon
+04/11/1995,Black Marlin,225,496.0395,-,Lighthouse,,,-,58,,,,Outgoing,1.5,81,39,Partly Cloudy,28.2,Waning Crescent
+08/11/1995,Sailfish,38,83.77556,-,Lighthouse,Skipped Bait,,M malhne,15,,28,Calm SE,Outgoing,1.5,115,51,Partly Cloudy,31.2,New Moon
+11/11/1995,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,09:30,--,,Outgoing,2.2,95,55,Partly Cloudy,29.3,New Moon
+11/11/1995,Black Marlin,329,725.31998,-,Lighthouse,-,,-,,,,,Unknown,0,50,38,Partly Cloudy,29.2,Unknown
+11/01/1996,Black Marlin,90,198.4158,-,12km East from Lighthouse ,Skipped Bait,,Skip Cuda,58,15:10,25,Calm,Outgoing,0.6,67,38,Partly Cloudy,28.6,Waning Crescent
+08/12/1995,Black Marlin,35,77.1617,-,-,-,,-,16,11:20,-,,Outgoing,1.7,114,31,Partly Cloudy,29.4,New Moon
+27/12/1995,Black Marlin,68,149.91416,-,8km East from Lighthouse ,Skipped Bait,,Skip Cuda,,,-,,Outgoing,1.5,97,34,Partly Cloudy,28.1,New Moon
+20/05/1996,Sailfish,45,99.2079,-,Sandpit,Rapala,,Blue Rapala,15,14:30,26,Calm,Outgoing,0.8,111,53,Partly Cloudy,30.3,Waning Crescent
+15/06/1996,Sailfish,38,83.77556,-,Lighthouse,Rapala,,Blue Rapala,15,11:50,24,Light NE,Outgoing,1.6,96,89,Overcast,27.2,Waning Crescent
+27/07/1996,Black Marlin,113,249.12206,-,East of Lighthouse,Live Bait,,Live Bonito,58,11:00,22,Light E,Outgoing,1.8,43,91,Overcast,25.4,Waning Crescent
+27/07/1996,Black Marlin,62,136.68644,-,East of Lighthouse,Skipped Bait,,Live Skipjack,58,15:00,22,Light E,Outgoing,0.7,47,85,Overcast,26.5,Waning Crescent
+06/10/1992,Sailfish,32,70.54784,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,13:00,26,SE,Outgoing,1.2,57,41,Partly Cloudy,30.9,Last Quarter
+01/10/1992,Sailfish,39,85.98018,-,Lighthouse,Halfbeak,Pink skirt ,Pink skirt + Halfbeak,15,13:10,26,E,Outgoing,1.1,67,43,Partly Cloudy,29.4,Waning Gibbous
+08/10/1992,Sailfish,30,66.1386,-,Lighthouse,,White skirt,White skirt,24,09:10,26,SE,Outgoing,2.3,87,62,Partly Cloudy,29.1,Last Quarter
+11/10/1992,Sailfish,36,79.36632,-,Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak + Pine,15,14:30,25,SE,Outgoing,0.8,115,41,Partly Cloudy,29.5,Waning Crescent
+12/10/1992,Sailfish,39,85.98018,-,Lighthouse,,,,15,15:30,26,NE,Outgoing,0.5,115,62,Partly Cloudy,30.3,Waning Crescent
+19/10/1992,Black Marlin,20,44.0924,-,Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak,15,12:00,25,NE,Outgoing,1.5,56,33,Partly Cloudy,29.1,Waning Crescent
+22/10/1992,Black Marlin,20,44.0924,-,Mush's Hole,Halfbeak,Hawaiian Eye,Yellow Hawaiin Eye + Halfbeak,15,10:30,25,NE,Outgoing,2,50,67,Partly Cloudy,28.3,Waning Crescent
+28/10/1992,Sailfish,37,81.57094,-,Lighthouse,Halfbeak,,Halfbeak,17,10:15,26,NE,Outgoing,2,113,55,Partly Cloudy,30.7,Waning Crescent
+01/11/1992,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,Hawaiian Eye,Pine Hawaiin Red Eye Halfbeak,10,10:00,26,SE,Outgoing,2.1,52,49,Partly Cloudy,30.6,Waning Gibbous
+01/11/1992,Sailfish,30,66.1386,-,2km from Lighthouse,Belly Shine,Hawaiian Eye,White Hawaiin Eye + Shine,10,10:15,26,SE,Outgoing,2,51,58,Partly Cloudy,29.4,Waning Gibbous
+01/11/1992,Sailfish,40,88.1848,-,2km from Lighthouse,Halfbeak,Red skirt ,Red Skirt + Halfbeak,10,12:00,26,SE,Outgoing,1.5,50,41,Partly Cloudy,29.5,Waning Gibbous
+01/11/1992,Sailfish,30,66.1386,-,2km from Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak,10,12:45,26,SE,Outgoing,1.3,49,43,Partly Cloudy,30.7,Waning Gibbous
+01/11/1992,Sailfish,27,59.52474,-,2km from Lighthouse,Belly Shine,Pink skirt ,Pink skirt + Shine,10,14:10,26,SE,Outgoing,0.9,48,62,Partly Cloudy,29.7,Waning Gibbous
+01/11/1992,Sailfish,30,66.1386,-,2km from Lighthouse,Belly Shine,Pink skirt ,Pink Skirt + Shine,10,15:30,26,SE,Outgoing,0.5,47,38,Partly Cloudy,30.6,Waning Gibbous
+01/11/1992,Sailfish,33,72.75246,-,3km from Lighthouse ,Belly Shine,Pink skirt ,Pink Skirt + Shine,17,11:00,26,Light SE,Outgoing,1.8,51,65,Partly Cloudy,30.8,Waning Gibbous
+02/11/1992,Black Marlin,25,55.1155,-,Sailfish bay,Belly Shine,Pink skirt ,Pink Skirt,12,10:00,26,E,Outgoing,2.1,22,47,Partly Cloudy,31,Waning Gibbous
+02/11/1992,Black Marlin,364,802.48168,3.01,Sailfish bay,Skipped Bait,,Skipped Tuna,80,15:00,26,E,Outgoing,0.7,22,40,Partly Cloudy,29.9,Waning Gibbous
+03/01/1990,Sailfish,36,79.36632,,Lighthouse,Strip Bait,,Strip,18,10:45,24,Calm,Outgoing,1.9,82,95,Overcast,28.6,Waxing Crescent
+03/09/1990,Sailfish,30,66.1386,,Sailfish Bay,Hawaiin Eye,,Hawaiin Eye,15,11:30,24,Moderate S.E,Outgoing,1.7,100,88,Overcast,27.5,Full Moon
+05/09/1990,Sailfish,26,57.32012,,North Lighthouse,Rapala,,Rapala,15,13:50,24,Moderate S.E,Outgoing,0.9,114,87,Overcast,27.4,Waning Gibbous
+06/09/1990,Sailfish,35,77.1617,,Lighthouse,Halfbeak,,Halfbeak,15,11:20,24,Light NE,Outgoing,1.7,114,91,Overcast,28.1,Waning Gibbous
+24/09/1990,Sailfish,32,70.54784,2.36,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak + Hawaiin Eye,12,13:00,25,Moderate S.E,Outgoing,1.2,102,46,Partly Cloudy,29,Last Quarter
+30/09/1990,Sailfish,29,63.93398,,Sandpit,,,,16,11:30,26,Calm,Outgoing,1.7,37,47,Partly Cloudy,30.4,Waning Gibbous
+30/09/1990,Sailfish,33.8,74.516156,,Lighthouse,Halfbeak,,Halfbeak,25,10:30,26,Calm,Outgoing,2,36,62,Partly Cloudy,30.1,Waning Gibbous
+30/09/1990,Sailfish,36,79.36632,,Lighthouse,Halfbeak,Hawaiian Eye,Halfbeak + Hawaiin Eye,16,12:20,26,Calm,Outgoing,1.4,37,36,Partly Cloudy,30.2,Waning Gibbous
+30/09/1990,Sailfish,29,63.93398,,Lighthouse,Halfbeak,,Halfbeak,16,12:20,26,Calm,Outgoing,1.4,37,69,Partly Cloudy,30.6,Waning Gibbous
+03/10/1990,Black Marlin,80,176.3696,,Lighthouse,Skipped Bait,,Skip Cuda,60,05:40,26,Calm,High,2.7,107,63,Partly Cloudy,29.5,Full Moon
+09/10/1990,Blue Marlin,75,165.3465,,10km in from Lighthouse,Live Bait,,Bonito,60,09:00,27,Calm,Outgoing,2.3,66,42,Partly Cloudy,31.5,Waning Gibbous
+30/06/1991,Blue Marlin,65,143.3003,,10km in from Lighthouse,Live Bait,,Bonito,60,11:00,27,Calm,Outgoing,1.8,113,65,Partly Cloudy,31.9,Waning Gibbous
+02/10/1991,Sailfish,28,61.72936,,Lighthouse,,Hawaiian Eye,Blue Hawaiin Eye,15,10:00,26,Calm E,Outgoing,2.1,77,41,Partly Cloudy,30.4,Waning Gibbous
+18/10/1991,Sailfish,33,72.75246,,Lighthouse,Strip Bait,Blue skirt ,Blue Skirt + Strip Bait,15,17:20,27,Moderate S.E,Low,0.3,60,63,Partly Cloudy,31.4,Last Quarter
+18/10/1991,Sailfish,22,48.50164,,Lighthouse,Strip Bait,Hawaiian Eye,Blue Hawaiin Eye + White Strip,11.5,09:30,26,Moderate S.E,Outgoing,2.2,54,48,Partly Cloudy,30.8,Last Quarter
+18/10/1991,Sailfish,37,81.57094,,Lighthouse,Belly Shine,Red skirt ,Red Skirt + Shine,14,15:15,26,Light NE,Outgoing,0.6,59,35,Partly Cloudy,30.6,Last Quarter
+27/10/1991,Sailfish,40,88.1848,2.7,Lighthouse,,White Skirt,White Skirt,10,15:00,3,Light NE,Outgoing,0.7,108,85,Overcast,6.8,Last Quarter
+12/09/1992,Sailfish,29,63.93398,1.89,Lighthouse,Halfbeak,Hawaiian Eye,Blue and White Hawaiin Eye + Halfbeak,17,09:30,24,Light SE,Outgoing,2.2,114,92,Overcast,27.3,Waning Crescent
+12/02/1992,Sailfish,32,70.54784,2,Lighthouse,Halfbeak,Hawaiian Eye,Blue and White Hawaiin Eye + Halfbeak,17,10:00,24,Light SE,Outgoing,2.1,29,96,Overcast,28.5,Waning Gibbous
+13/09/1992,Sailfish,35,77.1617,2,Lighthouse,Belly Shine,Hawaiian Eye,Blue Hawaiin Eye + Shine,15,10:00,25,Light SE,Outgoing,2.1,114,47,Partly Cloudy,28.8,Waning Gibbous
+13/09/1992,Sailfish,39,85.98018,2.1,Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak,23,14:00,25,Light SE,Outgoing,0.9,114,62,Partly Cloudy,28.4,Waning Gibbous
+13/09/1992,Sailfish,30,66.1386,1.9,Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak,23,14:30,25,Light SE,Outgoing,0.8,113,69,Partly Cloudy,28.7,Waning Gibbous
+14/09/1992,Sailfish,30,66.1386,-,Lighthouse,Strip Bait,Hawaiian Eye,Red Hawaiin Eye + Strip,15,08:00,24,SE,Outgoing,2.5,106,93,Overcast,28.2,Waning Gibbous
+14/09/1992,Sailfish,28,61.72936,-,Lighthouse,,Yellow skirt ,Yellow skirt,15,08:00,24,SE,Outgoing,2.5,106,83,Overcast,27.4,Waning Gibbous
+14/09/1992,Sailfish,22,48.50164,-,Lighthouse,Strip Bait,Pink skirt ,Pink skirt + Strip,10,11:20,24,SE,Outgoing,1.7,105,87,Overcast,28.4,Waning Gibbous
+14/09/1992,Sailfish,35,77.1617,-,Lighthouse,Strip Bait,Hawaiian Eye,Red Hawaiin Eye + Strip,15,15:00,24,SE,Outgoing,0.7,103,81,Overcast,27.4,Waning Gibbous
+14/09/1992,Sailfish,35,77.1617,-,Lighthouse,,Hawaiian Eye,Blue Hawaiin Eye,13,15:00,24,SE,Outgoing,0.7,103,93,Overcast,28.2,Waning Gibbous
+15/09/1992,Sailfish,32,70.54784,-,Lighthouse,Strip Bait,Pink skirt ,Pink skirt + Strip,10,12:15,24,SE,Outgoing,1.4,114,86,Overcast,27.4,Waning Gibbous
+15/09/1992,Sailfish,30,66.1386,-,Lighthouse,Strip Bait,Hawaiian Eye,Red Hawaiin Eye + Strip,15,15:20,24,SE,Outgoing,0.6,114,85,Overcast,27.6,Waning Gibbous
+15/09/1992,Sailfish,28,61.72936,-,Mush's Hole,Halfbeak,Hawaiian Eye,Blue Hawaiin Eye + Halfbeak,15,13:30,24,SE,Outgoing,1,114,80,Overcast,28.3,Waning Gibbous
+17/09/1992,Sailfish,28,61.72936,-,Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak,15,12:30,25,SE,Outgoing,1.3,100,69,Partly Cloudy,28,Last Quarter
+27/09/1992,Sailfish,20,44.0924,-,Lighthouse,Halfbeak,Hawaiian Eye,Red Hawaiin Eye + Halfbeak,12.5,10:00,26,SE,Outgoing,2.1,90,63,Partly Cloudy,30.3,Last Quarter
+27/09/1992,Sailfish,44,97.00328,-,Lighthouse,Belly Shine,Hawaiian Eye,Blue Hawaiin Eye + Shine,15,14:00,26,SE,Outgoing,0.9,92,45,Partly Cloudy,30.1,Last Quarter
+27/09/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,,Halfbeak,15,12:30,26,SE,Outgoing,1.3,91,35,Partly Cloudy,29.3,Last Quarter
+22/09/1992,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,,Halfbeak,15,15:30,26,SE,Outgoing,0.5,35,51,Partly Cloudy,29.5,Waning Crescent
+28/09/1992,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,,Halfbeak,15,13:30,25,SE,Outgoing,1,107,49,Partly Cloudy,28.7,Waning Crescent
+28/09/1992,Sailfish,45,99.2079,-,Lighthouse,Halfbeak,,Halfbeak,15,16:00,25,SE,Outgoing,0.5,108,66,Partly Cloudy,28.2,Waning Crescent
+28/09/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,,Halfbeak,15,12:45,25,SE,Outgoing,1.3,107,45,Partly Cloudy,29.5,Waning Crescent
+28/09/1992,Sailfish,38,83.77556,-,Lighthouse,Halfbeak,,Halfbeak,15,13:30,25,SE,Outgoing,1,107,58,Partly Cloudy,28.9,Waning Crescent
+29/09/1992,Sailfish,25,55.1155,-,Mush's hole,Belly Shine,Hawaiian Eye,Blue and White Hawaiin Eye + Shine,15,12:30,26,Light SE,Outgoing,1.3,110,62,Partly Cloudy,30.6,Waning Crescent
+29/09/1992,Sailfish,39,85.98018,-,Lighthouse,Belly Shine,Hawaiian Eye,Blue and White Hawaiin Eye + Shine,15,15:00,26,Calm,Outgoing,0.7,111,68,Partly Cloudy,30.8,Waning Crescent
+30/09/1992,Sailfish,20,44.0924,-,Lighthouse,Halfbeak,,Halfbeak,15,14:00,27,N,Outgoing,0.9,115,48,Partly Cloudy,30,Waning Crescent
+30/09/1992,Sailfish,36,79.36632,-,Lighthouse,Halfbeak,,Halfbeak,15,15:30,27,N,Outgoing,0.5,115,53,Partly Cloudy,31.8,Waning Crescent
+30/09/1992,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,,Halfbeak,15,16:30,27,N,Outgoing,0.4,115,42,Partly Cloudy,30.4,Waning Crescent
+30/09/1992,Sailfish,20,44.0924,-,Lighthouse,Halfbeak,,Halfbeak,23,15:00,27,N,Outgoing,0.7,115,66,Partly Cloudy,31.5,Waning Crescent
+30/09/1992,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,,Halfbeak,23,16:15,27,N,Outgoing,0.4,115,67,Partly Cloudy,30.3,Waning Crescent
+30/09/1992,Sailfish,40,88.1848,-,Lighthouse,Halfbeak,,Halfbeak,23,16:15,27,N,Outgoing,0.4,115,32,Partly Cloudy,31.7,Waning Crescent
+30/09/1992,Sailfish,30,66.1386,-,Lighthouse,Halfbeak,,Halfbeak,23,10:00,27,N,Outgoing,2.1,115,45,Partly Cloudy,31.3,Waning Crescent
+30/09/1992,Sailfish,35,77.1617,-,Lighthouse,Halfbeak,,Halfbeak,23,15:00,27,N,Outgoing,0.7,115,67,Partly Cloudy,31.8,Waning Crescent
+01/10/1992,Sailfish,45,99.2079,-,Lighthouse,Halfbeak,,Halfbeak,15,11:30,26,SE,Outgoing,1.7,69,57,Partly Cloudy,30,Waning Gibbous
+01/10/1992,Sailfish,42,92.59404,-,Lighthouse,Halfbeak,,Halfbeak,15,12:30,26,SE,Outgoing,1.3,68,43,Partly Cloudy,29.9,Waning Gibbous

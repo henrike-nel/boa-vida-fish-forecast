@@ -1,0 +1,53 @@
+{
+  "name": "boa-vida-fish-forecast",
+  "version": "1.0.0",
+  "description": "A data-driven fishing analytics tool for Bazaruto waters that predicts optimal fishing conditions based on historical catch data, environmental factors, and machine learning algorithms.",
+  "main": "src/index.html",
+  "homepage": "https://henriken.github.io/boa-vida-fish-forecast",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/henriken/boa-vida-fish-forecast.git"
+  },
+  "keywords": [
+    "fishing",
+    "analytics",
+    "bazaruto",
+    "data-science",
+    "marine-biology",
+    "predictive-modeling",
+    "react",
+    "data-visualization"
+  ],
+  "author": {
+    "name": "Henrik",
+    "email": "henrik@example.com"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "live-server src --port=3000 --open=/index.html",
+    "build": "node scripts/build.js",
+    "deploy": "npm run build && gh-pages -d dist",
+    "test": "jest tests/unit",
+    "lint": "eslint src --ext .js,.html",
+    "lint:fix": "eslint src --ext .js,.html --fix",
+    "format": "prettier --write \"src/**/*.{js,html,css,md}\"",
+    "validate": "npm run lint && npm run test"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-html": "^7.1.0",
+    "gh-pages": "^6.1.0",
+    "jest": "^29.7.0",
+    "live-server": "^1.2.2",
+    "prettier": "^3.1.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "papaparse": "^5.4.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+  }
+}
