@@ -9,6 +9,11 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- React and ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -22,11 +27,29 @@
     <!-- Lucide Icons (using static version instead of React components) -->
     <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.js"></script>
     
+    <script>
+        // Tailwind config extension for custom fonts
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'cormorant': ['"Cormorant Garamond"', 'serif'],
+                        'eb-garamond': ['"EB Garamond"', 'serif'],
+                    }
+                }
+            }
+        };
+    </script>
+    
     <style>
+
         /* Additional mobile optimizations */
         body {
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: transparent;
+            background-color: #F8FAFC; /* Light background */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #0F172A; /* Dark text for better readability */
         }
         
         /* Ensure good contrast in bright sunlight */
@@ -45,6 +68,92 @@
         /* Smooth transitions */
         .transition-all {
             transition: all 0.3s ease;
+        }
+        
+        /* Modern card styling */
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background-color: #FFFFFF;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        
+        /* Card variations */
+        .card-compact {
+            padding: 1.25rem;
+        }
+        
+        .card-spacious {
+            padding: 2rem;
+        }
+        
+        /* Modern minimalist color palette */
+        .bg-primary {
+            background-color: #0A2647;
+        }
+        
+        .bg-secondary {
+            background-color: #144272;
+        }
+        
+        .bg-accent {
+            background-color: #205295;
+        }
+        
+        .bg-light {
+            background-color: #F8FAFC;
+        }
+        
+        .bg-surface {
+            background-color: #FFFFFF;
+        }
+        
+        .text-primary {
+            color: #0A2647;
+        }
+        
+        .text-secondary {
+            color: #144272;
+        }
+        
+        .text-accent {
+            color: #205295;
+        }
+        
+        .text-muted {
+            color: #64748B;
+        }
+        
+        .border-primary {
+            border-color: #0A2647;
+        }
+        
+        /* Keep old color classes for compatibility */
+        .bg-true-navy {
+            background-color: #0A2647;
+        }
+        
+        .bg-blue-door {
+            background-color: #144272;
+        }
+        
+        .bg-harpers-blue {
+            background-color: #205295;
+        }
+        
+        .bg-alice-blue {
+            background-color: #F8FAFC;
+        }
+        
+        .text-true-navy {
+            color: #0A2647;
         }
     </style>
 </head>
@@ -112,6 +221,7 @@
                 try {
                     setLoading(true);
                     setError(null);
+                    console.log("Starting data load process...");
                     
                     // Try multiple possible filenames for flexibility
                     const possibleFilenames = [
@@ -126,44 +236,83 @@
                     let csvData;
                     let loadedFilename = '';
                     
-                    for (const filename of possibleFilenames) {
-                        try {
-                            const response = await fetch(filename);
-                            if (response.ok) {
-                                csvData = await response.text();
-                                loadedFilename = filename;
-                                console.log(`Successfully loaded: ${filename}`);
-                                break;
+                    // Always try the direct root path first as most reliable
+                    try {
+                        console.log("Trying direct path to CSV in root directory...");
+                        const response = await fetch('/Boa_Vida_Fish_Finder_data.csv');
+                        if (response.ok) {
+                            csvData = await response.text();
+                            loadedFilename = '/Boa_Vida_Fish_Finder_data.csv';
+                            console.log(`✅ Successfully loaded from root: ${loadedFilename}`);
+                            console.log(`First 50 chars: ${csvData.substring(0, 50)}`);
+                        } else {
+                            console.log(`❌ Root path failed with status: ${response.status}`);
+                        }
+                    } catch (err) {
+                        console.log(`❌ Error loading from root path: ${err.message}`);
+                    }
+                    
+                    // Try other paths if root didn't work
+                    if (!csvData) {
+                        for (const filename of possibleFilenames) {
+                            try {
+                                console.log(`Trying path: ${filename}`);
+                                const response = await fetch(filename);
+                                if (response.ok) {
+                                    csvData = await response.text();
+                                    loadedFilename = filename;
+                                    console.log(`✅ Successfully loaded: ${filename}`);
+                                    break;
+                                } else {
+                                    console.log(`❌ Failed with status: ${response.status}`);
+                                }
+                            } catch (err) {
+                                console.log(`❌ Error loading: ${filename} - ${err.message}`);
                             }
-                        } catch (err) {
-                            console.log(`Could not load: ${filename}`);
                         }
                     }
                     
                     if (!csvData) {
-                        console.error('CSV loading failed. Attempting to use hardcoded fallback data path...');
+                        console.error('⚠️ CSV loading failed from all relative paths. Attempting absolute path...');
                         try {
                             // Last resort - try with absolute path
-                            const absolutePath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/data/Boa_Vida_Fish_Finder_data.csv';
+                            const absolutePath = window.location.origin + '/Boa_Vida_Fish_Finder_data.csv';
                             console.log('Trying absolute path:', absolutePath);
                             const response = await fetch(absolutePath);
                             if (response.ok) {
                                 csvData = await response.text();
                                 loadedFilename = absolutePath;
-                                console.log(`Successfully loaded from absolute path: ${absolutePath}`);
+                                console.log(`✅ Successfully loaded from absolute path: ${absolutePath}`);
                             } else {
-                                throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the same directory or data/ subdirectory.');
+                                console.log(`❌ Absolute path failed with status: ${response.status}`);
+                                throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the project directory.');
                             }
                         } catch (err) {
-                            throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the same directory or data/ subdirectory.');
+                            console.error('❌ All CSV loading attempts failed:', err);
+                            throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the project directory.');
                         }
                     }
                     
+                    console.log("Starting CSV parsing...");
                     Papa.parse(csvData, {
                         header: true,
                         skipEmptyLines: true,
                         dynamicTyping: true,
                         complete: (results) => {
+                            console.log(`✅ CSV parsed successfully. Found ${results.data.length} rows.`);
+                            console.log(`Headers: ${results.meta.fields ? results.meta.fields.join(', ') : 'No headers found'}`);
+                            
+                            if (results.data.length === 0) {
+                                console.error("❌ No data rows found in CSV");
+                                throw new Error("CSV file contains no data rows");
+                            }
+                            
+                            if (!results.data[0].Species) {
+                                console.error("❌ Missing Species column in CSV data");
+                                console.log("First row data:", JSON.stringify(results.data[0], null, 2));
+                                throw new Error("CSV data is missing required Species column");
+                            }
+                            
                             const cleanedData = results.data
                                 .filter(row => row.Species && row.Species.trim() !== '')
                                 .map(row => {
@@ -199,12 +348,20 @@
                                     };
                                 });
                             
+                            console.log(`✅ Cleaned data: ${cleanedData.length} valid rows`);
                             setData(cleanedData);
+                            
                             const uniqueSpecies = _.uniq(cleanedData.map(d => d.Species)).sort();
+                            console.log(`✅ Found ${uniqueSpecies.length} unique species: ${uniqueSpecies.join(', ')}`);
                             setSpecies(uniqueSpecies);
+                            
                             if (uniqueSpecies.length > 0) {
+                                console.log(`✅ Setting selected fish to: ${uniqueSpecies[0]}`);
                                 setSelectedFish(uniqueSpecies[0]);
                                 analyzeSpecies(uniqueSpecies[0], cleanedData);
+                            } else {
+                                console.error("❌ No species found in data");
+                                throw new Error("No fish species found in data");
                             }
                         },
                         error: (error) => {
@@ -220,50 +377,92 @@
             };
 
             const analyzeSpecies = (fishSpecies, fishingData) => {
+                console.log(`Analyzing species: ${fishSpecies}`);
+                console.log(`Total fishing data records: ${fishingData.length}`);
+                
                 const speciesData = fishingData.filter(d => d.Species === fishSpecies);
+                console.log(`Found ${speciesData.length} records for ${fishSpecies}`);
                 
                 if (speciesData.length === 0) {
+                    console.error(`❌ No data found for species: ${fishSpecies}`);
                     setRecommendations(null);
                     return;
                 }
 
                 // Best locations
-                const locationCounts = _(speciesData)
-                    .groupBy('Place')
-                    .mapValues(records => ({
-                        count: records.length,
-                        avgWeight: _.meanBy(records, 'WeightLbs'),
-                        percentage: (records.length / speciesData.length * 100)
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                console.log("Calculating best locations...");
+                let locationCounts;
+                try {
+                    locationCounts = _(speciesData)
+                        .groupBy('Place')
+                        .mapValues(records => ({
+                            count: records.length,
+                            avgWeight: _.meanBy(records, 'WeightLbs'),
+                            percentage: (records.length / speciesData.length * 100)
+                        }))
+                        .entries()
+                        .orderBy([1, 'count'], ['desc'])
+                        .value();
+                    
+                    console.log(`✅ Found ${locationCounts.length} locations`);
+                    if (locationCounts.length > 0) {
+                        console.log(`Top location: ${locationCounts[0][0]} with ${locationCounts[0][1].count} catches`);
+                    }
+                } catch (err) {
+                    console.error("❌ Error calculating locations:", err);
+                    throw new Error(`Location analysis failed: ${err.message}`);
+                }
 
                 // Best baits (using Primary_Bait)
-                const baitCounts = _(speciesData)
-                    .groupBy('PrimaryBait')
-                    .mapValues(records => ({
-                        count: records.length,
-                        avgWeight: _.meanBy(records, 'WeightLbs'),
-                        percentage: (records.length / speciesData.length * 100)
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                console.log("Calculating best baits...");
+                let baitCounts;
+                try {
+                    baitCounts = _(speciesData)
+                        .groupBy('PrimaryBait')
+                        .mapValues(records => ({
+                            count: records.length,
+                            avgWeight: _.meanBy(records, 'WeightLbs'),
+                            percentage: (records.length / speciesData.length * 100)
+                        }))
+                        .entries()
+                        .orderBy([1, 'count'], ['desc'])
+                        .value();
+                    
+                    console.log(`✅ Found ${baitCounts.length} bait types`);
+                    if (baitCounts.length > 0) {
+                        console.log(`Top bait: ${baitCounts[0][0]} with ${baitCounts[0][1].count} catches`);
+                    }
+                } catch (err) {
+                    console.error("❌ Error calculating baits:", err);
+                    throw new Error(`Bait analysis failed: ${err.message}`);
+                }
 
                 // Best enhancements (when used with primary bait)
-                const enhancementCounts = _(speciesData)
-                    .filter(record => record.Enhancement && record.Enhancement !== 'Unknown' && record.Enhancement !== '')
-                    .groupBy('Enhancement')
-                    .mapValues(records => ({
-                        count: records.length,
-                        avgWeight: _.meanBy(records, 'WeightLbs'),
-                        percentage: (records.length / speciesData.filter(r => r.Enhancement && r.Enhancement !== '').length * 100),
-                        usedWith: _.chain(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                console.log("Calculating best enhancements...");
+                let enhancementCounts;
+                try {
+                    enhancementCounts = _(speciesData)
+                        .filter(record => record.Enhancement && record.Enhancement !== 'Unknown' && record.Enhancement !== '')
+                        .groupBy('Enhancement')
+                        .mapValues(records => ({
+                            count: records.length,
+                            avgWeight: _.meanBy(records, 'WeightLbs'),
+                            percentage: (records.length / speciesData.filter(r => r.Enhancement && r.Enhancement !== '').length * 100),
+                            usedWith: _.chain(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
+                        }))
+                        .entries()
+                        .orderBy([1, 'count'], ['desc'])
+                        .value();
+                    
+                    console.log(`✅ Found ${enhancementCounts.length} enhancement types`);
+                    if (enhancementCounts.length > 0) {
+                        console.log(`Top enhancement: ${enhancementCounts[0][0]} with ${enhancementCounts[0][1].count} catches`);
+                    }
+                } catch (err) {
+                    console.error("❌ Error calculating enhancements:", err);
+                    console.log("This is not critical, continuing with analysis...");
+                    enhancementCounts = [];
+                }
 
                 // Best moon phases
                 const moonCounts = _(speciesData)
@@ -307,11 +506,33 @@
                     .value();
 
                 // Weather conditions
-                const avgWaterTemp = _.meanBy(speciesData, 'WaterTemp');
-                const avgCloudCover = _.meanBy(speciesData, 'CloudCover');
+                console.log("Calculating weather conditions...");
+                let avgWaterTemp = 26; // Default to 26°C (typical Bazaruto water temp)
+                let avgCloudCover = 50; // Default to partly cloudy
+                let weatherPreference = 'Partly cloudy';
                 
-                const weatherPreference = avgCloudCover < 30 ? 'Clear skies' : 
-                                         avgCloudCover < 60 ? 'Partly cloudy' : 'Overcast';
+                try {
+                    // Exclude zero/missing values from average
+                    const validWaterTemps = speciesData.filter(d => d.WaterTemp > 0);
+                    console.log(`Found ${validWaterTemps.length} records with valid water temperatures`);
+                    
+                    if (validWaterTemps.length > 0) {
+                        avgWaterTemp = _.meanBy(validWaterTemps, 'WaterTemp');
+                        console.log(`✅ Average water temperature: ${avgWaterTemp.toFixed(1)}°C`);
+                    } else {
+                        console.log("⚠️ No valid water temperature data, using default of 26°C");
+                    }
+                    
+                    avgCloudCover = _.meanBy(speciesData, 'CloudCover');
+                    console.log(`✅ Average cloud cover: ${avgCloudCover.toFixed(1)}%`);
+                    
+                    weatherPreference = avgCloudCover < 30 ? 'Clear skies' : 
+                                      avgCloudCover < 60 ? 'Partly cloudy' : 'Overcast';
+                    console.log(`✅ Weather preference: ${weatherPreference}`);
+                } catch (err) {
+                    console.error("❌ Error calculating weather conditions:", err);
+                    console.log("Using default weather values");
+                }
 
                 setRecommendations({
                     totalCatches: speciesData.length,
@@ -381,7 +602,7 @@
                     React.createElement('button', {
                         key: 'retry',
                         onClick: loadData,
-                        className: "bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
+                        className: "bg-blue-door text-white px-6 py-3 rounded-lg font-semibold hover:bg-true-navy transition-all"
                     }, "Try Again")
                 ]));
             }
@@ -408,41 +629,114 @@
             }
 
             return React.createElement('div', {
-                className: "min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 p-4 pb-8"
+                className: "min-h-screen p-4 pb-8" // Background gradient is set in CSS
             }, React.createElement('div', {
                 className: "max-w-2xl mx-auto"
             }, [
                 // Header
                 React.createElement('div', {
                     key: 'header',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
-                }, React.createElement('div', {
-                    className: "text-center"
+                    className: "card bg-surface p-8 mb-6"
                 }, [
-                    React.createElement('h1', {
-                        key: 'title',
-                        className: "text-3xl font-bold text-gray-800 mb-2 sunlight-optimized"
-                    }, "Boa Vida Fish Finder"),
-                    React.createElement('p', {
-                        key: 'subtitle',
-                        className: "text-gray-600"
-                    }, `Based on ${data.length} successful catches`)
-                ])),
+                    // Home button (top left)
+                    React.createElement('div', {
+                        key: 'nav',
+                        className: "flex justify-start mb-4"
+                    }, 
+                        React.createElement('a', {
+                            key: 'home-btn',
+                            href: 'home.html',
+                            className: "inline-flex items-center justify-center gap-2 bg-light hover:bg-gray-100 text-primary font-medium py-2 px-4 rounded-full transition-colors"
+                        }, [
+                            // Home icon
+                            React.createElement('svg', {
+                                key: 'home-icon',
+                                xmlns: "http://www.w3.org/2000/svg",
+                                width: "16",
+                                height: "16",
+                                viewBox: "0 0 24 24",
+                                fill: "none",
+                                stroke: "currentColor",
+                                strokeWidth: "2",
+                                strokeLinecap: "round",
+                                strokeLinejoin: "round"
+                            }, [
+                                React.createElement('path', {
+                                    key: 'path1',
+                                    d: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                                }),
+                                React.createElement('polyline', {
+                                    key: 'path2',
+                                    points: "9 22 9 12 15 12 15 22"
+                                })
+                            ]),
+                            "Home"
+                        ])
+                    ),
+                    
+                    React.createElement('div', {
+                        key: 'content',
+                        className: "text-center"
+                    }, [
+                        React.createElement('h1', {
+                            key: 'title',
+                            className: "font-cormorant tracking-wider uppercase text-4xl font-light text-true-navy mb-2 sunlight-optimized whitespace-nowrap"
+                        }, "B O A   V I D A"),
+                        React.createElement('h2', {
+                            key: 'subtitle',
+                            className: "font-cormorant tracking-widest uppercase text-xl font-light text-true-navy mb-6 sunlight-optimized"
+                        }, "F I S H   F O R E C A S T"),
+                        
+                        // Log a Catch Button
+                        React.createElement('a', {
+                            key: 'log-catch-btn',
+                            href: 'https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header',
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                            className: "inline-flex items-center justify-center gap-3 bg-accent hover:bg-secondary text-white font-medium py-4 px-8 rounded-full shadow-lg text-lg transition-all mt-6"
+                        }, [
+                            // Plus icon
+                            React.createElement('svg', {
+                                key: 'plus-icon',
+                                xmlns: "http://www.w3.org/2000/svg",
+                                width: "24",
+                                height: "24",
+                                viewBox: "0 0 24 24",
+                                fill: "none",
+                                stroke: "currentColor",
+                                strokeWidth: "2",
+                                strokeLinecap: "round",
+                                strokeLinejoin: "round",
+                                className: "h-6 w-6"
+                            }, [
+                                React.createElement('path', {
+                                    key: 'path1',
+                                    d: "M12 5v14"
+                                }),
+                                React.createElement('path', {
+                                    key: 'path2',
+                                    d: "M5 12h14"
+                                })
+                            ]),
+                            "LOG A CATCH"
+                        ])
+                    ])
+                ]),
 
                 // Fish Selector
                 React.createElement('div', {
                     key: 'selector',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card card-spacious bg-surface mb-6"
                 }, [
                     React.createElement('label', {
                         key: 'label',
-                        className: "block text-lg font-semibold text-gray-700 mb-3 sunlight-optimized"
-                    }, "What fish do you want to catch?"),
+                        className: "block text-base font-medium text-muted mb-2"
+                    }, "SELECT SPECIES"),
                     React.createElement('select', {
                         key: 'select',
                         value: selectedFish,
                         onChange: (e) => handleSpeciesChange(e.target.value),
-                        className: "w-full text-2xl font-bold p-4 border-2 border-blue-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:border-blue-500 sunlight-optimized"
+                        className: "w-full text-xl font-semibold p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none text-primary bg-light"
                     }, species.map(sp => React.createElement('option', {
                         key: sp,
                         value: sp
@@ -450,32 +744,32 @@
                     
                     React.createElement('div', {
                         key: 'stats',
-                        className: "mt-4 p-4 bg-blue-50 rounded-lg"
+                        className: "mt-6 grid grid-cols-2 gap-4"
                     }, [
                         React.createElement('div', {
                             key: 'avg',
-                            className: "flex justify-between items-center"
+                            className: "bg-light rounded-xl p-4 flex flex-col"
                         }, [
                             React.createElement('span', {
                                 key: 'label',
-                                className: "text-gray-700"
-                            }, "Average weight:"),
+                                className: "text-sm text-muted mb-1"
+                            }, "AVERAGE WEIGHT"),
                             React.createElement('span', {
                                 key: 'value',
-                                className: "text-xl font-bold text-blue-600 sunlight-optimized"
+                                className: "text-2xl font-bold text-primary"
                             }, `${recommendations.avgWeight.toFixed(1)} lbs`)
                         ]),
                         React.createElement('div', {
                             key: 'max',
-                            className: "flex justify-between items-center mt-2"
+                            className: "bg-light rounded-xl p-4 flex flex-col"
                         }, [
                             React.createElement('span', {
                                 key: 'label',
-                                className: "text-gray-700"
-                            }, "Biggest catch:"),
+                                className: "text-sm text-muted mb-1"
+                            }, "BIGGEST CATCH"),
                             React.createElement('span', {
                                 key: 'value',
-                                className: "text-xl font-bold text-blue-600 sunlight-optimized"
+                                className: "text-2xl font-bold text-accent"
                             }, `${recommendations.maxWeight.toFixed(1)} lbs`)
                         ])
                     ])
@@ -484,67 +778,70 @@
                 // Best Location
                 React.createElement('div', {
                     key: 'location',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card card-spacious bg-surface mb-6"
                 }, [
                     React.createElement('div', {
                         key: 'header',
-                        className: "flex items-center mb-4"
+                        className: "flex items-center mb-6"
                     }, [
-                        React.createElement(MapPin, {
+                        React.createElement('div', {
+                            key: 'icon-wrapper',
+                            className: "bg-light rounded-full p-2 mr-3"
+                        }, React.createElement(MapPin, {
                             key: 'icon',
-                            className: "h-8 w-8 text-green-600 mr-3"
-                        }),
+                            className: "h-6 w-6 text-accent"
+                        })),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                            className: "text-xl font-semibold text-primary"
                         }, "Where to Fish")
                     ]),
                     
                     React.createElement('div', {
                         key: 'best',
-                        className: "bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 mb-4"
+                        className: "bg-light rounded-xl p-6 mb-6"
                     }, React.createElement('div', {
                         className: "text-center"
                     }, [
                         React.createElement('div', {
                             key: 'label',
-                            className: "text-lg text-green-700 mb-2"
-                        }, "🎯 BEST SPOT"),
+                            className: "text-sm text-muted uppercase mb-2"
+                        }, "Best Spot"),
                         React.createElement('div', {
                             key: 'name',
-                            className: "text-3xl font-bold text-green-900 mb-2 sunlight-optimized"
+                            className: "text-3xl font-bold text-primary mb-3"
                         }, recommendations.topLocation[0]),
                         React.createElement('div', {
                             key: 'stats',
-                            className: "text-xl text-green-700"
-                        }, `${recommendations.topLocation[1].count} catches (${recommendations.topLocation[1].percentage.toFixed(0)}% success)`),
+                            className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
+                        }, `${recommendations.topLocation[1].count} catches`),
                         React.createElement('div', {
                             key: 'avg',
-                            className: "text-lg text-green-600 mt-2"
-                        }, `Avg: ${recommendations.topLocation[1].avgWeight.toFixed(1)} lbs`)
+                            className: "text-sm text-muted mt-3"
+                        }, `Average weight: ${recommendations.topLocation[1].avgWeight.toFixed(1)} lbs`)
                     ])),
 
                     recommendations.allLocations.length > 1 && React.createElement('div', {
                         key: 'others',
-                        className: "space-y-2"
+                        className: "space-y-3"
                     }, [
                         React.createElement('div', {
                             key: 'label',
-                            className: "text-sm font-semibold text-gray-600 mb-2"
-                        }, "Other good spots:"),
+                            className: "text-xs font-medium text-muted uppercase"
+                        }, "Other good spots"),
                         ...recommendations.allLocations.slice(1).map(([place, data], index) => 
                             React.createElement('div', {
                                 key: index,
-                                className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                                className: "flex justify-between items-center bg-light p-3 rounded-lg hover:bg-gray-100 transition-colors"
                             }, [
                                 React.createElement('span', {
                                     key: 'name',
-                                    className: "font-medium text-gray-800"
+                                    className: "font-medium text-primary"
                                 }, place),
                                 React.createElement('span', {
                                     key: 'count',
-                                    className: "text-gray-600"
-                                }, `${data.count} catches`)
+                                    className: "text-xs px-2 py-1 bg-accent/10 text-accent rounded-full"
+                                }, `${data.count}`)
                             ])
                         )
                     ])
@@ -553,7 +850,7 @@
                 // Best Bait
                 React.createElement('div', {
                     key: 'bait',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
                 }, [
                     React.createElement('div', {
                         key: 'header',
@@ -565,7 +862,7 @@
                         }),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
                         }, "What Bait to Use")
                     ]),
                     
@@ -608,7 +905,7 @@
                             }, [
                                 React.createElement('span', {
                                     key: 'name',
-                                    className: "font-medium text-gray-800"
+                                    className: "font-medium text-true-navy"
                                 }, bait),
                                 React.createElement('span', {
                                     key: 'count',
@@ -622,7 +919,7 @@
                 // Best Enhancement (conditional)
                 recommendations.topEnhancement && React.createElement('div', {
                     key: 'enhancement',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
                 }, [
                     React.createElement('div', {
                         key: 'header',
@@ -634,7 +931,7 @@
                         }),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
                         }, "Bait Enhancement")
                     ]),
                     
@@ -681,7 +978,7 @@
                             }, [
                                 React.createElement('span', {
                                     key: 'name',
-                                    className: "font-medium text-gray-800"
+                                    className: "font-medium text-true-navy"
                                 }, enhancement),
                                 React.createElement('span', {
                                     key: 'count',
@@ -695,7 +992,7 @@
                 // Best Time
                 React.createElement('div', {
                     key: 'time',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
                 }, [
                     React.createElement('div', {
                         key: 'header',
@@ -707,7 +1004,7 @@
                         }),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
                         }, "When to Fish")
                     ]),
                     
@@ -754,7 +1051,7 @@
                 // Best Conditions
                 React.createElement('div', {
                     key: 'conditions',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
                 }, [
                     React.createElement('div', {
                         key: 'header',
@@ -766,7 +1063,7 @@
                         }),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-gray-800 sunlight-optimized"
+                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
                         }, "Best Conditions")
                     ]),
                     
@@ -794,11 +1091,11 @@
                                 }, [
                                     React.createElement('div', {
                                         key: 'label',
-                                        className: "font-semibold text-gray-800"
+                                        className: "font-semibold text-true-navy"
                                     }, "Moon Phase"),
                                     React.createElement('div', {
                                         key: 'value',
-                                        className: "text-2xl font-bold text-indigo-900 sunlight-optimized"
+                                        className: "text-2xl font-bold text-true-navy sunlight-optimized"
                                     }, recommendations.topMoon[0])
                                 ])
                             ]),
@@ -837,11 +1134,11 @@
                                 }, [
                                     React.createElement('div', {
                                         key: 'label',
-                                        className: "font-semibold text-gray-800"
+                                        className: "font-semibold text-true-navy"
                                     }, "Tide"),
                                     React.createElement('div', {
                                         key: 'value',
-                                        className: "text-2xl font-bold text-cyan-900 sunlight-optimized"
+                                        className: "text-2xl font-bold text-true-navy sunlight-optimized"
                                     }, recommendations.topTide[0])
                                 ])
                             ]),
@@ -880,11 +1177,11 @@
                                 }, [
                                     React.createElement('div', {
                                         key: 'label',
-                                        className: "font-semibold text-gray-800"
+                                        className: "font-semibold text-true-navy"
                                     }, "Weather"),
                                     React.createElement('div', {
                                         key: 'value',
-                                        className: "text-2xl font-bold text-sky-900 sunlight-optimized"
+                                        className: "text-2xl font-bold text-true-navy sunlight-optimized"
                                     }, recommendations.weatherPreference)
                                 ])
                             ]),
@@ -908,7 +1205,7 @@
                 // Quick Summary
                 React.createElement('div', {
                     key: 'summary',
-                    className: "bg-gradient-to-r from-green-500 to-blue-500 rounded-xl shadow-2xl p-6 text-white"
+                    className: "card bg-primary rounded-xl p-6 text-white"
                 }, [
                     React.createElement('div', {
                         key: 'header',
@@ -978,10 +1275,10 @@
                     ])
                 ]),
 
-                // Footer
+                        // Footer
                 React.createElement('div', {
                     key: 'footer',
-                    className: "text-center mt-6 text-white text-sm"
+                    className: "text-center mt-6 text-white text-sm font-cormorant"
                 }, [
                     React.createElement('p', {
                         key: 'line1'
@@ -989,14 +1286,67 @@
                     React.createElement('p', {
                         key: 'line2',
                         className: "mt-1"
-                    }, "Good luck fishing! 🎣")
-                ])
+                    }, "Good luck fishing! 🎣"),
+                    React.createElement('p', {
+                        key: 'line3',
+                        className: "text-sm mt-2 opacity-70"
+                    }, "© 2025 Henrike Basson")
+                ]),
+                
+                // Floating Action Button (Log a Catch with Google Form)
+                React.createElement('a', {
+                    key: 'fab',
+                    href: 'https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header',
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    style: {
+                        position: 'fixed',
+                        bottom: '32px',
+                        right: '32px',
+                        zIndex: 900,
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        minWidth: '56px',
+                        height: '56px',
+                        backgroundColor: '#205295', // accent color
+                        color: 'white',
+                        padding: '0',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.2s ease',
+                        transform: 'scale(1)'
+                    },
+                    onMouseOver: (e) => { 
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                        e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+                    },
+                    onMouseOut: (e) => { 
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                    }
+                }, React.createElement('svg', {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    width: "24",
+                    height: "24",
+                    viewBox: "0 0 24 24",
+                    fill: "none",
+                    stroke: "currentColor",
+                    strokeWidth: "2",
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round"
+                }, [
+                    React.createElement('path', { d: "M12 5v14" }),
+                    React.createElement('path', { d: "M5 12h14" })
+                ]))
             ]));
         };
 
             // Render the app
+            console.log("Rendering SimpleFishingGuide component...");
             const root = ReactDOM.createRoot(document.getElementById('root'));
             root.render(React.createElement(SimpleFishingGuide));
+            console.log("Component rendered!");
         }
         
         // Start initialization when DOM is ready

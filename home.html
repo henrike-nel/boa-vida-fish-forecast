@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boa Vida Fishing App</title>
+    <meta name="description" content="Fishing app for Bazaruto waters - Log catches and get fishing recommendations">
+    
+    <!-- Favicon - Simple colored square as data URI -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjMjYzNzREIi8+PC9zdmc+">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjMjYzNzREIi8+PC9zdmc+">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts with preload for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        // Tailwind config extension for custom fonts
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'cormorant': ['"Cormorant Garamond"', 'serif'],
+                        'eb-garamond': ['"EB Garamond"', 'serif'],
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <style>
+
+        /* Additional mobile optimizations */
+        body {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #F8FAFC; /* Light background */
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #0F172A; /* Dark text for better readability */
+        }
+        
+        /* Ensure good contrast in bright sunlight */
+        .sunlight-optimized {
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        /* Button hover effects */
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Button active effects */
+        .btn-hover:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Gradient overlay for better text readability */
+        .gradient-overlay {
+            background: #0A2647; /* Primary color */
+        }
+        
+        /* Modern card styling */
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background-color: #FFFFFF;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        
+        /* Modern minimalist color palette */
+        .bg-primary {
+            background-color: #0A2647;
+        }
+        
+        .bg-secondary {
+            background-color: #144272;
+        }
+        
+        .bg-accent {
+            background-color: #205295;
+        }
+        
+        .bg-light {
+            background-color: #F8FAFC;
+        }
+        
+        .bg-surface {
+            background-color: #FFFFFF;
+        }
+        
+        .text-primary {
+            color: #0A2647;
+        }
+        
+        .text-secondary {
+            color: #144272;
+        }
+        
+        .text-accent {
+            color: #205295;
+        }
+        
+        .text-muted {
+            color: #64748B;
+        }
+        
+        .border-primary {
+            border-color: #0A2647;
+        }
+        
+        /* Keep old color classes for compatibility */
+        .bg-true-navy {
+            background-color: #0A2647;
+        }
+        
+        .bg-blue-door {
+            background-color: #144272;
+        }
+        
+        .bg-harpers-blue {
+            background-color: #205295;
+        }
+        
+        .bg-alice-blue {
+            background-color: #F8FAFC;
+        }
+        
+        .text-true-navy {
+            color: #0A2647;
+        }
+        
+        /* Typography styles with robust fallbacks */
+        .font-garamond {
+            font-family: 'EB Garamond', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Times New Roman', serif;
+        }
+        
+        .font-cormorant {
+            font-family: 'Cormorant Garamond', 'Garamond', 'Baskerville', 'Baskerville Old Face', 'Hoefler Text', 'Times New Roman', serif;
+        }
+        
+        .tracking-widest {
+            letter-spacing: 0.2em;
+        }
+        
+        .uppercase {
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <!-- Main Content -->
+        <div class="card bg-surface overflow-hidden">
+            <!-- Header -->
+            <div class="gradient-overlay p-12 text-center">
+                <h1 class="font-cormorant tracking-wider uppercase text-5xl font-light text-white mb-6 sunlight-optimized whitespace-nowrap">B O A &nbsp; V I D A</h1>
+                <p class="font-cormorant tracking-widest uppercase text-1xl font-light text-white sunlight-optimized tracking-wider">F I S H &nbsp; F O R E C A S T</p>
+            </div>
+            
+            <!-- Buttons Container -->
+            <div class="p-8 space-y-6">
+                <!-- Fish Finder Button -->
+                <a href="index.html" class="btn-hover flex items-center justify-center bg-accent hover:bg-secondary text-white w-full py-5 px-6 rounded-full text-xl font-medium shadow-md transition-all">
+                    Fish Finder
+                </a>
+                
+                <!-- Log a Catch Button -->
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header" target="_blank" rel="noopener noreferrer" class="btn-hover flex items-center justify-center gap-3 bg-light hover:bg-gray-100 text-primary border border-gray-200 w-full py-5 px-6 rounded-full text-xl font-medium shadow-sm transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14"></path>
+                        <path d="M5 12h14"></path>
+                    </svg>
+                    Log a Catch
+                </a>
+            </div>
+            
+            <!-- Footer -->
+            <div class="px-8 pb-8 text-center">
+                <p class="text-sm text-muted mb-1">Based on historical catch data from Bazaruto</p>
+                <p class="text-xs text-muted opacity-70">© 2025 Henrike Basson</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if we need to redirect based on URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            
+            // Redirect based on action parameter
+            if (action === 'fish-finder') {
+                window.location.href = 'index.html';
+            } else if (action === 'log-catch') {
+                window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header';
+            }
+        });
+    </script>
+</body>
+</html>

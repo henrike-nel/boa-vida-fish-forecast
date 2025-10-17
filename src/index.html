@@ -89,7 +89,9 @@
             bottom: 24px;
             right: 24px;
             z-index: 900;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            min-width: 120px;
+            border: 3px solid white;
         }
         
         /* Status badge pulse */
@@ -105,6 +107,21 @@
 </head>
 <body>
     <div id="root"></div>
+    
+    <!-- Debug Element - Always Visible -->
+    <div id="debug-element" style="position: fixed; top: 10px; right: 10px; background-color: red; color: white; padding: 10px; z-index: 9999; font-weight: bold;">
+        DEBUG: Buttons should be visible
+    </div>
+    
+    <!-- Fallback Button (Pure HTML) -->
+    <div style="position: fixed; bottom: 80px; right: 20px; z-index: 10000;">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header" 
+           target="_blank"
+           rel="noopener noreferrer"
+           style="display: inline-block; background-color: blue; color: white; padding: 15px 30px; border-radius: 8px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+            FALLBACK BUTTON - LOG A CATCH
+        </a>
+    </div>
 
     <script>
         const { useState, useEffect, useRef } = React;
@@ -1100,6 +1117,15 @@
                         key: 'header',
                         className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
                     }, [
+                        // Direct button link outside the main div for testing
+                        React.createElement('a', {
+                            key: 'direct-btn',
+                            href: 'https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header',
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                            className: "block w-full bg-purple-600 text-white text-center font-bold py-3 mb-4 rounded-lg"
+                        }, "DIRECT BUTTON - CLICK ME"),
+                        
                         React.createElement('div', {
                             key: 'main',
                             className: "text-center"
@@ -1114,8 +1140,20 @@
                             }, "Boa Vida Fish Finder"),
                             React.createElement('p', {
                                 key: 'subtitle',
-                                className: "text-gray-600"
-                            }, `Based on historic catches`)
+                                className: "text-gray-600 mb-4"
+                            }, `Based on historic catches`),
+                            
+                            // Log a Catch Button
+                            React.createElement('a', {
+                                key: 'log-catch-btn',
+                                href: 'https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header',
+                                target: '_blank',
+                                rel: 'noopener noreferrer',
+                                className: "inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg text-xl transition-colors mt-4"
+                            }, [
+                                React.createElement(Plus, { key: 'plus-icon', className: 'h-6 w-6' }),
+                                "LOG A CATCH"
+                            ])
                         ]),
                         
                         // Status Bar
@@ -1760,12 +1798,20 @@
                 ])
             ]),
             
-            // Floating Action Button (Add Catch)
-            React.createElement('button', {
+            // Floating Action Button (Log a Catch with Google Form)
+            React.createElement('a', {
                 key: 'fab',
-                onClick: () => setShowForm(true),
-                className: 'fab bg-blue-600 hover:bg-blue-700 text-white p-5 rounded-full transition-all hover:scale-110 active:scale-95'
-            }, React.createElement(Plus, { className: 'h-8 w-8' })),
+                href: 'https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header',
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                className: 'fab bg-red-600 hover:bg-red-700 text-white p-6 rounded-full transition-all hover:scale-110 active:scale-95 flex items-center justify-center shadow-xl'
+            }, [
+                React.createElement(Plus, { className: 'h-10 w-10' }),
+                React.createElement('span', { 
+                    className: 'ml-2 font-bold text-lg',
+                    style: { display: 'inline-block' }
+                }, 'LOG')
+            ]),
             
             // Add Catch Form Modal
             showForm && React.createElement(AddCatchForm, { key: 'form' })
@@ -1774,7 +1820,9 @@
 
         // Render the app
         const root = ReactDOM.createRoot(document.getElementById('root'));
+        console.log("Rendering SimpleFishingGuide component...");
         root.render(React.createElement(SimpleFishingGuide));
+        console.log("Component rendered!");
     </script>
 </body>
 </html>

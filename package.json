@@ -24,7 +24,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "live-server . --port=3000 --open=/index.html",
+    "dev": "live-server . --port=3000 --open=/home.html",
     "test": "jest tests/unit",
     "lint": "eslint . --ext .js,.html",
     "lint:fix": "eslint . --ext .js,.html --fix",

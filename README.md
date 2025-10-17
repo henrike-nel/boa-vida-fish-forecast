@@ -22,6 +22,12 @@ Works on your phone. Even when the internet doesn't.
 - Discover optimal fishing times (fish have schedules too)
 - Get everything in one summary (because reading is hard on a boat)
 
+### Add New Catches
+- **Google Form Integration**: Easy-to-use form for logging catches
+- **Works Offline**: Google Form can save drafts without internet
+- **Direct to Spreadsheet**: Data goes straight to your Google Sheet
+- **Simple to Use**: Just tap the "Log a Catch" button
+
 ## Quick Start
 
 ### For Normal People

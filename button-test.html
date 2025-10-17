@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-10 bg-gray-100">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-6">Button Test</h1>
+        
+        <p class="mb-6">Testing if buttons are visible:</p>
+        
+        <!-- Header Button -->
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-2">Header Button:</h2>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header" 
+               target="_blank"
+               rel="noopener noreferrer"
+               class="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg text-xl transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                </svg>
+                LOG A CATCH
+            </a>
+        </div>
+        
+        <!-- FAB Button -->
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-2">FAB Button (Fixed Position):</h2>
+            <div class="relative h-40 border border-gray-300 rounded-lg">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="absolute bottom-4 right-4 bg-red-600 hover:bg-red-700 text-white p-6 rounded-full transition-all hover:scale-110 flex items-center justify-center shadow-xl min-w-[120px] border-3 border-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-10 w-10">
+                        <path d="M12 5v14"></path>
+                        <path d="M5 12h14"></path>
+                    </svg>
+                    <span class="ml-2 font-bold text-lg">LOG</span>
+                </a>
+            </div>
+        </div>
+        
+        <p class="text-gray-600">If you can see both buttons above, then the buttons should be working correctly in the main app.</p>
+    </div>
+</body>
+</html>
