@@ -22,6 +22,9 @@
     <!-- Lucide React Icons -->
     <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
     
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    
     <style>
         /* Additional mobile optimizations */
         body {
@@ -46,14 +49,241 @@
         .transition-all {
             transition: all 0.3s ease;
         }
+        
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Form animation */
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 900;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Status badge pulse */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script>
-        const { useState, useEffect } = React;
-        const { Fish, MapPin, Sun, Moon, Droplets, Clock, TrendingUp, AlertCircle } = lucideReact;
+        const { useState, useEffect, useRef } = React;
+        const { Fish, MapPin, Sun, Moon, Droplets, Clock, TrendingUp, AlertCircle, Plus, RefreshCw, Wifi, WifiOff, X, Save, CheckCircle } = lucideReact;
+        
+        // ============================================
+        // IndexedDB Manager for Offline Storage
+        // ============================================
+        const DB_NAME = 'BoaVidaFishDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'pendingCatches';
+        
+        const initDB = () => {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        const objectStore = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                        objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+                    }
+                };
+            });
+        };
+        
+        const saveCatchToDB = async (catchData) => {
+            const db = await initDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.add({
+                    ...catchData,
+                    timestamp: new Date().toISOString()
+                });
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        };
+        
+        const getPendingCatches = async () => {
+            const db = await initDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        };
+        
+        const deleteCatchFromDB = async (id) => {
+            const db = await initDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.delete(id);
+                
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        };
+        
+        // ============================================
+        // Google Sheets API Functions
+        // ============================================
+        const loadFromGoogleSheets = async () => {
+            const config = window.GOOGLE_SHEETS_CONFIG;
+            if (!config || !config.ENABLED || !config.SHEET_ID || !config.READ_API_KEY) {
+                console.log('Google Sheets not configured');
+                return null;
+            }
+            
+            try {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${config.SHEET_ID}/values/${config.READ_RANGE}?key=${config.READ_API_KEY}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Google Sheets API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const rows = data.values;
+                
+                if (!rows || rows.length === 0) {
+                    throw new Error('No data found in Google Sheet');
+                }
+                
+                // Convert to CSV format for Papa Parse
+                const csv = rows.map(row => row.join(',')).join('\n');
+                return csv;
+            } catch (error) {
+                console.error('Error loading from Google Sheets:', error);
+                return null;
+            }
+        };
+        
+        const syncCatchToGoogleSheets = async (catchData) => {
+            const config = window.GOOGLE_SHEETS_CONFIG;
+            if (!config || !config.ENABLED || !config.SHEET_ID || !config.WRITE_API_KEY) {
+                throw new Error('Google Sheets not configured for writing');
+            }
+            
+            // Convert catchData to row format matching CSV columns (18 columns: A-R)
+            const row = [
+                catchData.date,                                    // 1. Date
+                catchData.species,                                 // 2. Species
+                catchData.weightLbs,                               // 3. Weight (lbs)
+                catchData.length || '',                            // 4. Length (m)
+                catchData.place,                                   // 5. Place
+                catchData.primaryBait,                             // 6. Primary_Bait
+                catchData.enhancement || '',                       // 7. Enhancement
+                catchData.lineLbs || '',                           // 8. Line (lbs)
+                catchData.timeOfStrike,                            // 9. Time of Strike
+                catchData.waterTemp || '',                         // 10. Water Temperature (°C)
+                catchData.weather || '',                           // 11. Weather
+                catchData.tideState || '',                         // 12. Tide State
+                '',                                                // 13. Tide Height (m) - empty for now
+                '',                                                // 14. Tidal Coefficient - empty for now
+                catchData.weather === 'Clear' ? '10' : 
+                    catchData.weather === 'Partly Cloudy' ? '40' : '80', // 15. Cloud Cover (%)
+                `Catch logged via app on ${new Date().toLocaleDateString()}`, // 16. Description
+                catchData.airTemp || '',                           // 17. Air Temp (°C)
+                catchData.moon || ''                               // 18. Moon
+            ];
+            
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${config.SHEET_ID}/values/${config.WRITE_RANGE}:append?valueInputOption=USER_ENTERED&key=${config.WRITE_API_KEY}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    values: [row]
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(`Failed to sync to Google Sheets: ${error.error?.message || response.status}`);
+            }
+            
+            return await response.json();
+        };
+        
+        // ============================================
+        // Cache Management
+        // ============================================
+        const CACHE_KEY = 'fishingDataCache';
+        const CACHE_TIMESTAMP_KEY = 'fishingDataCacheTimestamp';
+        
+        const getCachedData = () => {
+            const cached = localStorage.getItem(CACHE_KEY);
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+            
+            if (!cached || !timestamp) return null;
+            
+            const config = window.GOOGLE_SHEETS_CONFIG || { CACHE_DURATION: 5 * 60 * 1000 };
+            const age = Date.now() - parseInt(timestamp);
+            
+            if (age > config.CACHE_DURATION) {
+                return null; // Cache expired
+            }
+            
+            return cached;
+        };
+        
+        const setCachedData = (data) => {
+            localStorage.setItem(CACHE_KEY, data);
+            localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+        };
+        
+        const getLastSyncTime = () => {
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+            if (!timestamp) return null;
+            return new Date(parseInt(timestamp));
+        };
 
         const SimpleFishingGuide = () => {
             const [data, setData] = useState([]);
@@ -62,46 +292,172 @@
             const [recommendations, setRecommendations] = useState(null);
             const [species, setSpecies] = useState([]);
             const [error, setError] = useState(null);
+            const [showForm, setShowForm] = useState(false);
+            const [pendingCount, setPendingCount] = useState(0);
+            const [isOnline, setIsOnline] = useState(navigator.onLine);
+            const [syncing, setSyncing] = useState(false);
+            const [lastSync, setLastSync] = useState(null);
+            const [notification, setNotification] = useState(null);
+            const [locations, setLocations] = useState([]);
+            const [baits, setBaits] = useState([]);
+            const [enhancements, setEnhancements] = useState([]);
 
             useEffect(() => {
                 loadData();
+                updatePendingCount();
+                setLastSync(getLastSyncTime());
+                
+                // Online/offline detection
+                const handleOnline = () => {
+                    setIsOnline(true);
+                    autoSync();
+                };
+                const handleOffline = () => setIsOnline(false);
+                
+                window.addEventListener('online', handleOnline);
+                window.addEventListener('offline', handleOffline);
+                
+                // Auto-sync on mount if online
+                if (navigator.onLine) {
+                    autoSync();
+                }
+                
+                return () => {
+                    window.removeEventListener('online', handleOnline);
+                    window.removeEventListener('offline', handleOffline);
+                };
             }, []);
+            
+            const updatePendingCount = async () => {
+                try {
+                    const pending = await getPendingCatches();
+                    setPendingCount(pending.length);
+                } catch (error) {
+                    console.error('Error getting pending catches:', error);
+                }
+            };
+            
+            const showNotification = (message, type = 'success') => {
+                setNotification({ message, type });
+                setTimeout(() => setNotification(null), 5000);
+            };
+            
+            const autoSync = async () => {
+                if (!isOnline) return;
+                
+                try {
+                    const pending = await getPendingCatches();
+                    if (pending.length > 0) {
+                        await syncPendingCatches();
+                    }
+                } catch (error) {
+                    console.error('Auto-sync failed:', error);
+                }
+            };
+            
+            const syncPendingCatches = async () => {
+                try {
+                    setSyncing(true);
+                    const pending = await getPendingCatches();
+                    
+                    if (pending.length === 0) {
+                        showNotification('No pending catches to sync', 'info');
+                        return;
+                    }
+                    
+                    let successCount = 0;
+                    let failCount = 0;
+                    
+                    for (const catch_ of pending) {
+                        try {
+                            await syncCatchToGoogleSheets(catch_);
+                            await deleteCatchFromDB(catch_.id);
+                            successCount++;
+                        } catch (error) {
+                            console.error('Failed to sync catch:', error);
+                            failCount++;
+                        }
+                    }
+                    
+                    await updatePendingCount();
+                    
+                    if (successCount > 0) {
+                        showNotification(`Synced ${successCount} catch${successCount > 1 ? 'es' : ''} to Google Sheets!`, 'success');
+                        // Refresh data after sync
+                        await loadData();
+                    }
+                    
+                    if (failCount > 0) {
+                        showNotification(`Failed to sync ${failCount} catch${failCount > 1 ? 'es' : ''}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('Sync error:', error);
+                    showNotification('Sync failed: ' + error.message, 'error');
+                } finally {
+                    setSyncing(false);
+                }
+            };
 
             const loadData = async () => {
                 try {
                     setLoading(true);
                     setError(null);
                     
-                    // Try multiple possible filenames for flexibility
-                    const possibleFilenames = [
-                        '../Boa_Vida_Fish_Finder_data.csv',
-                        'data/Boa_Vida_Fish_Finder_data.csv',
-                        'Boa_Vida_Fish_Finder_data.csv',
-                        'Baz  Stage 2 of Enriched Data 2.csv',
-                        'Baz  Enriched Data.csv',
-                        'Baz Data.csv'
-                    ];
+                    let csvData = null;
+                    let dataSource = 'unknown';
                     
-                    let csvData;
-                    let loadedFilename = '';
+                    // Try cache first
+                    const cached = getCachedData();
+                    if (cached) {
+                        console.log('Using cached data');
+                        csvData = cached;
+                        dataSource = 'cache';
+                    }
                     
-                    for (const filename of possibleFilenames) {
-                        try {
-                            const response = await fetch(filename);
-                            if (response.ok) {
-                                csvData = await response.text();
-                                loadedFilename = filename;
-                                console.log(`Successfully loaded: ${filename}`);
-                                break;
+                    // Try Google Sheets if online and not using cache
+                    if (!csvData && isOnline) {
+                        console.log('Attempting to load from Google Sheets...');
+                        csvData = await loadFromGoogleSheets();
+                        if (csvData) {
+                            console.log('Loaded from Google Sheets');
+                            setCachedData(csvData);
+                            setLastSync(new Date());
+                            dataSource = 'google-sheets';
+                        }
+                    }
+                    
+                    // Fallback to CSV files
+                    if (!csvData) {
+                        console.log('Falling back to CSV files...');
+                        const possibleFilenames = [
+                            '../Boa_Vida_Fish_Finder_data.csv',
+                            'data/Boa_Vida_Fish_Finder_data.csv',
+                            'Boa_Vida_Fish_Finder_data.csv',
+                            'Baz  Stage 2 of Enriched Data 2.csv',
+                            'Baz  Enriched Data.csv',
+                            'Baz Data.csv'
+                        ];
+                        
+                        for (const filename of possibleFilenames) {
+                            try {
+                                const response = await fetch(filename);
+                                if (response.ok) {
+                                    csvData = await response.text();
+                                    console.log(`Successfully loaded: ${filename}`);
+                                    dataSource = 'csv';
+                                    break;
+                                }
+                            } catch (err) {
+                                console.log(`Could not load: ${filename}`);
                             }
-                        } catch (err) {
-                            console.log(`Could not load: ${filename}`);
                         }
                     }
                     
                     if (!csvData) {
-                        throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the same directory.');
+                        throw new Error('Could not load fishing data from any source. Please check your configuration.');
                     }
+                    
+                    console.log(`Data loaded from: ${dataSource}`);
                     
                     Papa.parse(csvData, {
                         header: true,
@@ -119,26 +475,39 @@
                                     
                                     return {
                                         Species: row.Species?.trim(),
-                                        Weight: parseFloat(row['Weight (Kg)']) || 0,
+                                        Weight: parseFloat(row['Weight (lbs)']) * 0.453592 || 0,  // Convert lbs to kg for internal use
                                         WeightLbs: parseFloat(row['Weight (lbs)']) || 0,
+                                        Length: parseFloat(row['Length (m)']) || 0,
                                         Place: place?.trim() || 'Unknown',
                                         PrimaryBait: primaryBait?.trim() || 'Unknown',
                                         Enhancement: row.Enhancement?.trim() || '',
-                                        RawBait: row['Raw Data Bait']?.trim() || '',
-                                        WaterTemp: parseFloat(row['Water Temperature (C)']) || 0,
+                                        LineLbs: parseFloat(row['Line (lbs)']) || 0,
+                                        WaterTemp: parseFloat(row['Water Temperature (°C)']) || parseFloat(row['Water Temperature (C)']) || 0,
                                         Moon: row.Moon?.trim() || 'Unknown',
                                         TideState: row['Tide State']?.trim() || 'Unknown',
                                         TimeOfStrike: timeOfStrike?.trim() || '',
                                         Weather: weather?.trim() || '',
                                         CloudCover: parseInt(row['Cloud Cover (%)']) || 0,
                                         TideHeight: parseFloat(row['Tide Height (m)']) || 0,
-                                        TidalCoeff: parseInt(row['Tidal Coefficient']) || 0
+                                        TidalCoeff: parseInt(row['Tidal Coefficient']) || 0,
+                                        AirTemp: parseFloat(row['Air Temp (°C)']) || 0
                                     };
                                 });
                             
                             setData(cleanedData);
                             const uniqueSpecies = _.uniq(cleanedData.map(d => d.Species)).sort();
                             setSpecies(uniqueSpecies);
+                            
+                            // Extract unique values for form dropdowns
+                            const uniqueLocations = _.uniq(cleanedData.map(d => d.Place).filter(p => p && p !== 'Unknown')).sort();
+                            setLocations(uniqueLocations);
+                            
+                            const uniqueBaits = _.uniq(cleanedData.map(d => d.PrimaryBait).filter(b => b && b !== 'Unknown')).sort();
+                            setBaits(uniqueBaits);
+                            
+                            const uniqueEnhancements = _.uniq(cleanedData.map(d => d.Enhancement).filter(e => e && e !== 'Unknown' && e !== '')).sort();
+                            setEnhancements(uniqueEnhancements);
+                            
                             if (uniqueSpecies.length > 0) {
                                 setSelectedFish(uniqueSpecies[0]);
                                 analyzeSpecies(uniqueSpecies[0], cleanedData);
@@ -275,6 +644,361 @@
                 setSelectedFish(newSpecies);
                 analyzeSpecies(newSpecies, data);
             };
+            
+            const handleSaveCatch = async (catchData) => {
+                try {
+                    await saveCatchToDB(catchData);
+                    await updatePendingCount();
+                    showNotification('Catch saved! Will sync when online.', 'success');
+                    setShowForm(false);
+                    
+                    // Try to sync immediately if online
+                    if (isOnline) {
+                        await syncPendingCatches();
+                    }
+                } catch (error) {
+                    console.error('Error saving catch:', error);
+                    showNotification('Failed to save catch: ' + error.message, 'error');
+                }
+            };
+            
+            // ============================================
+            // Add Catch Form Component
+            // ============================================
+            const AddCatchForm = () => {
+                const getCurrentDate = () => {
+                    const now = new Date();
+                    return now.toISOString().split('T')[0];
+                };
+                
+                const getCurrentTime = () => {
+                    const now = new Date();
+                    return now.toTimeString().slice(0, 5);
+                };
+                
+                const [formData, setFormData] = useState({
+                    date: getCurrentDate(),
+                    species: species[0] || '',
+                    weightLbs: '',
+                    length: '',
+                    place: locations[0] || '',
+                    primaryBait: baits[0] || '',
+                    enhancement: '',
+                    lineLbs: '',
+                    timeOfStrike: getCurrentTime(),
+                    waterTemp: '',
+                    weather: 'Partly Cloudy',
+                    tideState: 'Outgoing',
+                    airTemp: '',
+                    moon: 'Full'
+                });
+                
+                const handleChange = (field, value) => {
+                    setFormData(prev => ({ ...prev, [field]: value }));
+                };
+                
+                const handleSubmit = (e) => {
+                    e.preventDefault();
+                    
+                    // Validation
+                    if (!formData.species || !formData.weightLbs || !formData.place || !formData.primaryBait) {
+                        showNotification('Please fill in all required fields', 'error');
+                        return;
+                    }
+                    
+                    if (parseFloat(formData.weightLbs) <= 0) {
+                        showNotification('Weight must be greater than 0', 'error');
+                        return;
+                    }
+                    
+                    handleSaveCatch(formData);
+                };
+                
+                return React.createElement('div', {
+                    className: 'modal-overlay',
+                    onClick: (e) => {
+                        if (e.target === e.currentTarget) setShowForm(false);
+                    }
+                }, React.createElement('div', {
+                    className: 'bg-white rounded-t-3xl slide-in max-w-2xl mx-auto mt-auto p-6 max-h-[90vh] overflow-y-auto'
+                }, [
+                    // Header
+                    React.createElement('div', {
+                        key: 'header',
+                        className: 'flex justify-between items-center mb-6'
+                    }, [
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: 'text-2xl font-bold text-gray-800'
+                        }, '📝 Add New Catch'),
+                        React.createElement('button', {
+                            key: 'close',
+                            onClick: () => setShowForm(false),
+                            className: 'p-2 hover:bg-gray-100 rounded-full transition-all'
+                        }, React.createElement(X, { className: 'h-6 w-6' }))
+                    ]),
+                    
+                    // Form
+                    React.createElement('form', {
+                        key: 'form',
+                        onSubmit: handleSubmit,
+                        className: 'space-y-4'
+                    }, [
+                        // Date
+                        React.createElement('div', { key: 'date' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Date *'),
+                            React.createElement('input', {
+                                key: 'input',
+                                type: 'date',
+                                value: formData.date,
+                                onChange: (e) => handleChange('date', e.target.value),
+                                required: true,
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            })
+                        ]),
+                        
+                        // Species
+                        React.createElement('div', { key: 'species' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Species *'),
+                            React.createElement('select', {
+                                key: 'input',
+                                value: formData.species,
+                                onChange: (e) => handleChange('species', e.target.value),
+                                required: true,
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }, species.map(sp => React.createElement('option', { key: sp, value: sp }, sp)))
+                        ]),
+                        
+                        // Weight and Length (two columns)
+                        React.createElement('div', {
+                            key: 'weight-length',
+                            className: 'grid grid-cols-2 gap-4'
+                        }, [
+                            React.createElement('div', { key: 'weight' }, [
+                                React.createElement('label', {
+                                    key: 'label',
+                                    className: 'block text-sm font-semibold text-gray-700 mb-2'
+                                }, 'Weight (lbs) *'),
+                                React.createElement('input', {
+                                    key: 'input',
+                                    type: 'number',
+                                    step: '0.1',
+                                    value: formData.weightLbs,
+                                    onChange: (e) => handleChange('weightLbs', e.target.value),
+                                    required: true,
+                                    placeholder: '25.5',
+                                    className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                                })
+                            ]),
+                            React.createElement('div', { key: 'length' }, [
+                                React.createElement('label', {
+                                    key: 'label',
+                                    className: 'block text-sm font-semibold text-gray-700 mb-2'
+                                }, 'Length (m)'),
+                                React.createElement('input', {
+                                    key: 'input',
+                                    type: 'number',
+                                    step: '0.01',
+                                    value: formData.length,
+                                    onChange: (e) => handleChange('length', e.target.value),
+                                    placeholder: '1.2',
+                                    className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                                })
+                            ])
+                        ]),
+                        
+                        // Place
+                        React.createElement('div', { key: 'place' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Place *'),
+                            React.createElement('select', {
+                                key: 'input',
+                                value: formData.place,
+                                onChange: (e) => handleChange('place', e.target.value),
+                                required: true,
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }, locations.map(loc => React.createElement('option', { key: loc, value: loc }, loc)))
+                        ]),
+                        
+                        // Primary Bait
+                        React.createElement('div', { key: 'bait' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Primary Bait *'),
+                            React.createElement('select', {
+                                key: 'input',
+                                value: formData.primaryBait,
+                                onChange: (e) => handleChange('primaryBait', e.target.value),
+                                required: true,
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }, baits.map(bait => React.createElement('option', { key: bait, value: bait }, bait)))
+                        ]),
+                        
+                        // Enhancement
+                        React.createElement('div', { key: 'enhancement' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Enhancement (optional)'),
+                            React.createElement('select', {
+                                key: 'input',
+                                value: formData.enhancement,
+                                onChange: (e) => handleChange('enhancement', e.target.value),
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }, [
+                                React.createElement('option', { key: 'none', value: '' }, 'None'),
+                                ...enhancements.map(enh => React.createElement('option', { key: enh, value: enh }, enh))
+                            ])
+                        ]),
+                        
+                        // Line and Time
+                        React.createElement('div', {
+                            key: 'line-time',
+                            className: 'grid grid-cols-2 gap-4'
+                        }, [
+                            React.createElement('div', { key: 'line' }, [
+                                React.createElement('label', {
+                                    key: 'label',
+                                    className: 'block text-sm font-semibold text-gray-700 mb-2'
+                                }, 'Line (lbs)'),
+                                React.createElement('input', {
+                                    key: 'input',
+                                    type: 'number',
+                                    step: '1',
+                                    value: formData.lineLbs,
+                                    onChange: (e) => handleChange('lineLbs', e.target.value),
+                                    placeholder: '30',
+                                    className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                                })
+                            ]),
+                            React.createElement('div', { key: 'time' }, [
+                                React.createElement('label', {
+                                    key: 'label',
+                                    className: 'block text-sm font-semibold text-gray-700 mb-2'
+                                }, 'Time of Strike'),
+                                React.createElement('input', {
+                                    key: 'input',
+                                    type: 'time',
+                                    value: formData.timeOfStrike,
+                                    onChange: (e) => handleChange('timeOfStrike', e.target.value),
+                                    className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                                })
+                            ])
+                        ]),
+                        
+                        // Water Temp and Air Temp
+                        React.createElement('div', {
+                            key: 'temps',
+                            className: 'grid grid-cols-2 gap-4'
+                        }, [
+                            React.createElement('div', { key: 'water' }, [
+                                React.createElement('label', {
+                                    key: 'label',
+                                    className: 'block text-sm font-semibold text-gray-700 mb-2'
+                                }, 'Water Temp (°C)'),
+                                React.createElement('input', {
+                                    key: 'input',
+                                    type: 'number',
+                                    step: '0.1',
+                                    value: formData.waterTemp,
+                                    onChange: (e) => handleChange('waterTemp', e.target.value),
+                                    placeholder: '26',
+                                    className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                                })
+                            ]),
+                            React.createElement('div', { key: 'air' }, [
+                                React.createElement('label', {
+                                    key: 'label',
+                                    className: 'block text-sm font-semibold text-gray-700 mb-2'
+                                }, 'Air Temp (°C)'),
+                                React.createElement('input', {
+                                    key: 'input',
+                                    type: 'number',
+                                    step: '0.1',
+                                    value: formData.airTemp,
+                                    onChange: (e) => handleChange('airTemp', e.target.value),
+                                    placeholder: '28',
+                                    className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                                })
+                            ])
+                        ]),
+                        
+                        // Weather
+                        React.createElement('div', { key: 'weather' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Weather'),
+                            React.createElement('select', {
+                                key: 'input',
+                                value: formData.weather,
+                                onChange: (e) => handleChange('weather', e.target.value),
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }, [
+                                React.createElement('option', { key: 'clear', value: 'Clear' }, 'Clear'),
+                                React.createElement('option', { key: 'partly', value: 'Partly Cloudy' }, 'Partly Cloudy'),
+                                React.createElement('option', { key: 'overcast', value: 'Overcast' }, 'Overcast'),
+                                React.createElement('option', { key: 'rainy', value: 'Rainy' }, 'Rainy')
+                            ])
+                        ]),
+                        
+                        // Tide State
+                        React.createElement('div', { key: 'tide' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Tide State'),
+                            React.createElement('select', {
+                                key: 'input',
+                                value: formData.tideState,
+                                onChange: (e) => handleChange('tideState', e.target.value),
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }, [
+                                React.createElement('option', { key: 'in', value: 'Incoming' }, 'Incoming'),
+                                React.createElement('option', { key: 'out', value: 'Outgoing' }, 'Outgoing'),
+                                React.createElement('option', { key: 'high', value: 'High' }, 'High'),
+                                React.createElement('option', { key: 'low', value: 'Low' }, 'Low')
+                            ])
+                        ]),
+                        
+                        // Moon Phase
+                        React.createElement('div', { key: 'moon' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: 'block text-sm font-semibold text-gray-700 mb-2'
+                            }, 'Moon Phase'),
+                            React.createElement('select', {
+                                key: 'input',
+                                value: formData.moon,
+                                onChange: (e) => handleChange('moon', e.target.value),
+                                className: 'w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }, [
+                                'New', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous',
+                                'Full', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent'
+                            ].map(phase => React.createElement('option', { key: phase, value: phase }, phase)))
+                        ]),
+                        
+                        // Submit Button
+                        React.createElement('button', {
+                            key: 'submit',
+                            type: 'submit',
+                            className: 'w-full bg-blue-600 text-white py-4 px-6 rounded-lg text-xl font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2 mt-6'
+                        }, [
+                            React.createElement(Save, { key: 'icon', className: 'h-6 w-6' }),
+                            React.createElement('span', { key: 'text' }, 'Save Catch')
+                        ])
+                    ])
+                ]));
+            };
 
             if (loading) {
                 return React.createElement('div', {
@@ -345,30 +1069,113 @@
             }
 
             return React.createElement('div', {
-                className: "min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 p-4 pb-8"
-            }, React.createElement('div', {
-                className: "max-w-2xl mx-auto"
+                className: "min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 p-4 pb-24"
             }, [
-                // Header
-                React.createElement('div', {
-                    key: 'header',
-                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
-                }, React.createElement('div', {
-                    className: "text-center"
+                // Notification Toast
+                notification && React.createElement('div', {
+                    key: 'notification',
+                    className: `fixed top-4 left-4 right-4 z-50 p-4 rounded-lg shadow-2xl ${
+                        notification.type === 'success' ? 'bg-green-500' :
+                        notification.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                    } text-white flex items-center gap-3`
                 }, [
-                    React.createElement(Fish, {
-                        key: 'icon',
-                        className: "h-12 w-12 text-blue-600 mx-auto mb-3"
-                    }),
-                    React.createElement('h1', {
-                        key: 'title',
-                        className: "text-3xl font-bold text-gray-800 mb-2 sunlight-optimized"
-                    }, "Boa Vida Fish Finder"),
-                    React.createElement('p', {
-                        key: 'subtitle',
-                        className: "text-gray-600"
-                    }, `Based on ${data.length} successful catches`)
-                ])),
+                    notification.type === 'success' && React.createElement(CheckCircle, { key: 'icon', className: 'h-6 w-6' }),
+                    notification.type === 'error' && React.createElement(AlertCircle, { key: 'icon', className: 'h-6 w-6' }),
+                    React.createElement('span', { key: 'message', className: 'flex-1 font-semibold' }, notification.message)
+                ]),
+                
+                // Main Content
+                React.createElement('div', {
+                    key: 'content',
+                    className: "max-w-2xl mx-auto"
+                }, [
+                    // Header with Status
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                    }, [
+                        React.createElement('div', {
+                            key: 'main',
+                            className: "text-center"
+                        }, [
+                            React.createElement(Fish, {
+                                key: 'icon',
+                                className: "h-12 w-12 text-blue-600 mx-auto mb-3"
+                            }),
+                            React.createElement('h1', {
+                                key: 'title',
+                                className: "text-3xl font-bold text-gray-800 mb-2 sunlight-optimized"
+                            }, "Boa Vida Fish Finder"),
+                            React.createElement('p', {
+                                key: 'subtitle',
+                                className: "text-gray-600"
+                            }, `Based on historic catches`)
+                        ]),
+                        
+                        // Status Bar
+                        React.createElement('div', {
+                            key: 'status',
+                            className: 'mt-4 pt-4 border-t border-gray-200 flex items-center justify-between text-sm'
+                        }, [
+                            // Online/Offline Status
+                            React.createElement('div', {
+                                key: 'online',
+                                className: 'flex items-center gap-2'
+                            }, [
+                                React.createElement(isOnline ? Wifi : WifiOff, {
+                                    key: 'icon',
+                                    className: `h-5 w-5 ${isOnline ? 'text-green-600' : 'text-gray-400'}`
+                                }),
+                                React.createElement('span', {
+                                    key: 'text',
+                                    className: isOnline ? 'text-green-600 font-semibold' : 'text-gray-500'
+                                }, isOnline ? 'Online' : 'Offline')
+                            ]),
+                            
+                            // Pending Count
+                            pendingCount > 0 && React.createElement('div', {
+                                key: 'pending',
+                                className: 'flex items-center gap-2 bg-orange-100 text-orange-700 px-3 py-1 rounded-full'
+                            }, [
+                                React.createElement('span', {
+                                    key: 'dot',
+                                    className: 'w-2 h-2 bg-orange-500 rounded-full pulse'
+                                }),
+                                React.createElement('span', {
+                                    key: 'text',
+                                    className: 'font-semibold'
+                                }, `${pendingCount} pending`)
+                            ]),
+                            
+                            // Sync Button
+                            React.createElement('button', {
+                                key: 'sync',
+                                onClick: () => {
+                                    if (pendingCount > 0) {
+                                        syncPendingCatches();
+                                    } else {
+                                        loadData();
+                                    }
+                                },
+                                disabled: syncing || (!isOnline && pendingCount === 0),
+                                className: 'flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed transition-all'
+                            }, [
+                                React.createElement(RefreshCw, {
+                                    key: 'icon',
+                                    className: `h-5 w-5 ${syncing ? 'animate-spin' : ''}`
+                                }),
+                                React.createElement('span', {
+                                    key: 'text'
+                                }, syncing ? 'Syncing...' : pendingCount > 0 ? 'Sync' : 'Refresh')
+                            ]),
+                            
+                            // Last Sync Time
+                            lastSync && React.createElement('div', {
+                                key: 'lastSync',
+                                className: 'text-xs text-gray-500'
+                            }, `Synced: ${lastSync.toLocaleTimeString()}`)
+                        ])
+                    ]),
 
                 // Fish Selector
                 React.createElement('div', {
@@ -924,7 +1731,18 @@
                         className: "mt-1"
                     }, "Good luck fishing! 🎣")
                 ])
-            ]));
+            ]),
+            
+            // Floating Action Button (Add Catch)
+            React.createElement('button', {
+                key: 'fab',
+                onClick: () => setShowForm(true),
+                className: 'fab bg-blue-600 hover:bg-blue-700 text-white p-5 rounded-full transition-all hover:scale-110 active:scale-95'
+            }, React.createElement(Plus, { className: 'h-8 w-8' })),
+            
+            // Add Catch Form Modal
+            showForm && React.createElement(AddCatchForm, { key: 'form' })
+            ]);
         };
 
         // Render the app

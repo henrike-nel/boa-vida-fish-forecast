@@ -149,3 +149,6 @@ docs/api/
 
 # Deployment
 gh-pages/
+
+# API Configuration (contains sensitive keys)
+src/config.js
