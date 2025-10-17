@@ -6,6 +6,10 @@
     <title>Boa Vida Fish Finder - Bazaruto Fishing Guide</title>
     <meta name="description" content="Data-driven fishing guide for Bazaruto waters based on historical catch data">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/fish_logo.png">
+    <link rel="apple-touch-icon" href="assets/images/fish_logo.png">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -13,6 +17,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     
     <!-- React and ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -47,7 +54,7 @@
         body {
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: transparent;
-            background-color: #F8FAFC; /* Light background */
+            background: linear-gradient(135deg, #536D82, #26374D); /* Blue Door to True Navy gradient */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #0F172A; /* Dark text for better readability */
         }
@@ -94,21 +101,21 @@
             padding: 2rem;
         }
         
-        /* Modern minimalist color palette */
+        /* Original color palette */
         .bg-primary {
-            background-color: #0A2647;
+            background-color: #26374D; /* True Navy */
         }
         
         .bg-secondary {
-            background-color: #144272;
+            background-color: #536D82; /* Blue Door */
         }
         
         .bg-accent {
-            background-color: #205295;
+            background-color: #9DB2BF; /* Harper's Blue */
         }
         
         .bg-light {
-            background-color: #F8FAFC;
+            background-color: #DDE8ED; /* Alice Blue */
         }
         
         .bg-surface {
@@ -116,15 +123,15 @@
         }
         
         .text-primary {
-            color: #0A2647;
+            color: #26374D; /* True Navy */
         }
         
         .text-secondary {
-            color: #144272;
+            color: #536D82; /* Blue Door */
         }
         
         .text-accent {
-            color: #205295;
+            color: #9DB2BF; /* Harper's Blue */
         }
         
         .text-muted {
@@ -132,28 +139,59 @@
         }
         
         .border-primary {
-            border-color: #0A2647;
+            border-color: #26374D; /* True Navy */
         }
         
-        /* Keep old color classes for compatibility */
+        /* Original color classes */
         .bg-true-navy {
-            background-color: #0A2647;
+            background-color: #26374D;
         }
         
         .bg-blue-door {
-            background-color: #144272;
+            background-color: #536D82;
         }
         
         .bg-harpers-blue {
-            background-color: #205295;
+            background-color: #9DB2BF;
         }
         
         .bg-alice-blue {
-            background-color: #F8FAFC;
+            background-color: #DDE8ED;
         }
         
         .text-true-navy {
-            color: #0A2647;
+            color: #26374D;
+        }
+        
+        /* Material Symbols */
+        .material-symbols-rounded {
+            font-family: 'Material Symbols Rounded';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            vertical-align: middle;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        /* Material Symbols in circular backgrounds */
+        .icon-wrapper .material-symbols-rounded {
+            margin-right: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -204,6 +242,8 @@
             const Clock = createIcon("M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20Z M12 6v6l4 2");
             const TrendingUp = createIcon("M22 7L13.5 15.5 8.5 10.5 2 17 M16 7h6v6");
             const AlertCircle = createIcon("M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20Z M12 8v4 M12 16h.01");
+            const Hook = createIcon("M16 8c0-2.21-1.79-4-4-4S8 5.79 8 8v3c0 1.66-1.34 3-3 3s-3-1.34-3-3V8c0-3.31 2.69-6 6-6s6 2.69 6 6v8c0 1.1-.9 2-2 2s-2-.9-2-2v-3");
+            const Worm = createIcon("M3 12c0-1.5 1-3 2.5-3.5C6.5 8 7.5 7 8.5 6.5 10 6 11.5 6.5 12.5 7.5s1.5 2.5 1 4c-.5 1.5-1.5 2.5-2.5 3.5-1 1-2.5 1.5-4 1-1.5-.5-2.5-1.5-3-3-.5-1.5-.5-3 0-4.5.5-1.5 1.5-2.5 3-3 1.5-.5 3-.5 4.5 0 1.5.5 2.5 1.5 3 3 .5 1.5.5 3 0 4.5M6 10c.5-.5 1-.5 1.5-.5s1 0 1.5.5c.5.5.5 1 .5 1.5s0 1-.5 1.5c-.5.5-1 .5-1.5.5s-1 0-1.5-.5c-.5-.5-.5-1-.5-1.5s0-1 .5-1.5");
 
             const SimpleFishingGuide = () => {
             const [data, setData] = useState([]);
@@ -254,19 +294,19 @@
                     
                     // Try other paths if root didn't work
                     if (!csvData) {
-                        for (const filename of possibleFilenames) {
-                            try {
+                    for (const filename of possibleFilenames) {
+                        try {
                                 console.log(`Trying path: ${filename}`);
-                                const response = await fetch(filename);
-                                if (response.ok) {
-                                    csvData = await response.text();
-                                    loadedFilename = filename;
+                            const response = await fetch(filename);
+                            if (response.ok) {
+                                csvData = await response.text();
+                                loadedFilename = filename;
                                     console.log(`✅ Successfully loaded: ${filename}`);
-                                    break;
+                                break;
                                 } else {
                                     console.log(`❌ Failed with status: ${response.status}`);
-                                }
-                            } catch (err) {
+                            }
+                        } catch (err) {
                                 console.log(`❌ Error loading: ${filename} - ${err.message}`);
                             }
                         }
@@ -394,15 +434,15 @@
                 let locationCounts;
                 try {
                     locationCounts = _(speciesData)
-                        .groupBy('Place')
-                        .mapValues(records => ({
-                            count: records.length,
-                            avgWeight: _.meanBy(records, 'WeightLbs'),
-                            percentage: (records.length / speciesData.length * 100)
-                        }))
-                        .entries()
-                        .orderBy([1, 'count'], ['desc'])
-                        .value();
+                    .groupBy('Place')
+                    .mapValues(records => ({
+                        count: records.length,
+                        avgWeight: _.meanBy(records, 'WeightLbs'),
+                        percentage: (records.length / speciesData.length * 100)
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
                     
                     console.log(`✅ Found ${locationCounts.length} locations`);
                     if (locationCounts.length > 0) {
@@ -418,15 +458,15 @@
                 let baitCounts;
                 try {
                     baitCounts = _(speciesData)
-                        .groupBy('PrimaryBait')
-                        .mapValues(records => ({
-                            count: records.length,
-                            avgWeight: _.meanBy(records, 'WeightLbs'),
-                            percentage: (records.length / speciesData.length * 100)
-                        }))
-                        .entries()
-                        .orderBy([1, 'count'], ['desc'])
-                        .value();
+                    .groupBy('PrimaryBait')
+                    .mapValues(records => ({
+                        count: records.length,
+                        avgWeight: _.meanBy(records, 'WeightLbs'),
+                        percentage: (records.length / speciesData.length * 100)
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
                     
                     console.log(`✅ Found ${baitCounts.length} bait types`);
                     if (baitCounts.length > 0) {
@@ -442,17 +482,17 @@
                 let enhancementCounts;
                 try {
                     enhancementCounts = _(speciesData)
-                        .filter(record => record.Enhancement && record.Enhancement !== 'Unknown' && record.Enhancement !== '')
-                        .groupBy('Enhancement')
-                        .mapValues(records => ({
-                            count: records.length,
-                            avgWeight: _.meanBy(records, 'WeightLbs'),
-                            percentage: (records.length / speciesData.filter(r => r.Enhancement && r.Enhancement !== '').length * 100),
-                            usedWith: _.chain(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
-                        }))
-                        .entries()
-                        .orderBy([1, 'count'], ['desc'])
-                        .value();
+                    .filter(record => record.Enhancement && record.Enhancement !== 'Unknown' && record.Enhancement !== '')
+                    .groupBy('Enhancement')
+                    .mapValues(records => ({
+                        count: records.length,
+                        avgWeight: _.meanBy(records, 'WeightLbs'),
+                        percentage: (records.length / speciesData.filter(r => r.Enhancement && r.Enhancement !== '').length * 100),
+                        usedWith: _.chain(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
+                    }))
+                    .entries()
+                    .orderBy([1, 'count'], ['desc'])
+                    .value();
                     
                     console.log(`✅ Found ${enhancementCounts.length} enhancement types`);
                     if (enhancementCounts.length > 0) {
@@ -527,7 +567,7 @@
                     console.log(`✅ Average cloud cover: ${avgCloudCover.toFixed(1)}%`);
                     
                     weatherPreference = avgCloudCover < 30 ? 'Clear skies' : 
-                                      avgCloudCover < 60 ? 'Partly cloudy' : 'Overcast';
+                                         avgCloudCover < 60 ? 'Partly cloudy' : 'Overcast';
                     console.log(`✅ Weather preference: ${weatherPreference}`);
                 } catch (err) {
                     console.error("❌ Error calculating weather conditions:", err);
@@ -676,16 +716,18 @@
                     
                     React.createElement('div', {
                         key: 'content',
-                        className: "text-center"
-                    }, [
-                        React.createElement('h1', {
-                            key: 'title',
-                            className: "font-cormorant tracking-wider uppercase text-4xl font-light text-true-navy mb-2 sunlight-optimized whitespace-nowrap"
-                        }, "B O A   V I D A"),
+                    className: "text-center"
+                }, [
+                    React.createElement('h1', {
+                        key: 'title',
+                            className: "font-cormorant uppercase text-4xl font-semibold text-true-navy mb-8 sunlight-optimized whitespace-nowrap",
+                            style: { letterSpacing: '0.8em', wordSpacing: '0.1em' }
+                        }, "BOA VIDA"),
                         React.createElement('h2', {
-                            key: 'subtitle',
-                            className: "font-cormorant tracking-widest uppercase text-xl font-light text-true-navy mb-6 sunlight-optimized"
-                        }, "F I S H   F O R E C A S T"),
+                        key: 'subtitle',
+                            className: "font-cormorant uppercase text-xl font-medium text-true-navy mb-8 sunlight-optimized",
+                            style: { letterSpacing: '0.8em', wordSpacing: '0.3em' }
+                        }, "FISH FORECAST"),
                         
                         // Log a Catch Button
                         React.createElement('a', {
@@ -756,7 +798,7 @@
                             }, "AVERAGE WEIGHT"),
                             React.createElement('span', {
                                 key: 'value',
-                                className: "text-2xl font-bold text-primary"
+                                className: "text-1xl font-bold text-primary"
                             }, `${recommendations.avgWeight.toFixed(1)} lbs`)
                         ]),
                         React.createElement('div', {
@@ -769,7 +811,7 @@
                             }, "BIGGEST CATCH"),
                             React.createElement('span', {
                                 key: 'value',
-                                className: "text-2xl font-bold text-accent"
+                                className: "text-1xl font-bold text-accent"
                             }, `${recommendations.maxWeight.toFixed(1)} lbs`)
                         ])
                     ])
@@ -786,11 +828,11 @@
                     }, [
                         React.createElement('div', {
                             key: 'icon-wrapper',
-                            className: "bg-light rounded-full p-2 mr-3"
-                        }, React.createElement(MapPin, {
+                            className: "bg-light rounded-full p-2 mr-3 icon-wrapper"
+                        }, React.createElement('span', {
                             key: 'icon',
-                            className: "h-6 w-6 text-accent"
-                        })),
+                            className: "material-symbols-rounded text-accent"
+                        }, "location_on")),
                         React.createElement('h2', {
                             key: 'title',
                             className: "text-xl font-semibold text-primary"
@@ -850,67 +892,70 @@
                 // Best Bait
                 React.createElement('div', {
                     key: 'bait',
-                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card card-spacious bg-surface mb-6"
                 }, [
                     React.createElement('div', {
                         key: 'header',
-                        className: "flex items-center mb-4"
+                        className: "flex items-center mb-6"
                     }, [
-                        React.createElement(Fish, {
+                        React.createElement('div', {
+                            key: 'icon-wrapper',
+                            className: "bg-light rounded-full p-2 mr-3 icon-wrapper"
+                        }, React.createElement('span', {
                             key: 'icon',
-                            className: "h-8 w-8 text-orange-600 mr-3"
-                        }),
+                            className: "material-symbols-rounded text-accent"
+                        }, "phishing")),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
+                            className: "text-xl font-semibold text-primary"
                         }, "What Bait to Use")
                     ]),
                     
                     React.createElement('div', {
                         key: 'best',
-                        className: "bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-6 mb-4"
+                        className: "bg-light rounded-xl p-6 mb-6"
                     }, React.createElement('div', {
                         className: "text-center"
                     }, [
                         React.createElement('div', {
                             key: 'label',
-                            className: "text-lg text-orange-700 mb-2"
-                        }, "🎣 BEST BAIT"),
+                            className: "text-sm text-muted uppercase mb-2"
+                        }, "Best Bait"),
                         React.createElement('div', {
                             key: 'name',
-                            className: "text-3xl font-bold text-orange-900 mb-2 sunlight-optimized"
+                            className: "text-3xl font-bold text-primary mb-3"
                         }, recommendations.topBait[0]),
                         React.createElement('div', {
                             key: 'stats',
-                            className: "text-xl text-orange-700"
+                            className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
                         }, `${recommendations.topBait[1].count} catches (${recommendations.topBait[1].percentage.toFixed(0)}% success)`),
                         React.createElement('div', {
                             key: 'avg',
-                            className: "text-lg text-orange-600 mt-2"
-                        }, `Avg: ${recommendations.topBait[1].avgWeight.toFixed(1)} lbs`)
+                            className: "text-sm text-muted mt-3"
+                        }, `Average weight: ${recommendations.topBait[1].avgWeight.toFixed(1)} lbs`)
                     ])),
 
                     recommendations.allBaits.length > 1 && React.createElement('div', {
                         key: 'others',
-                        className: "space-y-2"
+                        className: "space-y-3"
                     }, [
                         React.createElement('div', {
                             key: 'label',
-                            className: "text-sm font-semibold text-gray-600 mb-2"
-                        }, "Other good baits:"),
+                            className: "text-xs font-medium text-muted uppercase"
+                        }, "Other good baits"),
                         ...recommendations.allBaits.slice(1).map(([bait, data], index) => 
                             React.createElement('div', {
                                 key: index,
-                                className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                                className: "flex justify-between items-center bg-light p-3 rounded-lg hover:bg-gray-100 transition-colors"
                             }, [
                                 React.createElement('span', {
                                     key: 'name',
-                                    className: "font-medium text-true-navy"
+                                    className: "font-medium text-primary"
                                 }, bait),
                                 React.createElement('span', {
                                     key: 'count',
-                                    className: "text-gray-600"
-                                }, `${data.count} catches`)
+                                    className: "text-xs px-2 py-1 bg-accent/10 text-accent rounded-full"
+                                }, `${data.count}`)
                             ])
                         )
                     ])
@@ -919,71 +964,74 @@
                 // Best Enhancement (conditional)
                 recommendations.topEnhancement && React.createElement('div', {
                     key: 'enhancement',
-                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card card-spacious bg-surface mb-6"
                 }, [
                     React.createElement('div', {
                         key: 'header',
-                        className: "flex items-center mb-4"
+                        className: "flex items-center mb-6"
                     }, [
-                        React.createElement(TrendingUp, {
+                        React.createElement('div', {
+                            key: 'icon-wrapper',
+                            className: "bg-light rounded-full p-2 mr-3 icon-wrapper"
+                        }, React.createElement('span', {
                             key: 'icon',
-                            className: "h-8 w-8 text-pink-600 mr-3"
-                        }),
+                            className: "material-symbols-rounded text-accent"
+                        }, "auto_awesome")),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
+                            className: "text-xl font-semibold text-primary"
                         }, "Bait Enhancement")
                     ]),
                     
                     React.createElement('div', {
                         key: 'best',
-                        className: "bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg p-6 mb-4"
+                        className: "bg-light rounded-xl p-6 mb-6"
                     }, React.createElement('div', {
                         className: "text-center"
                     }, [
                         React.createElement('div', {
                             key: 'label',
-                            className: "text-lg text-pink-700 mb-2"
-                        }, "✨ BEST ENHANCEMENT"),
+                            className: "text-sm text-muted uppercase mb-2"
+                        }, "Best Enhancement"),
                         React.createElement('div', {
                             key: 'name',
-                            className: "text-3xl font-bold text-pink-900 mb-2 sunlight-optimized"
+                            className: "text-3xl font-bold text-primary mb-3"
                         }, recommendations.topEnhancement[0]),
                         React.createElement('div', {
                             key: 'stats',
-                            className: "text-xl text-pink-700"
+                            className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
                         }, `${recommendations.topEnhancement[1].count} catches (${recommendations.topEnhancement[1].percentage.toFixed(0)}% when used)`),
                         React.createElement('div', {
                             key: 'avg',
-                            className: "text-lg text-pink-600 mt-2"
-                        }, `Avg: ${recommendations.topEnhancement[1].avgWeight.toFixed(1)} lbs`),
+                            className: "text-sm text-muted mt-3"
+                        }, `Average weight: ${recommendations.topEnhancement[1].avgWeight.toFixed(1)} lbs`),
                         recommendations.topEnhancement[1].usedWith && React.createElement('div', {
                             key: 'used-with',
-                            className: "text-sm text-pink-600 mt-2"
+                            className: "text-sm text-muted mt-2"
                         }, `Often used with: ${recommendations.topEnhancement[1].usedWith[0]}`)
                     ])),
 
                     recommendations.allEnhancements.length > 1 && React.createElement('div', {
                         key: 'others',
-                        className: "space-y-2"
+                        className: "space-y-3"
                     }, [
                         React.createElement('div', {
                             key: 'label',
-                            className: "text-sm font-semibold text-gray-600 mb-2"
-                        }, "Other enhancements:"),
+                            className: "text-xs font-medium text-muted uppercase"
+                        }, "Other enhancements"),
                         ...recommendations.allEnhancements.slice(1).map(([enhancement, data], index) => 
                             React.createElement('div', {
                                 key: index,
-                                className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                                className: "flex justify-between items-center bg-light p-3 rounded-lg hover:bg-gray-100 transition-colors"
                             }, [
                                 React.createElement('span', {
                                     key: 'name',
-                                    className: "font-medium text-true-navy"
+                                    className: "font-medium text-primary"
                                 }, enhancement),
                                 React.createElement('span', {
                                     key: 'count',
-                                    className: "text-gray-600"
-                                }, `${data.count} catches`)
+                                    className: "text-xs px-2 py-1 bg-accent/10 text-accent rounded-full"
+                                }, `${data.count}`)
                             ])
                         )
                     ])
@@ -992,89 +1040,101 @@
                 // Best Time
                 React.createElement('div', {
                     key: 'time',
-                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card card-spacious bg-surface mb-6"
                 }, [
                     React.createElement('div', {
                         key: 'header',
-                        className: "flex items-center mb-4"
+                        className: "flex items-center mb-6"
                     }, [
-                        React.createElement(Clock, {
+                        React.createElement('div', {
+                            key: 'icon-wrapper',
+                            className: "bg-light rounded-full p-2 mr-3 icon-wrapper"
+                        }, React.createElement('span', {
                             key: 'icon',
-                            className: "h-8 w-8 text-purple-600 mr-3"
-                        }),
+                            className: "material-symbols-rounded text-accent"
+                        }, "schedule")),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
+                            className: "text-xl font-semibold text-primary"
                         }, "When to Fish")
                     ]),
                     
                     React.createElement('div', {
                         key: 'best',
-                        className: "bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-6 mb-4"
+                        className: "bg-light rounded-xl p-6 mb-6"
                     }, React.createElement('div', {
                         className: "text-center"
                     }, [
                         React.createElement('div', {
                             key: 'label',
-                            className: "text-lg text-purple-700 mb-2"
-                        }, "⏰ BEST TIME"),
+                            className: "text-sm text-muted uppercase mb-2"
+                        }, "Best Time"),
                         React.createElement('div', {
                             key: 'name',
-                            className: "text-3xl font-bold text-purple-900 mb-2 sunlight-optimized"
+                            className: "text-3xl font-bold text-primary mb-3"
                         }, recommendations.topTime[0]),
                         React.createElement('div', {
                             key: 'stats',
-                            className: "text-xl text-purple-700"
+                            className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
                         }, `${recommendations.topTime[1].count} catches (${recommendations.topTime[1].percentage.toFixed(0)}% success)`)
                     ])),
 
                     recommendations.allTimes.length > 1 && React.createElement('div', {
                         key: 'others',
-                        className: "space-y-2"
-                    }, recommendations.allTimes.slice(1).map(([time, data], index) => 
+                        className: "space-y-3"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-xs font-medium text-muted uppercase"
+                        }, "Other good times"),
+                        ...recommendations.allTimes.slice(1).map(([time, data], index) => 
                         React.createElement('div', {
                             key: index,
-                            className: "flex justify-between items-center bg-gray-50 p-3 rounded-lg"
+                                className: "flex justify-between items-center bg-light p-3 rounded-lg hover:bg-gray-100 transition-colors"
                         }, [
                             React.createElement('span', {
                                 key: 'name',
-                                className: "font-medium text-gray-800"
+                                    className: "font-medium text-primary"
                             }, time),
                             React.createElement('span', {
                                 key: 'count',
-                                className: "text-gray-600"
-                            }, `${data.count} catches`)
+                                    className: "text-xs px-2 py-1 bg-accent/10 text-accent rounded-full"
+                                }, `${data.count}`)
                         ])
-                    ))
+                        )
+                    ])
                 ]),
 
                 // Best Conditions
                 React.createElement('div', {
                     key: 'conditions',
-                    className: "card bg-alice-blue rounded-xl shadow-2xl p-6 mb-4"
+                    className: "card card-spacious bg-surface mb-6"
                 }, [
                     React.createElement('div', {
                         key: 'header',
-                        className: "flex items-center mb-4"
+                        className: "flex items-center mb-6"
                     }, [
-                        React.createElement(Sun, {
+                        React.createElement('div', {
+                            key: 'icon-wrapper',
+                            className: "bg-light rounded-full p-2 mr-3 icon-wrapper"
+                        }, React.createElement('span', {
                             key: 'icon',
-                            className: "h-8 w-8 text-yellow-600 mr-3"
-                        }),
+                            className: "material-symbols-rounded text-accent"
+                        }, "wb_sunny")),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold text-true-navy sunlight-optimized"
+                            className: "text-xl font-semibold text-primary"
                         }, "Best Conditions")
                     ]),
                     
                     React.createElement('div', {
                         key: 'conditions-list',
-                        className: "space-y-3"
+                        className: "space-y-4"
                     }, [
                         // Moon Phase
                         React.createElement('div', {
                             key: 'moon',
-                            className: "bg-indigo-50 rounded-lg p-4"
+                            className: "bg-light rounded-xl p-4"
                         }, React.createElement('div', {
                             className: "flex items-center justify-between"
                         }, [
@@ -1082,42 +1142,39 @@
                                 key: 'left',
                                 className: "flex items-center"
                             }, [
-                                React.createElement(Moon, {
+                            React.createElement('div', {
+                                key: 'icon-wrapper',
+                                className: "bg-true-navy/20 rounded-full p-2 mr-3"
+                            }, React.createElement(Moon, {
                                     key: 'icon',
-                                    className: "h-6 w-6 text-indigo-600 mr-3"
-                                }),
+                                className: "h-5 w-5 text-true-navy"
+                            })),
                                 React.createElement('div', {
                                     key: 'content'
                                 }, [
                                     React.createElement('div', {
                                         key: 'label',
-                                        className: "font-semibold text-true-navy"
+                                        className: "text-sm text-true-navy uppercase font-medium"
                                     }, "Moon Phase"),
                                     React.createElement('div', {
                                         key: 'value',
-                                        className: "text-2xl font-bold text-true-navy sunlight-optimized"
+                                        className: "text-lg font-semibold text-true-navy"
                                     }, recommendations.topMoon[0])
                                 ])
                             ]),
                             React.createElement('div', {
                                 key: 'right',
                                 className: "text-right"
-                            }, [
-                                React.createElement('div', {
-                                    key: 'label',
-                                    className: "text-sm text-gray-600"
-                                }, "Success rate"),
-                                React.createElement('div', {
-                                    key: 'value',
-                                    className: "text-xl font-bold text-indigo-600 sunlight-optimized"
-                                }, `${recommendations.topMoon[1].percentage.toFixed(0)}%`)
-                            ])
+                            }, React.createElement('div', {
+                                key: 'stats',
+                                className: "inline-flex items-center justify-center px-3 py-1 bg-true-navy/10 text-true-navy rounded-full text-sm font-medium"
+                            }, `${recommendations.topMoon[1].percentage.toFixed(0)}% success`))
                         ])),
 
                         // Tide State
                         React.createElement('div', {
                             key: 'tide',
-                            className: "bg-cyan-50 rounded-lg p-4"
+                            className: "bg-light rounded-xl p-4"
                         }, React.createElement('div', {
                             className: "flex items-center justify-between"
                         }, [
@@ -1125,42 +1182,39 @@
                                 key: 'left',
                                 className: "flex items-center"
                             }, [
-                                React.createElement(Droplets, {
+                            React.createElement('div', {
+                                key: 'icon-wrapper',
+                                className: "bg-true-navy/20 rounded-full p-2 mr-3"
+                            }, React.createElement(Droplets, {
                                     key: 'icon',
-                                    className: "h-6 w-6 text-cyan-600 mr-3"
-                                }),
+                                className: "h-5 w-5 text-true-navy"
+                            })),
                                 React.createElement('div', {
                                     key: 'content'
                                 }, [
                                     React.createElement('div', {
                                         key: 'label',
-                                        className: "font-semibold text-true-navy"
+                                        className: "text-sm text-true-navy uppercase font-medium"
                                     }, "Tide"),
                                     React.createElement('div', {
                                         key: 'value',
-                                        className: "text-2xl font-bold text-true-navy sunlight-optimized"
+                                        className: "text-lg font-semibold text-true-navy"
                                     }, recommendations.topTide[0])
                                 ])
                             ]),
                             React.createElement('div', {
                                 key: 'right',
                                 className: "text-right"
-                            }, [
-                                React.createElement('div', {
-                                    key: 'label',
-                                    className: "text-sm text-gray-600"
-                                }, "Success rate"),
-                                React.createElement('div', {
-                                    key: 'value',
-                                    className: "text-xl font-bold text-cyan-600 sunlight-optimized"
-                                }, `${recommendations.topTide[1].percentage.toFixed(0)}%`)
-                            ])
+                            }, React.createElement('div', {
+                                key: 'stats',
+                                className: "inline-flex items-center justify-center px-3 py-1 bg-true-navy/10 text-true-navy rounded-full text-sm font-medium"
+                            }, `${recommendations.topTide[1].percentage.toFixed(0)}% success`))
                         ])),
 
                         // Weather
                         React.createElement('div', {
                             key: 'weather',
-                            className: "bg-sky-50 rounded-lg p-4"
+                            className: "bg-light rounded-xl p-4"
                         }, React.createElement('div', {
                             className: "flex items-center justify-between"
                         }, [
@@ -1168,20 +1222,23 @@
                                 key: 'left',
                                 className: "flex items-center"
                             }, [
-                                React.createElement(Sun, {
+                            React.createElement('div', {
+                                key: 'icon-wrapper',
+                                className: "bg-true-navy/20 rounded-full p-2 mr-3"
+                            }, React.createElement(Sun, {
                                     key: 'icon',
-                                    className: "h-6 w-6 text-sky-600 mr-3"
-                                }),
+                                className: "h-5 w-5 text-true-navy"
+                            })),
                                 React.createElement('div', {
                                     key: 'content'
                                 }, [
                                     React.createElement('div', {
                                         key: 'label',
-                                        className: "font-semibold text-true-navy"
+                                        className: "text-sm text-true-navy uppercase font-medium"
                                     }, "Weather"),
                                     React.createElement('div', {
                                         key: 'value',
-                                        className: "text-2xl font-bold text-true-navy sunlight-optimized"
+                                        className: "text-lg font-semibold text-true-navy"
                                     }, recommendations.weatherPreference)
                                 ])
                             ]),
@@ -1191,11 +1248,11 @@
                             }, [
                                 React.createElement('div', {
                                     key: 'label',
-                                    className: "text-sm text-gray-600"
+                                    className: "text-sm text-true-navy"
                                 }, "Water temp"),
                                 React.createElement('div', {
                                     key: 'value',
-                                    className: "text-xl font-bold text-sky-600 sunlight-optimized"
+                                    className: "text-xl font-bold text-true-navy sunlight-optimized"
                                 }, `${recommendations.avgWaterTemp}°C`)
                             ])
                         ]))
@@ -1205,7 +1262,7 @@
                 // Quick Summary
                 React.createElement('div', {
                     key: 'summary',
-                    className: "card bg-primary rounded-xl p-6 text-white"
+                    className: "card bg-true-navy rounded-xl p-6 text-white"
                 }, [
                     React.createElement('div', {
                         key: 'header',
@@ -1230,52 +1287,103 @@
                         }, React.createElement('strong', null, `To catch ${selectedFish}:`)),
                         React.createElement('p', {
                             key: 'location',
-                            className: "mb-2"
+                            className: "mb-2 flex items-center"
                         }, [
-                            "🎯 Fish at ",
+                            React.createElement('span', {
+                                key: 'icon',
+                                className: "material-symbols-rounded text-white"
+                            }, "location_on"),
+                            React.createElement('span', {
+                                key: 'text'
+                            }, [
+                                "Fish at ",
                             React.createElement('strong', { key: 'loc-value' }, recommendations.topLocation && recommendations.topLocation[0] || "Unknown")
+                            ])
                         ]),
                         React.createElement('p', {
                             key: 'bait',
-                            className: "mb-2"
+                            className: "mb-2 flex items-center"
                         }, [
-                            "🎣 Use ",
+                            React.createElement('span', {
+                                key: 'icon',
+                                className: "material-symbols-rounded text-white"
+                            }, "set_meal"),
+                            React.createElement('span', {
+                                key: 'text'
+                            }, [
+                                "Use ",
                             React.createElement('strong', { key: 'bait-value' }, recommendations.topBait && recommendations.topBait[0] || "Unknown"),
-                            " as bait"
+                                " bait"
+                            ])
                         ]),
                         recommendations.topEnhancement && React.createElement('p', {
                             key: 'enhancement',
-                            className: "mb-2"
+                            className: "mb-2 flex items-center"
                         }, [
-                            "✨ Add ",
+                            React.createElement('span', {
+                                key: 'icon',
+                                className: "material-symbols-rounded text-white"
+                            }, "auto_awesome"),
+                            React.createElement('span', {
+                                key: 'text'
+                            }, [
+                                "Add ",
                             React.createElement('strong', { key: 'enh-value' }, recommendations.topEnhancement[0] || "Unknown"),
                             " enhancement"
+                            ])
                         ]),
                         React.createElement('p', {
                             key: 'time',
-                            className: "mb-2"
+                            className: "mb-2 flex items-center"
                         }, [
-                            "⏰ Go fishing ",
-                            React.createElement('strong', { key: 'time-value' }, recommendations.topTime && recommendations.topTime[0] ? recommendations.topTime[0].toLowerCase() : "anytime")
+                            React.createElement('span', {
+                                key: 'icon',
+                                className: "material-symbols-rounded text-white"
+                            }, "schedule"),
+                            React.createElement('span', {
+                                key: 'text'
+                            }, [
+                                "Go fishing ",
+                                React.createElement('strong', { key: 'time-value' }, recommendations.topTime && recommendations.topTime[0] ? recommendations.topTime[0].toLowerCase() : "anytime"),
+                                " (5am-12pm)"
+                            ])
                         ]),
                         React.createElement('p', {
                             key: 'moon',
-                            className: "mb-2"
+                            className: "mb-2 flex items-center"
                         }, [
-                            "🌙 Best during ",
-                            React.createElement('strong', { key: 'moon-value' }, recommendations.topMoon && recommendations.topMoon[0] || "Unknown")
+                            React.createElement('span', {
+                                key: 'icon',
+                                className: "material-symbols-rounded text-white"
+                            }, "bedtime"),
+                            React.createElement('span', {
+                                key: 'text'
+                            }, [
+                                "Best during ",
+                                React.createElement('strong', { key: 'moon-value' }, recommendations.topMoon && recommendations.topMoon[0] || "Unknown"),
+                                " moon"
+                            ])
                         ]),
                         React.createElement('p', {
-                            key: 'tide'
+                            key: 'tide',
+                            className: "flex items-center"
                         }, [
-                            "🌊 Target ",
-                            React.createElement('strong', { key: 'tide-value' }, recommendations.topTide && recommendations.topTide[0] ? recommendations.topTide[0].toLowerCase() : "Unknown"),
+                            React.createElement('span', {
+                                key: 'icon',
+                                className: "material-symbols-rounded text-white"
+                            }, "waves"),
+                            React.createElement('span', {
+                                key: 'text'
+                            }, [
+                                "Target ",
+                                React.createElement('strong', { key: 'tide-value' }, recommendations.topTide && recommendations.topTide[0] ? recommendations.topTide[0].toLowerCase() : "unknown"),
                             " tide"
+                            ])
                         ])
                     ])
                 ]),
 
-                        // Footer
+                // Footer
                 React.createElement('div', {
                     key: 'footer',
                     className: "text-center mt-6 text-white text-sm font-cormorant"
@@ -1286,7 +1394,7 @@
                     React.createElement('p', {
                         key: 'line2',
                         className: "mt-1"
-                    }, "Good luck fishing! 🎣"),
+                    }, "STYWE LYNE!"),
                     React.createElement('p', {
                         key: 'line3',
                         className: "text-sm mt-2 opacity-70"
@@ -1307,8 +1415,8 @@
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
                         minWidth: '56px',
                         height: '56px',
-                        backgroundColor: '#205295', // accent color
-                        color: 'white',
+                        backgroundColor: '#9DB2BF', // Harper's Blue
+                        color: '#26374D', // True Navy
                         padding: '0',
                         borderRadius: '50%',
                         display: 'flex',
@@ -1320,10 +1428,12 @@
                     onMouseOver: (e) => { 
                         e.currentTarget.style.transform = 'scale(1.05)';
                         e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+                        e.currentTarget.style.backgroundColor = '#536D82'; // Blue Door
                     },
                     onMouseOut: (e) => { 
                         e.currentTarget.style.transform = 'scale(1)';
                         e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                        e.currentTarget.style.backgroundColor = '#9DB2BF'; // Harper's Blue
                     }
                 }, React.createElement('svg', {
                     xmlns: "http://www.w3.org/2000/svg",
