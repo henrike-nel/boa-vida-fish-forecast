@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boa Vida Fish Finder - Bazaruto Fishing Guide</title>
+    <title>Fish Forecast</title>
     <meta name="description" content="Data-driven fishing guide for Bazaruto waters based on historical catch data">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/images/fish_logo.png">
-    <link rel="apple-touch-icon" href="assets/images/fish_logo.png">
+    <link rel="icon" type="image/png" href="assets/images/fav.png">
+    <link rel="apple-touch-icon" href="assets/images/fav.png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -676,7 +676,7 @@
                 // Header
                 React.createElement('div', {
                     key: 'header',
-                    className: "card bg-surface p-6 sm:p-8 mb-6 shadow-md"
+                    className: "card bg-true-navy p-6 sm:p-8 mb-6 shadow-md overflow-hidden gradient-overlay"
                 }, [
                     // Home button (top left)
                     React.createElement('div', {
@@ -686,7 +686,7 @@
                         React.createElement('a', {
                             key: 'home-btn',
                             href: 'home.html',
-                            className: "inline-flex items-center justify-center gap-2 bg-light hover:bg-gray-100 text-primary font-medium py-2 px-4 rounded-full transition-colors"
+                            className: "inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-true-navy font-medium py-2 px-4 rounded-full shadow-sm transition-colors"
                         }, [
                             // Home icon
                             React.createElement('svg', {
@@ -716,16 +716,16 @@
                     
                     React.createElement('div', {
                         key: 'content',
-                    className: "text-center bg-true-navy p-6 sm:p-10 rounded-xl shadow-inner"
+                    className: "text-center p-6 sm:p-10"
                 }, [
                         React.createElement('h1', {
                         key: 'title',
-                            className: "font-cormorant uppercase text-4xl sm:text-5xl font-light text-white mb-4 sunlight-optimized whitespace-nowrap",
+                            className: "font-cormorant tracking-wider uppercase text-4xl sm:text-5xl font-light text-white mb-4 sm:mb-6 sunlight-optimized whitespace-nowrap",
                             style: { letterSpacing: '0.2em', wordSpacing: '0.1em' }
                         }, "BOA VIDA"),
-                        React.createElement('h2', {
+                        React.createElement('p', {
                         key: 'subtitle',
-                            className: "font-cormorant uppercase text-base sm:text-xl font-light text-white mb-0 sunlight-optimized",
+                            className: "font-cormorant tracking-wider uppercase text-base sm:text-xl font-light text-white sunlight-optimized",
                             style: { letterSpacing: '0.3em', wordSpacing: '0.3em' }
                         }, "FISH FORECAST")
                     ])
@@ -1232,16 +1232,13 @@
                 }, [
                     React.createElement('div', {
                         key: 'header',
-                        className: "flex items-center mb-4"
+                        className: "mb-8 text-center"
                     }, [
-                        React.createElement(TrendingUp, {
-                            key: 'icon',
-                            className: "h-8 w-8 mr-3"
-                        }),
                         React.createElement('h2', {
                             key: 'title',
-                            className: "text-2xl font-bold sunlight-optimized"
-                        }, "Quick Summary")
+                            className: "font-cormorant uppercase text-2xl font-medium tracking-wider text-white sunlight-optimized mb-4",
+                            style: { letterSpacing: '0.2em' }
+                        }, "QUICK SUMMARY")
                     ]),
                     React.createElement('div', {
                         key: 'content',
@@ -1352,7 +1349,7 @@
                 // Footer
                 React.createElement('div', {
                     key: 'footer',
-                    className: "text-center mt-6 text-white text-sm font-cormorant"
+                    className: "text-center mt-6 text-white text-sm"
                 }, [
                     React.createElement('p', {
                         key: 'line1'
