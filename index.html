@@ -52,10 +52,26 @@
     <div id="root"></div>
 
     <script>
-        const { useState, useEffect } = React;
-        const { Fish, MapPin, Sun, Moon, Droplets, Clock, TrendingUp, AlertCircle } = lucideReact;
+        // Wait for all libraries to load before initializing the app
+        function initializeApp() {
+            // Check if all libraries are loaded
+            if (typeof React === 'undefined' || typeof ReactDOM === 'undefined' || 
+                typeof Papa === 'undefined' || typeof _ === 'undefined' || 
+                typeof lucideReact === 'undefined') {
+                console.log('Waiting for libraries to load...');
+                setTimeout(initializeApp, 100);
+                return;
+            }
+            
+            console.log('All libraries loaded, starting app...');
+            startApp();
+        }
+        
+        function startApp() {
+            const { useState, useEffect } = React;
+            const { Fish, MapPin, Sun, Moon, Droplets, Clock, TrendingUp, AlertCircle } = lucideReact;
 
-        const SimpleFishingGuide = () => {
+            const SimpleFishingGuide = () => {
             const [data, setData] = useState([]);
             const [loading, setLoading] = useState(false);
             const [selectedFish, setSelectedFish] = useState('');
@@ -925,9 +941,17 @@
             ]));
         };
 
-        // Render the app
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(SimpleFishingGuide));
+            // Render the app
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(React.createElement(SimpleFishingGuide));
+        }
+        
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
     </script>
 </body>
 </html>
