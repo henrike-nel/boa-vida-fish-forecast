@@ -6,9 +6,25 @@
     <title>Fish Forecast</title>
     <meta name="description" content="Data-driven fishing guide for Bazaruto waters based on historical catch data">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/images/fav.png">
-    <link rel="apple-touch-icon" href="/assets/images/fav.png">
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" href="/assets/icons/fish_forecast_icon-2.png">
+    <link rel="apple-touch-icon" href="/assets/icons/fish_forecast_icon-2.png">
+    
+    <!-- Social Media / Open Graph Tags -->
+    <meta property="og:title" content="Boa Vida Fish Forecast">
+    <meta property="og:description" content="Data-driven fishing guide for Bazaruto waters based on historical catch data">
+    <meta property="og:image" content="https://henriken.github.io/boa-vida-fish-forecast/assets/icons/fish_forecast_icon-2.png">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Boa Vida Fish Forecast">
+    <meta name="twitter:description" content="Data-driven fishing guide for Bazaruto waters based on historical catch data">
+    <meta name="twitter:image" content="https://henriken.github.io/boa-vida-fish-forecast/assets/icons/fish_forecast_icon-2.png">
+    
+    <!-- Microsoft Tile Tags -->
+    <meta name="msapplication-TileImage" content="/assets/icons/fish_forecast_icon-2.png">
+    <meta name="msapplication-TileColor" content="#26374D">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -450,26 +466,26 @@
                     // Fallback to CSV files
                     if (!csvData) {
                         console.log('Falling back to CSV files...');
-                        const possibleFilenames = [
-                            '../Boa_Vida_Fish_Finder_data.csv',
-                            'data/Boa_Vida_Fish_Finder_data.csv',
-                            'Boa_Vida_Fish_Finder_data.csv',
-                            'Baz  Stage 2 of Enriched Data 2.csv',
-                            'Baz  Enriched Data.csv',
-                            'Baz Data.csv'
-                        ];
-                        
-                        for (const filename of possibleFilenames) {
-                            try {
-                                const response = await fetch(filename);
-                                if (response.ok) {
-                                    csvData = await response.text();
-                                    console.log(`Successfully loaded: ${filename}`);
+                    const possibleFilenames = [
+                        '../Boa_Vida_Fish_Finder_data.csv',
+                        'data/Boa_Vida_Fish_Finder_data.csv',
+                        'Boa_Vida_Fish_Finder_data.csv',
+                        'Baz  Stage 2 of Enriched Data 2.csv',
+                        'Baz  Enriched Data.csv',
+                        'Baz Data.csv'
+                    ];
+                    
+                    for (const filename of possibleFilenames) {
+                        try {
+                            const response = await fetch(filename);
+                            if (response.ok) {
+                                csvData = await response.text();
+                                console.log(`Successfully loaded: ${filename}`);
                                     dataSource = 'csv';
-                                    break;
-                                }
-                            } catch (err) {
-                                console.log(`Could not load: ${filename}`);
+                                break;
+                            }
+                        } catch (err) {
+                            console.log(`Could not load: ${filename}`);
                             }
                         }
                     }
@@ -1110,12 +1126,12 @@
                 // Main Content
                 React.createElement('div', {
                     key: 'content',
-                    className: "max-w-2xl mx-auto"
-                }, [
+                className: "max-w-2xl mx-auto"
+            }, [
                     // Header with Status
-                    React.createElement('div', {
-                        key: 'header',
-                        className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
+                React.createElement('div', {
+                    key: 'header',
+                    className: "bg-white rounded-xl shadow-2xl p-6 mb-4"
                     }, [
                         // Direct button link outside the main div for testing
                         React.createElement('a', {
@@ -1128,18 +1144,18 @@
                         
                         React.createElement('div', {
                             key: 'main',
-                            className: "text-center"
-                        }, [
-                            React.createElement(Fish, {
-                                key: 'icon',
-                                className: "h-12 w-12 text-blue-600 mx-auto mb-3"
-                            }),
-                            React.createElement('h1', {
-                                key: 'title',
-                                className: "text-3xl font-bold text-gray-800 mb-2 sunlight-optimized"
-                            }, "Boa Vida Fish Finder"),
-                            React.createElement('p', {
-                                key: 'subtitle',
+                    className: "text-center"
+                }, [
+                    React.createElement(Fish, {
+                        key: 'icon',
+                        className: "h-12 w-12 text-blue-600 mx-auto mb-3"
+                    }),
+                    React.createElement('h1', {
+                        key: 'title',
+                        className: "text-3xl font-bold text-gray-800 mb-2 sunlight-optimized"
+                    }, "Boa Vida Fish Finder"),
+                    React.createElement('p', {
+                        key: 'subtitle',
                                 className: "text-gray-600 mb-4"
                             }, `Based on historic catches`),
                             
