@@ -116,9 +116,11 @@
                     // Try multiple possible filenames for flexibility
                     const possibleFilenames = [
                         'Boa_Vida_Fish_Finder_data.csv',
-                        'Baz  Stage 2 of Enriched Data 2.csv',
-                        'Baz  Enriched Data.csv',
-                        'Baz Data.csv'
+                        './Boa_Vida_Fish_Finder_data.csv',
+                        '../Boa_Vida_Fish_Finder_data.csv',
+                        '/Boa_Vida_Fish_Finder_data.csv',
+                        'data/Boa_Vida_Fish_Finder_data.csv',
+                        './data/Boa_Vida_Fish_Finder_data.csv'
                     ];
                     
                     let csvData;
@@ -139,7 +141,22 @@
                     }
                     
                     if (!csvData) {
-                        throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the same directory.');
+                        console.error('CSV loading failed. Attempting to use hardcoded fallback data path...');
+                        try {
+                            // Last resort - try with absolute path
+                            const absolutePath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/data/Boa_Vida_Fish_Finder_data.csv';
+                            console.log('Trying absolute path:', absolutePath);
+                            const response = await fetch(absolutePath);
+                            if (response.ok) {
+                                csvData = await response.text();
+                                loadedFilename = absolutePath;
+                                console.log(`Successfully loaded from absolute path: ${absolutePath}`);
+                            } else {
+                                throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the same directory or data/ subdirectory.');
+                            }
+                        } catch (err) {
+                            throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the same directory or data/ subdirectory.');
+                        }
                     }
                     
                     Papa.parse(csvData, {
@@ -156,22 +173,29 @@
                                     const timeOfStrike = row['Time of Strike'] || row['Time of Strike '] || row['Time of Strike  '];
                                     const weather = row.Weather || row['Weather '] || row['Weather  '];
                                     
+                                    // Convert lbs to kg internally (0.453592 conversion factor)
+                                    const weightLbs = parseFloat(row['Weight (lbs)']) || 0;
+                                    const weightKg = weightLbs * 0.453592;
+                                    
                                     return {
                                         Species: row.Species?.trim(),
-                                        Weight: parseFloat(row['Weight (Kg)']) || 0,
-                                        WeightLbs: parseFloat(row['Weight (lbs)']) || 0,
+                                        Weight: weightKg, // Calculated from lbs
+                                        WeightLbs: weightLbs,
                                         Place: place?.trim() || 'Unknown',
                                         PrimaryBait: primaryBait?.trim() || 'Unknown',
                                         Enhancement: row.Enhancement?.trim() || '',
-                                        RawBait: row['Raw Data Bait']?.trim() || '',
-                                        WaterTemp: parseFloat(row['Water Temperature (C)']) || 0,
+                                        // RawBait removed as per column update
+                                        WaterTemp: parseFloat(row['Water Temperature (°C)'] || row['Water Temperature (C)']) || 0,
                                         Moon: row.Moon?.trim() || 'Unknown',
                                         TideState: row['Tide State']?.trim() || 'Unknown',
                                         TimeOfStrike: timeOfStrike?.trim() || '',
                                         Weather: weather?.trim() || '',
                                         CloudCover: parseInt(row['Cloud Cover (%)']) || 0,
                                         TideHeight: parseFloat(row['Tide Height (m)']) || 0,
-                                        TidalCoeff: parseInt(row['Tidal Coefficient']) || 0
+                                        TidalCoeff: parseInt(row['Tidal Coefficient']) || 0,
+                                        Length: parseFloat(row['Length (m)']) || 0,
+                                        LineLbs: parseFloat(row['Line (lbs)']) || 0,
+                                        AirTemp: parseFloat(row['Air Temp (°C)']) || 0
                                     };
                                 });
                             
@@ -395,10 +419,6 @@
                 }, React.createElement('div', {
                     className: "text-center"
                 }, [
-                    React.createElement(Fish, {
-                        key: 'icon',
-                        className: "h-12 w-12 text-blue-600 mx-auto mb-3"
-                    }),
                     React.createElement('h1', {
                         key: 'title',
                         className: "text-3xl font-bold text-gray-800 mb-2 sunlight-optimized"
@@ -433,21 +453,8 @@
                         className: "mt-4 p-4 bg-blue-50 rounded-lg"
                     }, [
                         React.createElement('div', {
-                            key: 'total',
-                            className: "flex justify-between items-center"
-                        }, [
-                            React.createElement('span', {
-                                key: 'label',
-                                className: "text-gray-700"
-                            }, "Total caught:"),
-                            React.createElement('span', {
-                                key: 'value',
-                                className: "text-2xl font-bold text-blue-600 sunlight-optimized"
-                            }, recommendations.totalCatches)
-                        ]),
-                        React.createElement('div', {
                             key: 'avg',
-                            className: "flex justify-between items-center mt-2"
+                            className: "flex justify-between items-center"
                         }, [
                             React.createElement('span', {
                                 key: 'label',
@@ -927,26 +934,47 @@
                         React.createElement('p', {
                             key: 'location',
                             className: "mb-2"
-                        }, `🎯 Fish at ${React.createElement('strong', null, recommendations.topLocation[0])}`),
+                        }, [
+                            "🎯 Fish at ",
+                            React.createElement('strong', { key: 'loc-value' }, recommendations.topLocation && recommendations.topLocation[0] || "Unknown")
+                        ]),
                         React.createElement('p', {
                             key: 'bait',
                             className: "mb-2"
-                        }, `🎣 Use ${React.createElement('strong', null, recommendations.topBait[0])} as bait`),
+                        }, [
+                            "🎣 Use ",
+                            React.createElement('strong', { key: 'bait-value' }, recommendations.topBait && recommendations.topBait[0] || "Unknown"),
+                            " as bait"
+                        ]),
                         recommendations.topEnhancement && React.createElement('p', {
                             key: 'enhancement',
                             className: "mb-2"
-                        }, `✨ Add ${React.createElement('strong', null, recommendations.topEnhancement[0])} enhancement`),
+                        }, [
+                            "✨ Add ",
+                            React.createElement('strong', { key: 'enh-value' }, recommendations.topEnhancement[0] || "Unknown"),
+                            " enhancement"
+                        ]),
                         React.createElement('p', {
                             key: 'time',
                             className: "mb-2"
-                        }, `⏰ Go fishing ${React.createElement('strong', null, recommendations.topTime[0].toLowerCase())}`),
+                        }, [
+                            "⏰ Go fishing ",
+                            React.createElement('strong', { key: 'time-value' }, recommendations.topTime && recommendations.topTime[0] ? recommendations.topTime[0].toLowerCase() : "anytime")
+                        ]),
                         React.createElement('p', {
                             key: 'moon',
                             className: "mb-2"
-                        }, `🌙 Best during ${React.createElement('strong', null, recommendations.topMoon[0])}`),
+                        }, [
+                            "🌙 Best during ",
+                            React.createElement('strong', { key: 'moon-value' }, recommendations.topMoon && recommendations.topMoon[0] || "Unknown")
+                        ]),
                         React.createElement('p', {
                             key: 'tide'
-                        }, `🌊 Target ${React.createElement('strong', null, recommendations.topTide[0].toLowerCase())} tide`)
+                        }, [
+                            "🌊 Target ",
+                            React.createElement('strong', { key: 'tide-value' }, recommendations.topTide && recommendations.topTide[0] ? recommendations.topTide[0].toLowerCase() : "Unknown"),
+                            " tide"
+                        ])
                     ])
                 ]),
 

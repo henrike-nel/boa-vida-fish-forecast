@@ -6,6 +6,10 @@
     <title>Boa Vida Fish Finder - Bazaruto Fishing Guide</title>
     <meta name="description" content="Data-driven fishing guide for Bazaruto waters based on historical catch data">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/fav.png">
+    <link rel="apple-touch-icon" href="/assets/images/fav.png">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -612,8 +616,10 @@
                     .orderBy([1, 'count'], ['desc'])
                     .value();
 
-                // Weather conditions
-                const avgWaterTemp = _.meanBy(speciesData, 'WaterTemp');
+                // Weather conditions - exclude zero/missing values from average
+                const validWaterTemps = speciesData.filter(d => d.WaterTemp > 0);
+                // Use 26°C as default if no water temp data (typical Bazaruto water temp)
+                const avgWaterTemp = validWaterTemps.length > 0 ? _.meanBy(validWaterTemps, 'WaterTemp') : 26;
                 const avgCloudCover = _.meanBy(speciesData, 'CloudCover');
                 
                 const weatherPreference = avgCloudCover < 30 ? 'Clear skies' : 
@@ -1695,26 +1701,47 @@
                         React.createElement('p', {
                             key: 'location',
                             className: "mb-2"
-                        }, `🎯 Fish at ${React.createElement('strong', null, recommendations.topLocation[0])}`),
+                        }, [
+                            "🎯 Fish at ",
+                            React.createElement('strong', { key: 'strong' }, recommendations.topLocation[0])
+                        ]),
                         React.createElement('p', {
                             key: 'bait',
                             className: "mb-2"
-                        }, `🎣 Use ${React.createElement('strong', null, recommendations.topBait[0])} as bait`),
+                        }, [
+                            "🎣 Use ",
+                            React.createElement('strong', { key: 'strong' }, recommendations.topBait[0]),
+                            " as bait"
+                        ]),
                         recommendations.topEnhancement && React.createElement('p', {
                             key: 'enhancement',
                             className: "mb-2"
-                        }, `✨ Add ${React.createElement('strong', null, recommendations.topEnhancement[0])} enhancement`),
+                        }, [
+                            "✨ Add ",
+                            React.createElement('strong', { key: 'strong' }, recommendations.topEnhancement[0]),
+                            " enhancement"
+                        ]),
                         React.createElement('p', {
                             key: 'time',
                             className: "mb-2"
-                        }, `⏰ Go fishing ${React.createElement('strong', null, recommendations.topTime[0].toLowerCase())}`),
+                        }, [
+                            "⏰ Go fishing ",
+                            React.createElement('strong', { key: 'strong' }, recommendations.topTime[0].toLowerCase())
+                        ]),
                         React.createElement('p', {
                             key: 'moon',
                             className: "mb-2"
-                        }, `🌙 Best during ${React.createElement('strong', null, recommendations.topMoon[0])}`),
+                        }, [
+                            "🌙 Best during ",
+                            React.createElement('strong', { key: 'strong' }, recommendations.topMoon[0])
+                        ]),
                         React.createElement('p', {
                             key: 'tide'
-                        }, `🌊 Target ${React.createElement('strong', null, recommendations.topTide[0].toLowerCase())} tide`)
+                        }, [
+                            "🌊 Target ",
+                            React.createElement('strong', { key: 'strong' }, recommendations.topTide[0].toLowerCase()),
+                            " tide"
+                        ])
                     ])
                 ]),
 
