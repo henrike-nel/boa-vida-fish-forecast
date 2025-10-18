@@ -449,70 +449,107 @@
                 console.log("Calculating best locations...");
                 let locationCounts;
                 try {
-                    locationCounts = _(speciesData)
-                    .groupBy('Place')
-                    .mapValues(records => ({
-                        count: records.length,
-                        avgWeight: _.meanBy(records, 'WeightLbs'),
-                        percentage: (records.length / speciesData.length * 100)
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                    // Filter for valid location data first
+                    const validLocationData = speciesData.filter(d => 
+                        d.Place && d.Place.trim() !== '' && d.Place !== 'Unknown'
+                    );
                     
-                    console.log(`✅ Found ${locationCounts.length} locations`);
-                    if (locationCounts.length > 0) {
-                        console.log(`Top location: ${locationCounts[0][0]} with ${locationCounts[0][1].count} catches`);
+                    console.log(`Found ${validLocationData.length} records with valid location data out of ${speciesData.length} total`);
+                    
+                    if (validLocationData.length === 0) {
+                        console.log("⚠️ No valid location data available");
+                        locationCounts = [];
+                    } else {
+                        locationCounts = _(validLocationData)
+                        .groupBy('Place')
+                        .mapValues(records => ({
+                            count: records.length,
+                            avgWeight: _.meanBy(records, 'WeightLbs'),
+                            percentage: (records.length / validLocationData.length * 100)
+                        }))
+                        .entries()
+                        .orderBy([1, 'count'], ['desc'])
+                        .value();
+                        
+                        console.log(`✅ Found ${locationCounts.length} locations`);
+                        if (locationCounts.length > 0) {
+                            console.log(`Top location: ${locationCounts[0][0]} with ${locationCounts[0][1].count} catches`);
+                        }
                     }
                 } catch (err) {
                     console.error("❌ Error calculating locations:", err);
-                    throw new Error(`Location analysis failed: ${err.message}`);
+                    locationCounts = [];
+                    console.log("Continuing with analysis despite location error");
                 }
 
                 // Best baits (using Primary_Bait)
                 console.log("Calculating best baits...");
                 let baitCounts;
                 try {
-                    baitCounts = _(speciesData)
-                    .groupBy('PrimaryBait')
-                    .mapValues(records => ({
-                        count: records.length,
-                        avgWeight: _.meanBy(records, 'WeightLbs'),
-                        percentage: (records.length / speciesData.length * 100)
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                    // Filter for valid bait data first
+                    const validBaitData = speciesData.filter(d => 
+                        d.PrimaryBait && d.PrimaryBait.trim() !== '' && d.PrimaryBait !== 'Unknown'
+                    );
                     
-                    console.log(`✅ Found ${baitCounts.length} bait types`);
-                    if (baitCounts.length > 0) {
-                        console.log(`Top bait: ${baitCounts[0][0]} with ${baitCounts[0][1].count} catches`);
+                    console.log(`Found ${validBaitData.length} records with valid bait data out of ${speciesData.length} total`);
+                    
+                    if (validBaitData.length === 0) {
+                        console.log("⚠️ No valid bait data available");
+                        baitCounts = [];
+                    } else {
+                        baitCounts = _(validBaitData)
+                        .groupBy('PrimaryBait')
+                        .mapValues(records => ({
+                            count: records.length,
+                            avgWeight: _.meanBy(records, 'WeightLbs'),
+                            percentage: (records.length / validBaitData.length * 100)
+                        }))
+                        .entries()
+                        .orderBy([1, 'count'], ['desc'])
+                        .value();
+                        
+                        console.log(`✅ Found ${baitCounts.length} bait types`);
+                        if (baitCounts.length > 0) {
+                            console.log(`Top bait: ${baitCounts[0][0]} with ${baitCounts[0][1].count} catches`);
+                        }
                     }
                 } catch (err) {
                     console.error("❌ Error calculating baits:", err);
-                    throw new Error(`Bait analysis failed: ${err.message}`);
+                    baitCounts = [];
+                    console.log("Continuing with analysis despite bait error");
                 }
 
                 // Best enhancements (when used with primary bait)
                 console.log("Calculating best enhancements...");
                 let enhancementCounts;
                 try {
-                    enhancementCounts = _(speciesData)
-                    .filter(record => record.Enhancement && record.Enhancement !== 'Unknown' && record.Enhancement !== '')
-                    .groupBy('Enhancement')
-                    .mapValues(records => ({
-                        count: records.length,
-                        avgWeight: _.meanBy(records, 'WeightLbs'),
-                        percentage: (records.length / speciesData.filter(r => r.Enhancement && r.Enhancement !== '').length * 100),
-                        usedWith: _.chain(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                    // Filter for valid enhancement data first
+                    const validEnhancementData = speciesData.filter(record => 
+                        record.Enhancement && record.Enhancement.trim() !== '' && record.Enhancement !== 'Unknown'
+                    );
                     
-                    console.log(`✅ Found ${enhancementCounts.length} enhancement types`);
-                    if (enhancementCounts.length > 0) {
-                        console.log(`Top enhancement: ${enhancementCounts[0][0]} with ${enhancementCounts[0][1].count} catches`);
+                    console.log(`Found ${validEnhancementData.length} records with valid enhancement data out of ${speciesData.length} total`);
+                    
+                    if (validEnhancementData.length === 0) {
+                        console.log("⚠️ No valid enhancement data available");
+                        enhancementCounts = [];
+                    } else {
+                        enhancementCounts = _(validEnhancementData)
+                        .groupBy('Enhancement')
+                        .mapValues(records => ({
+                            count: records.length,
+                            avgWeight: _.meanBy(records, 'WeightLbs'),
+                            percentage: (records.length / validEnhancementData.length * 100),
+                            usedWith: _.chain(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
+                        }))
+                        .entries()
+                        .orderBy([1, 'count'], ['desc'])
+                        .value();
+                        
+                        console.log(`✅ Found ${enhancementCounts.length} enhancement types`);
+                        if (enhancementCounts.length > 0) {
+                            console.log(`Top enhancement: ${enhancementCounts[0][0]} with ${enhancementCounts[0][1].count} catches`);
+                        }
                     }
                 } catch (err) {
                     console.error("❌ Error calculating enhancements:", err);
@@ -521,93 +558,195 @@
                 }
 
                 // Best moon phases
-                const moonCounts = _(speciesData)
-                    .groupBy('Moon')
-                    .mapValues(records => ({
-                        count: records.length,
-                        percentage: (records.length / speciesData.length * 100)
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                console.log("Calculating best moon phases...");
+                let moonCounts;
+                try {
+                    // Filter for valid moon phase data first
+                    const validMoonData = speciesData.filter(d => 
+                        d.Moon && d.Moon.trim() !== '' && d.Moon !== 'Unknown'
+                    );
+                    
+                    console.log(`Found ${validMoonData.length} records with valid moon phase data out of ${speciesData.length} total`);
+                    
+                    if (validMoonData.length === 0) {
+                        console.log("⚠️ No valid moon phase data available");
+                        moonCounts = [];
+                    } else {
+                        moonCounts = _(validMoonData)
+                            .groupBy('Moon')
+                            .mapValues(records => ({
+                                count: records.length,
+                                percentage: (records.length / validMoonData.length * 100)
+                            }))
+                            .entries()
+                            .orderBy([1, 'count'], ['desc'])
+                            .value();
+                            
+                        console.log(`✅ Found ${moonCounts.length} moon phases`);
+                        if (moonCounts.length > 0) {
+                            console.log(`Top moon phase: ${moonCounts[0][0]} with ${moonCounts[0][1].count} catches`);
+                        }
+                    }
+                } catch (err) {
+                    console.error("❌ Error calculating moon phases:", err);
+                    moonCounts = [];
+                    console.log("Continuing with analysis despite moon phase error");
+                }
 
                 // Best tide states
-                const tideCounts = _(speciesData)
-                    .groupBy('TideState')
-                    .mapValues(records => ({
-                        count: records.length,
-                        percentage: (records.length / speciesData.length * 100)
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                console.log("Calculating best tide states...");
+                let tideCounts;
+                try {
+                    // Filter for valid tide state data first
+                    const validTideData = speciesData.filter(d => 
+                        d.TideState && d.TideState.trim() !== '' && d.TideState !== 'Unknown'
+                    );
+                    
+                    console.log(`Found ${validTideData.length} records with valid tide state data out of ${speciesData.length} total`);
+                    
+                    if (validTideData.length === 0) {
+                        console.log("⚠️ No valid tide state data available");
+                        tideCounts = [];
+                    } else {
+                        tideCounts = _(validTideData)
+                            .groupBy('TideState')
+                            .mapValues(records => ({
+                                count: records.length,
+                                percentage: (records.length / validTideData.length * 100)
+                            }))
+                            .entries()
+                            .orderBy([1, 'count'], ['desc'])
+                            .value();
+                            
+                        console.log(`✅ Found ${tideCounts.length} tide states`);
+                        if (tideCounts.length > 0) {
+                            console.log(`Top tide state: ${tideCounts[0][0]} with ${tideCounts[0][1].count} catches`);
+                        }
+                    }
+                } catch (err) {
+                    console.error("❌ Error calculating tide states:", err);
+                    tideCounts = [];
+                    console.log("Continuing with analysis despite tide state error");
+                }
 
                 // Best time of day
-                const timeOfDay = _(speciesData)
-                    .groupBy(row => {
-                        const time = row.TimeOfStrike;
-                        if (!time) return 'Unknown';
-                        const hour = parseInt(time.split(':')[0]);
-                        if (hour >= 5 && hour < 12) return 'Morning (5am-12pm)';
-                        if (hour >= 12 && hour < 17) return 'Afternoon (12pm-5pm)';
-                        if (hour >= 17 && hour < 20) return 'Evening (5pm-8pm)';
-                        return 'Night (8pm-5am)';
-                    })
-                    .mapValues(records => ({
-                        count: records.length,
-                        percentage: (records.length / speciesData.length * 100)
-                    }))
-                    .entries()
-                    .orderBy([1, 'count'], ['desc'])
-                    .value();
+                console.log("Calculating best time of day...");
+                let timeOfDay;
+                try {
+                    // Filter for valid time data first
+                    const validTimeData = speciesData.filter(d => 
+                        d.TimeOfStrike && d.TimeOfStrike.trim() !== ''
+                    );
+                    
+                    console.log(`Found ${validTimeData.length} records with valid time data out of ${speciesData.length} total`);
+                    
+                    if (validTimeData.length === 0) {
+                        console.log("⚠️ No valid time data available");
+                        timeOfDay = [];
+                    } else {
+                        timeOfDay = _(validTimeData)
+                            .groupBy(row => {
+                                const time = row.TimeOfStrike;
+                                const hour = parseInt(time.split(':')[0]);
+                                if (hour >= 5 && hour < 12) return 'Morning (5am-12pm)';
+                                if (hour >= 12 && hour < 17) return 'Afternoon (12pm-5pm)';
+                                if (hour >= 17 && hour < 20) return 'Evening (5pm-8pm)';
+                                return 'Night (8pm-5am)';
+                            })
+                            .mapValues(records => ({
+                                count: records.length,
+                                percentage: (records.length / validTimeData.length * 100)
+                            }))
+                            .entries()
+                            .orderBy([1, 'count'], ['desc'])
+                            .value();
+                            
+                        console.log(`✅ Found ${timeOfDay.length} time periods`);
+                        if (timeOfDay.length > 0) {
+                            console.log(`Top time period: ${timeOfDay[0][0]} with ${timeOfDay[0][1].count} catches`);
+                        }
+                    }
+                } catch (err) {
+                    console.error("❌ Error calculating time of day:", err);
+                    timeOfDay = [];
+                    console.log("Continuing with analysis despite time of day error");
+                }
 
                 // Weather conditions
                 console.log("Calculating weather conditions...");
-                let avgWaterTemp = 26; // Default to 26°C (typical Bazaruto water temp)
-                let avgCloudCover = 50; // Default to partly cloudy
-                let weatherPreference = 'Partly cloudy';
+                let avgWaterTemp = null;
+                let avgCloudCover = null;
+                let weatherPreference = null;
                 
                 try {
-                    // Exclude zero/missing values from average
-                    const validWaterTemps = speciesData.filter(d => d.WaterTemp > 0);
-                    console.log(`Found ${validWaterTemps.length} records with valid water temperatures`);
+                    // Filter for valid water temperature data
+                    const validWaterTemps = speciesData.filter(d => 
+                        typeof d.WaterTemp === 'number' && !isNaN(d.WaterTemp) && d.WaterTemp > 0
+                    );
+                    console.log(`Found ${validWaterTemps.length} records with valid water temperatures out of ${speciesData.length} total`);
                     
                     if (validWaterTemps.length > 0) {
                         avgWaterTemp = _.meanBy(validWaterTemps, 'WaterTemp');
                         console.log(`✅ Average water temperature: ${avgWaterTemp.toFixed(1)}°C`);
                     } else {
-                        console.log("⚠️ No valid water temperature data, using default of 26°C");
+                        console.log("⚠️ No valid water temperature data available");
                     }
                     
-                    avgCloudCover = _.meanBy(speciesData, 'CloudCover');
-                    console.log(`✅ Average cloud cover: ${avgCloudCover.toFixed(1)}%`);
+                    // Filter for valid cloud cover data
+                    const validCloudCoverData = speciesData.filter(d => 
+                        typeof d.CloudCover === 'number' && !isNaN(d.CloudCover)
+                    );
+                    console.log(`Found ${validCloudCoverData.length} records with valid cloud cover data out of ${speciesData.length} total`);
                     
-                    weatherPreference = avgCloudCover < 30 ? 'Clear skies' : 
-                                         avgCloudCover < 60 ? 'Partly cloudy' : 'Overcast';
-                    console.log(`✅ Weather preference: ${weatherPreference}`);
+                    if (validCloudCoverData.length > 0) {
+                        avgCloudCover = _.meanBy(validCloudCoverData, 'CloudCover');
+                        console.log(`✅ Average cloud cover: ${avgCloudCover.toFixed(1)}%`);
+                        
+                        // Only set weather preference if we have valid cloud cover data
+                        weatherPreference = avgCloudCover < 30 ? 'Clear skies' : 
+                                           avgCloudCover < 60 ? 'Partly cloudy' : 'Overcast';
+                        console.log(`✅ Weather preference: ${weatherPreference}`);
+                    } else {
+                        console.log("⚠️ No valid cloud cover data available");
+                    }
                 } catch (err) {
                     console.error("❌ Error calculating weather conditions:", err);
-                    console.log("Using default weather values");
+                    console.log("Continuing with analysis despite weather condition error");
                 }
 
+                // Create recommendations object with null checks for all values
                 setRecommendations({
                     totalCatches: speciesData.length,
-                    avgWeight: _.meanBy(speciesData, 'WeightLbs'),
-                    maxWeight: _.maxBy(speciesData, 'WeightLbs')?.WeightLbs || 0,
-                    topLocation: locationCounts[0],
+                    avgWeight: _.meanBy(speciesData.filter(d => typeof d.WeightLbs === 'number' && !isNaN(d.WeightLbs)), 'WeightLbs') || 0,
+                    maxWeight: _.maxBy(speciesData.filter(d => typeof d.WeightLbs === 'number' && !isNaN(d.WeightLbs)), 'WeightLbs')?.WeightLbs || 0,
+                    
+                    // Location recommendations
+                    topLocation: locationCounts.length > 0 ? locationCounts[0] : null,
                     allLocations: locationCounts.slice(0, 3),
-                    topBait: baitCounts[0],
+                    
+                    // Bait recommendations
+                    topBait: baitCounts.length > 0 ? baitCounts[0] : null,
                     allBaits: baitCounts.slice(0, 3),
+                    
+                    // Enhancement recommendations
                     topEnhancement: enhancementCounts.length > 0 ? enhancementCounts[0] : null,
                     allEnhancements: enhancementCounts.slice(0, 3),
-                    topMoon: moonCounts[0],
+                    
+                    // Moon phase recommendations
+                    topMoon: moonCounts.length > 0 ? moonCounts[0] : null,
                     allMoons: moonCounts.slice(0, 3),
-                    topTide: tideCounts[0],
+                    
+                    // Tide state recommendations
+                    topTide: tideCounts.length > 0 ? tideCounts[0] : null,
                     allTides: tideCounts.slice(0, 3),
-                    topTime: timeOfDay[0],
+                    
+                    // Time of day recommendations
+                    topTime: timeOfDay.length > 0 ? timeOfDay[0] : null,
                     allTimes: timeOfDay,
-                    avgWaterTemp: avgWaterTemp.toFixed(1),
-                    weatherPreference
+                    
+                    // Weather recommendations
+                    avgWaterTemp: avgWaterTemp !== null ? avgWaterTemp.toFixed(1) : null,
+                    weatherPreference: weatherPreference || null
                 });
             };
 
@@ -834,15 +973,15 @@
                         React.createElement('div', {
                             key: 'name',
                             className: "text-3xl font-bold text-primary mb-3"
-                        }, recommendations.topLocation[0]),
-                        React.createElement('div', {
+                        }, recommendations.topLocation ? recommendations.topLocation[0] : "No data available"),
+                        recommendations.topLocation ? React.createElement('div', {
                             key: 'stats',
                             className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
-                        }, `${recommendations.topLocation[1].count} catches`),
-                        React.createElement('div', {
+                        }, `${recommendations.topLocation[1].count} catches`) : null,
+                        recommendations.topLocation ? React.createElement('div', {
                             key: 'avg',
                             className: "text-sm text-muted mt-3"
-                        }, `Average weight: ${recommendations.topLocation[1].avgWeight.toFixed(1)} lbs`)
+                        }, `Average weight: ${recommendations.topLocation[1].avgWeight.toFixed(1)} lbs`) : null
                     ])),
 
                     recommendations.allLocations.length > 1 && React.createElement('div', {
@@ -906,15 +1045,15 @@
                         React.createElement('div', {
                             key: 'name',
                             className: "text-3xl font-bold text-primary mb-3"
-                        }, recommendations.topBait[0]),
-                        React.createElement('div', {
+                        }, recommendations.topBait ? recommendations.topBait[0] : "No data available"),
+                        recommendations.topBait ? React.createElement('div', {
                             key: 'stats',
                             className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
-                        }, `${recommendations.topBait[1].count} catches (${recommendations.topBait[1].percentage.toFixed(0)}% success)`),
-                        React.createElement('div', {
+                        }, `${recommendations.topBait[1].count} catches (${recommendations.topBait[1].percentage.toFixed(0)}% success)`) : null,
+                        recommendations.topBait ? React.createElement('div', {
                             key: 'avg',
                             className: "text-sm text-muted mt-3"
-                        }, `Average weight: ${recommendations.topBait[1].avgWeight.toFixed(1)} lbs`)
+                        }, `Average weight: ${recommendations.topBait[1].avgWeight.toFixed(1)} lbs`) : null
                     ])),
 
                     recommendations.allBaits.length > 1 && React.createElement('div', {
@@ -978,19 +1117,19 @@
                         React.createElement('div', {
                             key: 'name',
                             className: "text-3xl font-bold text-primary mb-3"
-                        }, recommendations.topEnhancement[0]),
-                        React.createElement('div', {
+                        }, recommendations.topEnhancement ? recommendations.topEnhancement[0] : "No data available"),
+                        recommendations.topEnhancement ? React.createElement('div', {
                             key: 'stats',
                             className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
-                        }, `${recommendations.topEnhancement[1].count} catches (${recommendations.topEnhancement[1].percentage.toFixed(0)}% when used)`),
-                        React.createElement('div', {
+                        }, `${recommendations.topEnhancement[1].count} catches (${recommendations.topEnhancement[1].percentage.toFixed(0)}% when used)`) : null,
+                        recommendations.topEnhancement ? React.createElement('div', {
                             key: 'avg',
                             className: "text-sm text-muted mt-3"
-                        }, `Average weight: ${recommendations.topEnhancement[1].avgWeight.toFixed(1)} lbs`),
-                        recommendations.topEnhancement[1].usedWith && React.createElement('div', {
+                        }, `Average weight: ${recommendations.topEnhancement[1].avgWeight.toFixed(1)} lbs`) : null,
+                        recommendations.topEnhancement && recommendations.topEnhancement[1].usedWith ? React.createElement('div', {
                             key: 'used-with',
                             className: "text-sm text-muted mt-2"
-                        }, `Often used with: ${recommendations.topEnhancement[1].usedWith[0]}`)
+                        }, `Often used with: ${recommendations.topEnhancement[1].usedWith[0]}`) : null
                     ])),
 
                     recommendations.allEnhancements.length > 1 && React.createElement('div', {
@@ -1054,11 +1193,11 @@
                         React.createElement('div', {
                             key: 'name',
                             className: "text-3xl font-bold text-primary mb-3"
-                        }, recommendations.topTime[0]),
-                        React.createElement('div', {
+                        }, recommendations.topTime ? recommendations.topTime[0] : "No data available"),
+                        recommendations.topTime ? React.createElement('div', {
                             key: 'stats',
                             className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
-                        }, `${recommendations.topTime[1].count} catches (${recommendations.topTime[1].percentage.toFixed(0)}% success)`)
+                        }, `${recommendations.topTime[1].count} catches (${recommendations.topTime[1].percentage.toFixed(0)}% success)`) : null
                     ])),
 
                     recommendations.allTimes.length > 1 && React.createElement('div', {
@@ -1141,16 +1280,16 @@
                                     React.createElement('div', {
                                         key: 'value',
                                         className: "text-lg font-semibold text-true-navy"
-                                    }, recommendations.topMoon[0])
+                                    }, recommendations.topMoon ? recommendations.topMoon[0] : "No data available")
                                 ])
                             ]),
                             React.createElement('div', {
                                 key: 'right',
                                 className: "text-right"
-                            }, React.createElement('div', {
+                            },                                 recommendations.topMoon ? React.createElement('div', {
                                 key: 'stats',
                                 className: "inline-flex items-center justify-center px-3 py-1 bg-true-navy/10 text-true-navy rounded-full text-sm font-medium"
-                            }, `${recommendations.topMoon[1].percentage.toFixed(0)}% success`))
+                            }, `${recommendations.topMoon[1].percentage.toFixed(0)}% success`) : null)
                         ])),
 
                         // Tide State
@@ -1181,16 +1320,16 @@
                                     React.createElement('div', {
                                         key: 'value',
                                         className: "text-lg font-semibold text-true-navy"
-                                    }, recommendations.topTide[0])
+                                    }, recommendations.topTide ? recommendations.topTide[0] : "No data available")
                                 ])
                             ]),
                             React.createElement('div', {
                                 key: 'right',
                                 className: "text-right"
-                            }, React.createElement('div', {
+                            },                                 recommendations.topTide ? React.createElement('div', {
                                 key: 'stats',
                                 className: "inline-flex items-center justify-center px-3 py-1 bg-true-navy/10 text-true-navy rounded-full text-sm font-medium"
-                            }, `${recommendations.topTide[1].percentage.toFixed(0)}% success`))
+                            }, `${recommendations.topTide[1].percentage.toFixed(0)}% success`) : null)
                         ])),
 
                         // Weather
@@ -1221,7 +1360,7 @@
                                     React.createElement('div', {
                                         key: 'value',
                                         className: "text-lg font-semibold text-true-navy"
-                                    }, recommendations.weatherPreference)
+                                    }, recommendations.weatherPreference || "No data available")
                                 ])
                             ]),
                             React.createElement('div', {
@@ -1235,7 +1374,7 @@
                                 React.createElement('div', {
                                     key: 'value',
                                     className: "text-xl font-bold text-true-navy sunlight-optimized"
-                                }, `${recommendations.avgWaterTemp}°C`)
+                                }, recommendations.avgWaterTemp ? `${recommendations.avgWaterTemp}°C` : "No data")
                             ])
                         ]))
                     ])
@@ -1275,8 +1414,10 @@
                             React.createElement('span', {
                                 key: 'text'
                             }, [
-                                "Fish at ",
-                            React.createElement('strong', { key: 'loc-value' }, recommendations.topLocation && recommendations.topLocation[0] || "Unknown")
+                                recommendations.topLocation ? [
+                                    "Fish at ",
+                                    React.createElement('strong', { key: 'loc-value' }, recommendations.topLocation[0])
+                                ] : "Location data not available"
                             ])
                         ]),
                         React.createElement('p', {
@@ -1290,9 +1431,11 @@
                             React.createElement('span', {
                                 key: 'text'
                             }, [
-                                "Use ",
-                            React.createElement('strong', { key: 'bait-value' }, recommendations.topBait && recommendations.topBait[0] || "Unknown"),
-                                " bait"
+                                recommendations.topBait ? [
+                                    "Use ",
+                                    React.createElement('strong', { key: 'bait-value' }, recommendations.topBait[0]),
+                                    " bait"
+                                ] : "Bait data not available"
                             ])
                         ]),
                         recommendations.topEnhancement && React.createElement('p', {
@@ -1322,9 +1465,11 @@
                             React.createElement('span', {
                                 key: 'text'
                             }, [
-                                "Go fishing ",
-                                React.createElement('strong', { key: 'time-value' }, recommendations.topTime && recommendations.topTime[0] ? recommendations.topTime[0].toLowerCase() : "anytime"),
-                                " (5am-12pm)"
+                                recommendations.topTime ? [
+                                    "Go fishing ",
+                                    React.createElement('strong', { key: 'time-value' }, recommendations.topTime[0].toLowerCase()),
+                                    " (5am-12pm)"
+                                ] : "Time data not available"
                             ])
                         ]),
                         React.createElement('p', {
@@ -1338,9 +1483,11 @@
                             React.createElement('span', {
                                 key: 'text'
                             }, [
-                                "Best during ",
-                                React.createElement('strong', { key: 'moon-value' }, recommendations.topMoon && recommendations.topMoon[0] || "Unknown"),
-                                " moon"
+                                recommendations.topMoon ? [
+                                    "Best during ",
+                                    React.createElement('strong', { key: 'moon-value' }, recommendations.topMoon[0]),
+                                    " moon"
+                                ] : "Moon phase data not available"
                             ])
                         ]),
                         React.createElement('p', {
@@ -1354,9 +1501,11 @@
                             React.createElement('span', {
                                 key: 'text'
                             }, [
-                                "Target ",
-                                React.createElement('strong', { key: 'tide-value' }, recommendations.topTide && recommendations.topTide[0] ? recommendations.topTide[0].toLowerCase() : "unknown"),
-                            " tide"
+                                recommendations.topTide ? [
+                                    "Target ",
+                                    React.createElement('strong', { key: 'tide-value' }, recommendations.topTide[0].toLowerCase()),
+                                    " tide"
+                                ] : "Tide data not available"
                             ])
                         ])
                     ])
