@@ -517,6 +517,36 @@
                             const weightLbs = parseFloat(row['Weight (lbs)']) || 0;
                             const weightKg = weightLbs * 0.453592;
                             
+                            // Parse date and determine season (Southern Hemisphere)
+                            const dateStr = row.Date;
+                            let season = 'Unknown';
+                            let parsedDate = null;
+                            
+                            if (dateStr && typeof dateStr === 'string') {
+                                // Handle DD/MM/YYYY format
+                                const dateParts = dateStr.split('/');
+                                if (dateParts.length === 3) {
+                                    const day = parseInt(dateParts[0]);
+                                    const month = parseInt(dateParts[1]);
+                                    const year = parseInt(dateParts[2]);
+                                    
+                                    if (month >= 1 && month <= 12) {
+                                        parsedDate = new Date(year, month - 1, day);
+                                        
+                                        // Southern Hemisphere seasons
+                                        if (month >= 11 || month <= 1) {
+                                            season = 'Summer (Nov-Jan)';
+                                        } else if (month >= 2 && month <= 4) {
+                                            season = 'Autumn (Feb-Apr)';
+                                        } else if (month >= 5 && month <= 7) {
+                                            season = 'Winter (May-Jul)';
+                                        } else if (month >= 8 && month <= 10) {
+                                            season = 'Spring (Aug-Oct)';
+                                        }
+                                    }
+                                }
+                            }
+                            
                             return {
                                 Species: row.Species?.trim(),
                                 Weight: weightKg, // Calculated from lbs
@@ -535,7 +565,9 @@
                                 TidalCoeff: parseInt(row['Tidal Coefficient']) || 0,
                                 Length: parseFloat(row['Length (m)']) || 0,
                                 LineLbs: parseFloat(row['Line (lbs)']) || 0,
-                                AirTemp: parseFloat(row['Air Temp (°C)']) || 0
+                                AirTemp: parseFloat(row['Air Temp (°C)']) || 0,
+                                Season: season,
+                                Date: parsedDate
                             };
                         });
                     
@@ -801,6 +833,45 @@
                     console.log("Continuing with analysis despite time of day error");
                 }
 
+                // Best seasons (Southern Hemisphere)
+                console.log("Calculating seasonal patterns...");
+                let seasonCounts;
+                try {
+                    // Filter for valid seasonal data first
+                    const validSeasonData = speciesData.filter(record => 
+                        record.Season && record.Season !== 'Unknown'
+                    );
+                    
+                    console.log(`Found ${validSeasonData.length} records with valid seasonal data out of ${speciesData.length} total`);
+                    
+                    if (validSeasonData.length === 0) {
+                        console.log("⚠️ No valid seasonal data available");
+                        seasonCounts = [];
+                    } else {
+                        seasonCounts = _(validSeasonData)
+                            .groupBy('Season')
+                            .mapValues(records => ({
+                                count: records.length,
+                                avgWeight: _.meanBy(records, 'WeightLbs'),
+                                percentage: (records.length / validSeasonData.length * 100),
+                                bestLocation: _(records).groupBy('Place').mapValues('length').entries().orderBy([1], ['desc']).value()[0],
+                                bestBait: _(records).groupBy('PrimaryBait').mapValues('length').entries().orderBy([1], ['desc']).value()[0]
+                            }))
+                            .entries()
+                            .orderBy([1, 'count'], ['desc'])
+                            .value();
+                        
+                        console.log(`✅ Found ${seasonCounts.length} seasons`);
+                        if (seasonCounts.length > 0) {
+                            console.log(`Top season: ${seasonCounts[0][0]} with ${seasonCounts[0][1].count} catches`);
+                        }
+                    }
+                } catch (err) {
+                    console.error("❌ Error calculating seasons:", err);
+                    console.log("This is not critical, continuing with analysis...");
+                    seasonCounts = [];
+                }
+
                 // Weather conditions
                 console.log("Calculating weather conditions...");
                 let avgWaterTemp = null;
@@ -872,6 +943,10 @@
                     // Time of day recommendations
                     topTime: timeOfDay.length > 0 ? timeOfDay[0] : null,
                     allTimes: timeOfDay,
+                    
+                    // Seasonal recommendations
+                    topSeason: seasonCounts.length > 0 ? seasonCounts[0] : null,
+                    allSeasons: seasonCounts,
                     
                     // Weather recommendations
                     avgWaterTemp: avgWaterTemp !== null ? avgWaterTemp.toFixed(1) : null,
@@ -1368,6 +1443,87 @@
                     ])
                 ]),
 
+                // Best Season
+                recommendations.topSeason && React.createElement('div', {
+                    key: 'season',
+                    className: "card card-spacious bg-surface mb-6"
+                }, [
+                    React.createElement('div', {
+                        key: 'header',
+                        className: "flex items-center mb-6"
+                    }, [
+                        React.createElement('div', {
+                            key: 'icon-wrapper',
+                            className: "bg-light rounded-full p-2 mr-3 icon-wrapper"
+                        }, React.createElement('span', {
+                            key: 'icon',
+                            className: "material-symbols-rounded text-accent"
+                        }, "calendar_today")),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "text-xl font-semibold text-primary"
+                        }, "Best Season")
+                    ]),
+
+                    React.createElement('div', {
+                        key: 'best',
+                        className: "bg-light rounded-xl p-6 mb-6"
+                    }, React.createElement('div', {
+                        className: "text-center"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-sm text-muted uppercase mb-2"
+                        }, "Peak Season"),
+                        React.createElement('div', {
+                            key: 'name',
+                            className: "text-3xl font-bold text-primary mb-3"
+                        }, recommendations.topSeason[0]),
+                        React.createElement('div', {
+                            key: 'stats',
+                            className: "inline-flex items-center justify-center px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
+                        }, `${recommendations.topSeason[1].count} catches (${recommendations.topSeason[1].percentage.toFixed(0)}% of seasonal data)`),
+                        React.createElement('div', {
+                            key: 'weight',
+                            className: "text-sm text-muted mt-2"
+                        }, `Average weight: ${recommendations.topSeason[1].avgWeight.toFixed(1)} lbs`)
+                    ])),
+
+                    recommendations.allSeasons.length > 1 && React.createElement('div', {
+                        key: 'others',
+                        className: "space-y-3"
+                    }, [
+                        React.createElement('div', {
+                            key: 'label',
+                            className: "text-xs font-medium text-muted uppercase"
+                        }, "Other seasons"),
+                        ...recommendations.allSeasons.slice(1).map(([season, data], index) => 
+                        React.createElement('div', {
+                            key: index,
+                                className: "flex justify-between items-center bg-light p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                        }, [
+                            React.createElement('div', {
+                                key: 'info',
+                                className: "flex flex-col"
+                            }, [
+                                React.createElement('span', {
+                                    key: 'name',
+                                    className: "font-medium text-primary"
+                                }, season),
+                                React.createElement('span', {
+                                    key: 'weight',
+                                    className: "text-xs text-muted"
+                                }, `Avg: ${data.avgWeight.toFixed(1)} lbs`)
+                            ]),
+                            React.createElement('span', {
+                                key: 'count',
+                                    className: "text-xs px-2 py-1 bg-accent/10 text-accent rounded-full"
+                                }, `${data.count}`)
+                        ])
+                        )
+                    ])
+                ]),
+
                 // Best Conditions
                 React.createElement('div', {
                     key: 'conditions',
@@ -1634,7 +1790,7 @@
                         ]),
                         React.createElement('p', {
                             key: 'tide',
-                            className: "flex items-center"
+                            className: "mb-2 flex items-center"
                         }, [
                             React.createElement('span', {
                                 key: 'icon',
@@ -1648,6 +1804,21 @@
                                     React.createElement('strong', { key: 'tide-value' }, recommendations.topTide[0].toLowerCase()),
                                     " tide"
                                 ] : "Tide data not available"
+                            ])
+                        ]),
+                        recommendations.topSeason && React.createElement('p', {
+                            key: 'season',
+                            className: "flex items-center"
+                        }, [
+                            React.createElement('span', {
+                                key: 'icon',
+                                className: "material-symbols-rounded text-white"
+                            }, "calendar_today"),
+                            React.createElement('span', {
+                                key: 'text'
+                            }, [
+                                "Peak season is ",
+                                React.createElement('strong', { key: 'season-value' }, recommendations.topSeason[0].toLowerCase())
                             ])
                         ])
                     ])
