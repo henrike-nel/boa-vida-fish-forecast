@@ -26,6 +26,12 @@
     <meta name="msapplication-TileImage" content="assets/icons/fish_forecast_icon-2.png">
     <meta name="msapplication-TileColor" content="#26374D">
     
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#26374D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -230,7 +236,44 @@
         </div>
     </div>
 
+    <!-- IndexedDB Manager -->
+    <script src="/js/indexedDB-manager.js"></script>
+    
+    <!-- Update Notifier -->
+    <script src="/js/update-notifier.js"></script>
+    
     <script>
+        // Register service worker for offline capabilities
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                        
+                        // Handle updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker is installed but waiting to activate
+                                    UpdateNotifier.showUpdateNotification();
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+                    
+                // Listen for messages from the service worker
+                navigator.serviceWorker.addEventListener('message', event => {
+                    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                        UpdateNotifier.showUpdateNotification();
+                    }
+                });
+            });
+        }
+    
         // Check if we need to redirect based on URL parameters
         document.addEventListener('DOMContentLoaded', function() {
             // Get URL parameters
@@ -242,6 +285,14 @@
                 window.location.href = 'index.html';
             } else if (action === 'log-catch') {
                 window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLSdvpVR2RHX20eDRkGjjlfyyZyBwaViGhszCn7sh0DVyfhim6g/viewform?usp=header';
+            }
+            
+            // Add offline status indicator if needed
+            if (!navigator.onLine) {
+                const offlineIndicator = document.createElement('div');
+                offlineIndicator.className = 'fixed top-0 left-0 right-0 bg-yellow-500 text-white px-4 py-2 text-center text-sm';
+                offlineIndicator.innerHTML = '<span style="margin-right: 8px;">⚠️</span> You\'re currently offline. Some features may be limited.';
+                document.body.prepend(offlineIndicator);
             }
         });
     </script>

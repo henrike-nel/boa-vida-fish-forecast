@@ -26,6 +26,12 @@
     <meta name="msapplication-TileImage" content="assets/icons/fish_forecast_icon-2.png">
     <meta name="msapplication-TileColor" content="#26374D">
     
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#26374D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -214,7 +220,44 @@
 <body>
     <div id="root"></div>
 
+    <!-- IndexedDB Manager -->
+    <script src="/js/indexedDB-manager.js"></script>
+    
+    <!-- Update Notifier -->
+    <script src="/js/update-notifier.js"></script>
+    
     <script>
+        // Register service worker for offline capabilities
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                        
+                        // Handle updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker is installed but waiting to activate
+                                    UpdateNotifier.showUpdateNotification();
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+                    
+                // Listen for messages from the service worker
+                navigator.serviceWorker.addEventListener('message', event => {
+                    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                        UpdateNotifier.showUpdateNotification();
+                    }
+                });
+            });
+        }
+        
         // Wait for all libraries to load before initializing the app
         function initializeApp() {
             // Check if all libraries are loaded
@@ -268,9 +311,36 @@
             const [recommendations, setRecommendations] = useState(null);
             const [species, setSpecies] = useState([]);
             const [error, setError] = useState(null);
+            const [isOnline, setIsOnline] = useState(navigator.onLine);
 
             useEffect(() => {
                 loadData();
+                
+                // Set up network status monitoring
+                const handleOnline = () => {
+                    console.log("🌐 Network connection restored");
+                    setIsOnline(true);
+                    
+                    // Fetch fresh data when coming back online
+                    fetchAndCacheData().catch(err => {
+                        console.log("Background data refresh failed after coming online:", err);
+                    });
+                };
+                
+                const handleOffline = () => {
+                    console.log("⚠️ Network connection lost");
+                    setIsOnline(false);
+                };
+                
+                // Add event listeners for online/offline events
+                window.addEventListener('online', handleOnline);
+                window.addEventListener('offline', handleOffline);
+                
+                // Clean up event listeners on component unmount
+                return () => {
+                    window.removeEventListener('online', handleOnline);
+                    window.removeEventListener('offline', handleOffline);
+                };
             }, []);
 
             const loadData = async () => {
@@ -279,156 +349,215 @@
                     setError(null);
                     console.log("Starting data load process...");
                     
-                    // Try multiple possible filenames for flexibility
-                    const possibleFilenames = [
-                        'Boa_Vida_Fish_Finder_data.csv',
-                        './Boa_Vida_Fish_Finder_data.csv',
-                        '../Boa_Vida_Fish_Finder_data.csv',
-                        '/Boa_Vida_Fish_Finder_data.csv',
-                        'data/Boa_Vida_Fish_Finder_data.csv',
-                        './data/Boa_Vida_Fish_Finder_data.csv'
-                    ];
+                    // Track whether we're using cached data
+                    let usingCachedData = false;
                     
-                    let csvData;
-                    let loadedFilename = '';
-                    
-                    // Always try the direct root path first as most reliable
+                    // First, try to load data from IndexedDB if available
                     try {
-                        console.log("Trying direct path to CSV in root directory...");
-                        const response = await fetch('/Boa_Vida_Fish_Finder_data.csv');
-                        if (response.ok) {
-                            csvData = await response.text();
-                            loadedFilename = '/Boa_Vida_Fish_Finder_data.csv';
-                            console.log(`✅ Successfully loaded from root: ${loadedFilename}`);
-                            console.log(`First 50 chars: ${csvData.substring(0, 50)}`);
+                        console.log("Checking for cached data in IndexedDB...");
+                        const cachedData = await IndexedDBManager.getFishingData();
+                        
+                        if (cachedData) {
+                            console.log("✅ Found cached data in IndexedDB, using it");
+                            usingCachedData = true;
+                            processData(cachedData);
+                            
+                            // If we're online, fetch fresh data in the background
+                            if (navigator.onLine) {
+                                console.log("📡 Online: Fetching fresh data in the background...");
+                                fetchAndCacheData().catch(err => {
+                                    console.log("Background data refresh failed, continuing with cached data");
+                                });
+                            }
+                            return;
                         } else {
-                            console.log(`❌ Root path failed with status: ${response.status}`);
+                            console.log("⚠️ No cached data found in IndexedDB");
                         }
                     } catch (err) {
-                        console.log(`❌ Error loading from root path: ${err.message}`);
+                        console.error("❌ Error accessing IndexedDB:", err);
                     }
                     
-                    // Try other paths if root didn't work
-                    if (!csvData) {
-                    for (const filename of possibleFilenames) {
-                        try {
-                                console.log(`Trying path: ${filename}`);
-                            const response = await fetch(filename);
-                            if (response.ok) {
-                                csvData = await response.text();
-                                loadedFilename = filename;
-                                    console.log(`✅ Successfully loaded: ${filename}`);
-                                break;
-                                } else {
-                                    console.log(`❌ Failed with status: ${response.status}`);
-                            }
-                        } catch (err) {
-                                console.log(`❌ Error loading: ${filename} - ${err.message}`);
-                            }
-                        }
+                    // If no cached data or error accessing IndexedDB, fetch from network
+                    if (navigator.onLine) {
+                        await fetchAndCacheData();
+                    } else {
+                        // We're offline and have no cached data
+                        throw new Error("You're offline and no cached data is available. Please connect to the internet to download fishing data.");
                     }
-                    
-                    if (!csvData) {
-                        console.error('⚠️ CSV loading failed from all relative paths. Attempting absolute path...');
-                        try {
-                            // Last resort - try with absolute path
-                            const absolutePath = window.location.origin + '/Boa_Vida_Fish_Finder_data.csv';
-                            console.log('Trying absolute path:', absolutePath);
-                            const response = await fetch(absolutePath);
-                            if (response.ok) {
-                                csvData = await response.text();
-                                loadedFilename = absolutePath;
-                                console.log(`✅ Successfully loaded from absolute path: ${absolutePath}`);
-                            } else {
-                                console.log(`❌ Absolute path failed with status: ${response.status}`);
-                                throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the project directory.');
-                            }
-                        } catch (err) {
-                            console.error('❌ All CSV loading attempts failed:', err);
-                            throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the project directory.');
-                        }
-                    }
-                    
-                    console.log("Starting CSV parsing...");
-                    Papa.parse(csvData, {
-                        header: true,
-                        skipEmptyLines: true,
-                        dynamicTyping: true,
-                        complete: (results) => {
-                            console.log(`✅ CSV parsed successfully. Found ${results.data.length} rows.`);
-                            console.log(`Headers: ${results.meta.fields ? results.meta.fields.join(', ') : 'No headers found'}`);
-                            
-                            if (results.data.length === 0) {
-                                console.error("❌ No data rows found in CSV");
-                                throw new Error("CSV file contains no data rows");
-                            }
-                            
-                            if (!results.data[0].Species) {
-                                console.error("❌ Missing Species column in CSV data");
-                                console.log("First row data:", JSON.stringify(results.data[0], null, 2));
-                                throw new Error("CSV data is missing required Species column");
-                            }
-                            
-                            const cleanedData = results.data
-                                .filter(row => row.Species && row.Species.trim() !== '')
-                                .map(row => {
-                                    // Handle column names with trailing spaces
-                                    const place = row.Place || row['Place '] || row['Place  '];
-                                    const primaryBait = row.Primary_Bait || row['Primary_Bait '] || row.Bait || row['Bait '];
-                                    const timeOfStrike = row['Time of Strike'] || row['Time of Strike '] || row['Time of Strike  '];
-                                    const weather = row.Weather || row['Weather '] || row['Weather  '];
-                                    
-                                    // Convert lbs to kg internally (0.453592 conversion factor)
-                                    const weightLbs = parseFloat(row['Weight (lbs)']) || 0;
-                                    const weightKg = weightLbs * 0.453592;
-                                    
-                                    return {
-                                        Species: row.Species?.trim(),
-                                        Weight: weightKg, // Calculated from lbs
-                                        WeightLbs: weightLbs,
-                                        Place: place?.trim() || 'Unknown',
-                                        PrimaryBait: primaryBait?.trim() || 'Unknown',
-                                        Enhancement: row.Enhancement?.trim() || '',
-                                        // RawBait removed as per column update
-                                        WaterTemp: parseFloat(row['Water Temperature (°C)'] || row['Water Temperature (C)']) || 0,
-                                        Moon: row.Moon?.trim() || 'Unknown',
-                                        TideState: row['Tide State']?.trim() || 'Unknown',
-                                        TimeOfStrike: timeOfStrike?.trim() || '',
-                                        Weather: weather?.trim() || '',
-                                        CloudCover: parseInt(row['Cloud Cover (%)']) || 0,
-                                        TideHeight: parseFloat(row['Tide Height (m)']) || 0,
-                                        TidalCoeff: parseInt(row['Tidal Coefficient']) || 0,
-                                        Length: parseFloat(row['Length (m)']) || 0,
-                                        LineLbs: parseFloat(row['Line (lbs)']) || 0,
-                                        AirTemp: parseFloat(row['Air Temp (°C)']) || 0
-                                    };
-                                });
-                            
-                            console.log(`✅ Cleaned data: ${cleanedData.length} valid rows`);
-                            setData(cleanedData);
-                            
-                            const uniqueSpecies = _.uniq(cleanedData.map(d => d.Species)).sort();
-                            console.log(`✅ Found ${uniqueSpecies.length} unique species: ${uniqueSpecies.join(', ')}`);
-                            setSpecies(uniqueSpecies);
-                            
-                            if (uniqueSpecies.length > 0) {
-                                console.log(`✅ Setting selected fish to: ${uniqueSpecies[0]}`);
-                                setSelectedFish(uniqueSpecies[0]);
-                                analyzeSpecies(uniqueSpecies[0], cleanedData);
-                            } else {
-                                console.error("❌ No species found in data");
-                                throw new Error("No fish species found in data");
-                            }
-                        },
-                        error: (error) => {
-                            throw new Error(`CSV parsing error: ${error.message}`);
-                        }
-                    });
                 } catch (error) {
                     console.error('Error loading data:', error);
                     setError(error.message);
                 } finally {
                     setLoading(false);
+                }
+            };
+            
+            // Function to fetch data from network and cache it
+            const fetchAndCacheData = async () => {
+                // Try multiple possible filenames for flexibility
+                const possibleFilenames = [
+                    'Boa_Vida_Fish_Finder_data.csv',
+                    './Boa_Vida_Fish_Finder_data.csv',
+                    '../Boa_Vida_Fish_Finder_data.csv',
+                    '/Boa_Vida_Fish_Finder_data.csv',
+                    'data/Boa_Vida_Fish_Finder_data.csv',
+                    './data/Boa_Vida_Fish_Finder_data.csv'
+                ];
+                
+                let csvData;
+                let loadedFilename = '';
+                
+                // Always try the direct root path first as most reliable
+                try {
+                    console.log("Trying direct path to CSV in root directory...");
+                    const response = await fetch('/Boa_Vida_Fish_Finder_data.csv');
+                    if (response.ok) {
+                        csvData = await response.text();
+                        loadedFilename = '/Boa_Vida_Fish_Finder_data.csv';
+                        console.log(`✅ Successfully loaded from root: ${loadedFilename}`);
+                        console.log(`First 50 chars: ${csvData.substring(0, 50)}`);
+                    } else {
+                        console.log(`❌ Root path failed with status: ${response.status}`);
+                    }
+                } catch (err) {
+                    console.log(`❌ Error loading from root path: ${err.message}`);
+                }
+                
+                // Try other paths if root didn't work
+                if (!csvData) {
+                    for (const filename of possibleFilenames) {
+                        try {
+                            console.log(`Trying path: ${filename}`);
+                            const response = await fetch(filename);
+                            if (response.ok) {
+                                csvData = await response.text();
+                                loadedFilename = filename;
+                                console.log(`✅ Successfully loaded: ${filename}`);
+                                break;
+                            } else {
+                                console.log(`❌ Failed with status: ${response.status}`);
+                            }
+                        } catch (err) {
+                            console.log(`❌ Error loading: ${filename} - ${err.message}`);
+                        }
+                    }
+                }
+                
+                if (!csvData) {
+                    console.error('⚠️ CSV loading failed from all relative paths. Attempting absolute path...');
+                    try {
+                        // Last resort - try with absolute path
+                        const absolutePath = window.location.origin + '/Boa_Vida_Fish_Finder_data.csv';
+                        console.log('Trying absolute path:', absolutePath);
+                        const response = await fetch(absolutePath);
+                        if (response.ok) {
+                            csvData = await response.text();
+                            loadedFilename = absolutePath;
+                            console.log(`✅ Successfully loaded from absolute path: ${absolutePath}`);
+                        } else {
+                            console.log(`❌ Absolute path failed with status: ${response.status}`);
+                            throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the project directory.');
+                        }
+                    } catch (err) {
+                        console.error('❌ All CSV loading attempts failed:', err);
+                        throw new Error('Could not find CSV file. Please ensure Boa_Vida_Fish_Finder_data.csv is in the project directory.');
+                    }
+                }
+                
+                // Process the CSV data
+                console.log("Starting CSV parsing...");
+                Papa.parse(csvData, {
+                    header: true,
+                    skipEmptyLines: true,
+                    dynamicTyping: true,
+                    complete: (results) => {
+                        console.log(`✅ CSV parsed successfully. Found ${results.data.length} rows.`);
+                        
+                        if (results.data.length === 0) {
+                            console.error("❌ No data rows found in CSV");
+                            throw new Error("CSV file contains no data rows");
+                        }
+                        
+                        if (!results.data[0].Species) {
+                            console.error("❌ Missing Species column in CSV data");
+                            throw new Error("CSV data is missing required Species column");
+                        }
+                        
+                        // Process the data
+                        processData(results.data);
+                        
+                        // Cache the raw data in IndexedDB for offline use
+                        try {
+                            IndexedDBManager.saveFishingData(results.data, 'csv')
+                                .then(() => console.log("✅ Successfully cached fishing data in IndexedDB"))
+                                .catch(err => console.error("❌ Error caching data in IndexedDB:", err));
+                        } catch (err) {
+                            console.error("❌ Error accessing IndexedDB for caching:", err);
+                        }
+                    },
+                    error: (error) => {
+                        throw new Error(`CSV parsing error: ${error.message}`);
+                    }
+                });
+            };
+            
+            // Function to process the data (either from network or cache)
+            const processData = (rawData) => {
+                try {
+                    const cleanedData = rawData
+                        .filter(row => row.Species && row.Species.trim() !== '')
+                        .map(row => {
+                            // Handle column names with trailing spaces
+                            const place = row.Place || row['Place '] || row['Place  '];
+                            const primaryBait = row.Primary_Bait || row['Primary_Bait '] || row.Bait || row['Bait '];
+                            const timeOfStrike = row['Time of Strike'] || row['Time of Strike '] || row['Time of Strike  '];
+                            const weather = row.Weather || row['Weather '] || row['Weather  '];
+                            
+                            // Convert lbs to kg internally (0.453592 conversion factor)
+                            const weightLbs = parseFloat(row['Weight (lbs)']) || 0;
+                            const weightKg = weightLbs * 0.453592;
+                            
+                            return {
+                                Species: row.Species?.trim(),
+                                Weight: weightKg, // Calculated from lbs
+                                WeightLbs: weightLbs,
+                                Place: place?.trim() || 'Unknown',
+                                PrimaryBait: primaryBait?.trim() || 'Unknown',
+                                Enhancement: row.Enhancement?.trim() || '',
+                                // RawBait removed as per column update
+                                WaterTemp: parseFloat(row['Water Temperature (°C)'] || row['Water Temperature (C)']) || 0,
+                                Moon: row.Moon?.trim() || 'Unknown',
+                                TideState: row['Tide State']?.trim() || 'Unknown',
+                                TimeOfStrike: timeOfStrike?.trim() || '',
+                                Weather: weather?.trim() || '',
+                                CloudCover: parseInt(row['Cloud Cover (%)']) || 0,
+                                TideHeight: parseFloat(row['Tide Height (m)']) || 0,
+                                TidalCoeff: parseInt(row['Tidal Coefficient']) || 0,
+                                Length: parseFloat(row['Length (m)']) || 0,
+                                LineLbs: parseFloat(row['Line (lbs)']) || 0,
+                                AirTemp: parseFloat(row['Air Temp (°C)']) || 0
+                            };
+                        });
+                    
+                    console.log(`✅ Cleaned data: ${cleanedData.length} valid rows`);
+                    setData(cleanedData);
+                    
+                    const uniqueSpecies = _.uniq(cleanedData.map(d => d.Species)).sort();
+                    console.log(`✅ Found ${uniqueSpecies.length} unique species: ${uniqueSpecies.join(', ')}`);
+                    setSpecies(uniqueSpecies);
+                    
+                    if (uniqueSpecies.length > 0) {
+                        console.log(`✅ Setting selected fish to: ${uniqueSpecies[0]}`);
+                        setSelectedFish(uniqueSpecies[0]);
+                        analyzeSpecies(uniqueSpecies[0], cleanedData);
+                    } else {
+                        console.error("❌ No species found in data");
+                        throw new Error("No fish species found in data");
+                    }
+                } catch (error) {
+                    console.error('Error processing data:', error);
+                    setError(error.message);
+                    throw error;
                 }
             };
 
@@ -828,6 +957,19 @@
             }, React.createElement('div', {
                 className: "max-w-2xl mx-auto"
             }, [
+                // Offline indicator - only show when offline
+                !isOnline && React.createElement('div', {
+                    key: 'offline-indicator',
+                    className: "bg-yellow-500 text-white px-4 py-2 text-center rounded-lg mb-4 flex items-center justify-center shadow-md"
+                }, [
+                    React.createElement('span', {
+                        key: 'icon',
+                        className: "material-symbols-rounded mr-2"
+                    }, "wifi_off"),
+                    React.createElement('span', {
+                        key: 'text'
+                    }, "You're currently offline. Using cached data.")
+                ]),
                 // Header
                 React.createElement('div', {
                     key: 'header',
@@ -1468,7 +1610,7 @@
                                 recommendations.topTime ? [
                                     "Go fishing ",
                                     React.createElement('strong', { key: 'time-value' }, recommendations.topTime[0].toLowerCase()),
-                                    " (5am-12pm)"
+                                    ""
                                 ] : "Time data not available"
                             ])
                         ]),
