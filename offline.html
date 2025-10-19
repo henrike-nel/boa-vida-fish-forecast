@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Fish Forecast</title>
+    <meta name="description" content="Offline mode for Fish Forecast">
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" href="assets/icons/fish_forecast_icon-2.png">
+    <link rel="apple-touch-icon" href="assets/icons/fish_forecast_icon-2.png">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#26374D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #536D82, #26374D);
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Card styling */
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.2em;
+            font-weight: 300;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        /* Button styling */
+        .button {
+            background-color: white;
+            color: #26374D;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Icon styling */
+        .icon {
+            display: block;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            opacity: 0.9;
+        }
+        
+        /* Status indicator */
+        .status {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .status::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #ff6b6b;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status">You're offline</div>
+    
+    <div class="card">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+            <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+        </svg>
+        
+        <h1>NO INTERNET CONNECTION</h1>
+        
+        <p>It looks like you're currently offline. Don't worry - you can still access your previously loaded fish forecasts and recommendations.</p>
+        
+        <p>Some features may be limited until you reconnect to the internet.</p>
+        
+        <a href="/" class="button">Try Again</a>
+    </div>
+    
+    <footer>
+        © 2025 Boa Vida Fish Forecast
+    </footer>
+    
+    <!-- Update Notifier -->
+    <script src="/js/update-notifier.js"></script>
+    
+    <script>
+        // Register service worker for offline capabilities
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        // Check if online and redirect if connection is restored
+        window.addEventListener('online', () => {
+            window.location.href = '/';
+        });
+        
+        // Update button text with countdown when clicked
+        document.querySelector('.button').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (navigator.onLine) {
+                window.location.href = '/';
+                return;
+            }
+            
+            const button = this;
+            const originalText = button.textContent;
+            let countdown = 3;
+            
+            button.textContent = `Checking... (${countdown})`;
+            button.style.pointerEvents = 'none';
+            button.style.opacity = '0.7';
+            
+            const timer = setInterval(() => {
+                countdown--;
+                button.textContent = `Checking... (${countdown})`;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    
+                    if (navigator.onLine) {
+                        window.location.href = '/';
+                    } else {
+                        button.textContent = originalText;
+                        button.style.pointerEvents = 'auto';
+                        button.style.opacity = '1';
+                    }
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

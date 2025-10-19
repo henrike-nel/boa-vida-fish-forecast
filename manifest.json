@@ -1,0 +1,50 @@
+{
+  "name": "Boa Vida Fish Forecast",
+  "short_name": "Fish Forecast",
+  "description": "Data-driven fishing guide for Bazaruto waters based on historical catch data",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#26374D",
+  "theme_color": "#26374D",
+  "categories": ["sports", "fishing", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/icons/fish_forecast_icon-2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/fish_forecast_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/fish_forecast_icon-2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/images/marlin_image.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Fish Forecast Application"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Home",
+      "url": "/home.html",
+      "description": "Go to the home page"
+    }
+  ]
+}
